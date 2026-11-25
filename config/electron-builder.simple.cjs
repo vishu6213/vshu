@@ -22,7 +22,7 @@ module.exports = {
     'native/**',
     'resources/plugins/**',
     'resources/skills/**',
-    'node_modules/@vshu/**'
+    'node_modules/**'
   ],
   extraResources: [
     {
