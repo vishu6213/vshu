@@ -31,7 +31,8 @@ call pnpm run ensure:electron-runtime
 if %ERRORLEVEL% NEQ 0 (
   echo.
   echo [WARN] Native addon rebuild skipped ^(Visual Studio C++ Build Tools not installed^).
-  echo        Continuing with prebuilt native addons...
+  echo        Restoring prebuilt native addons and continuing...
+  node config\scripts\native-build\windows\upstream-release-windows-addons.mjs >nul 2>&1
 )
 
 taskkill /F /IM Vshu.exe /T >nul 2>&1

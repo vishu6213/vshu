@@ -37,10 +37,10 @@ const UPSTREAM = ['or', 'ca'].join('')
 // Upstream's own release; the digest is the one its latest.yml publishes for this installer.
 export const UPSTREAM_RELEASE = {
   repository: ['stablyai', UPSTREAM].join('/'),
-  tag: 'v1.4.269',
+  tag: 'v1.4.274',
   asset: `${UPSTREAM}-windows-setup.exe`,
-  size: 236261696,
-  sha512: 'cOgJFiqdHAE/Xdh5lGjt/uhDqygX+9xytzz5KxFVEAXnmgek/VGYOwV4TVpvMz8SPTTicZDdgtJwppKPPQ0jMQ=='
+  size: 243494424,
+  sha512: '2qkdsmgjdGNlDlKz+BrY1zCgvmY8vqyx6er8ipCT2FD6W7sCpXU4RMVSSeLgMByzOIq1Bi6D5EfIWoPv8E4WZg=='
 }
 const PAYLOAD = 'resources/node_modules'
 const WORKSPACE_ADDONS = ['security', 'registry', 'notifications']
