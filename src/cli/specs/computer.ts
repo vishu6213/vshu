@@ -1,0 +1,163 @@
+import type { CommandSpec } from '../discovery/command-spec'
+import { CLI_GLOBAL_FLAGS as GLOBAL_FLAGS } from '../../shared/cli/cli-argument-boundary'
+import {
+  COMPUTER_WAIT_DEFAULT_TIMEOUT_MS,
+  COMPUTER_WAIT_MAX_TIMEOUT_MS
+} from '../../shared/computer/computer-wait-timeout'
+
+const COMPUTER_FLAGS = [...GLOBAL_FLAGS, 'worktree', 'session', 'app']
+const COMPUTER_WINDOW_TARGET_FLAGS = ['window-id', 'window-index']
+const COMPUTER_OBSERVE_FLAGS = [
+  ...COMPUTER_FLAGS,
+  ...COMPUTER_WINDOW_TARGET_FLAGS,
+  'restore-window',
+  'no-screenshot',
+  'screenshot-format',
+  'screenshot-scale',
+  'screenshot-max-edge'
+]
+const COMPUTER_ACTION_FLAGS = [...COMPUTER_OBSERVE_FLAGS, 'full-tree']
+
+export const COMPUTER_COMMAND_SPECS: CommandSpec[] = [
+  {
+    path: ['computer', 'capabilities'],
+    summary: 'Show computer-use provider capabilities',
+    usage: 'vshu computer capabilities [--json]',
+    allowedFlags: [...GLOBAL_FLAGS]
+  },
+  {
+    path: ['computer', 'list-apps'],
+    summary: 'List running apps available to computer-use',
+    usage: 'vshu computer list-apps [--json]',
+    allowedFlags: [...GLOBAL_FLAGS]
+  },
+  {
+    path: ['computer', 'permissions'],
+    summary: 'Open computer-use permission setup',
+    usage: 'vshu computer permissions [--id <accessibility|screenshots>] [--json]',
+    allowedFlags: [...GLOBAL_FLAGS, 'id']
+  },
+  {
+    path: ['computer', 'launch-app'],
+    summary: 'Start a closed app without taking the foreground',
+    usage: 'vshu computer launch-app <name|bundle|path> [--activate] [--json]',
+    allowedFlags: [...GLOBAL_FLAGS, 'app', 'activate'],
+    positionalArgs: ['app'],
+    notes: [
+      'Leaves an app that is already running as it is. Use this instead of `open -a` or Start-Process, which bring the app to the front.',
+      'Use --activate only when the user asked for the app to come forward: it takes the keyboard from whatever they are doing. It applies only when launch-app starts the app.',
+      'macOS and Windows only.'
+    ]
+  },
+  {
+    path: ['computer', 'list-windows'],
+    summary: 'List windows for an app available to computer-use',
+    usage: 'vshu computer list-windows --app <name|bundle|pid:N> [--json]',
+    allowedFlags: [...GLOBAL_FLAGS, 'app']
+  },
+  {
+    path: ['computer', 'get-app-state'],
+    summary: 'Capture a compact accessibility snapshot of an app',
+    usage:
+      'vshu computer get-app-state --app <name|bundle|pid:N> [--window-id <id> | --window-index <n>] [--worktree <selector> | --session <id>] [--element-index <n>] [--query <text>] [--max-elements <n>] [--restore-window] [--no-screenshot] [--screenshot-format <png|jpeg>] [--screenshot-scale <n>] [--screenshot-max-edge <px>] [--json]',
+    allowedFlags: [...COMPUTER_OBSERVE_FLAGS, 'element-index', 'query', 'max-elements']
+  },
+  {
+    path: ['computer', 'wait'],
+    summary: 'Wait until an app shows text, enables a control, or opens a window',
+    usage:
+      'vshu computer wait --app <name|bundle|pid:N> (--text <text> | --enabled <text> | --window-title <text>) [--timeout <ms>] [--window-id <id> | --window-index <n>] [--worktree <selector> | --session <id>] [--json]',
+    allowedFlags: [
+      ...COMPUTER_FLAGS,
+      ...COMPUTER_WINDOW_TARGET_FLAGS,
+      'text',
+      'enabled',
+      'window-title',
+      'timeout'
+    ],
+    notes: [
+      'Polls the accessibility tree (or, for --window-title, the window list) until the condition holds, then prints the matching elements or windows. Matching is a case-insensitive substring, like get-app-state --query.',
+      '--enabled holds once an element contains the text and no element containing it is disabled.',
+      `--timeout defaults to ${COMPUTER_WAIT_DEFAULT_TIMEOUT_MS} ms (at most ${COMPUTER_WAIT_MAX_TIMEOUT_MS}); on timeout the command fails with wait_timeout.`
+    ]
+  },
+  {
+    path: ['computer', 'click'],
+    summary: 'Click an app element or window coordinate, optionally with modifiers',
+    usage:
+      'vshu computer click --app <app> (--element-index <n> | --x <x> --y <y>) [--window-id <id> | --window-index <n>] [--click-count <n>] [--mouse-button <left|right|middle>] [--modifiers <modifier-chord>] [--restore-window] [--no-screenshot] [--full-tree] [--json]',
+    allowedFlags: [
+      ...COMPUTER_ACTION_FLAGS,
+      'element-index',
+      'x',
+      'y',
+      'click-count',
+      'mouse-button',
+      'modifiers'
+    ]
+  },
+  {
+    path: ['computer', 'perform-secondary-action'],
+    summary: 'Perform an advertised secondary accessibility action',
+    usage:
+      'vshu computer perform-secondary-action --app <app> --element-index <n> --action <name> [--window-id <id> | --window-index <n>] [--restore-window] [--no-screenshot] [--full-tree] [--json]',
+    allowedFlags: [...COMPUTER_ACTION_FLAGS, 'element-index', 'action']
+  },
+  {
+    path: ['computer', 'scroll'],
+    summary: 'Scroll an app element or window coordinate',
+    usage:
+      'vshu computer scroll --app <app> (--element-index <n> | --x <x> --y <y>) --direction <up|down|left|right> [--window-id <id> | --window-index <n>] [--pages <n>] [--restore-window] [--no-screenshot] [--full-tree] [--json]',
+    allowedFlags: [...COMPUTER_ACTION_FLAGS, 'element-index', 'x', 'y', 'direction', 'pages']
+  },
+  {
+    path: ['computer', 'drag'],
+    summary: 'Drag between app elements or window coordinates',
+    usage:
+      'vshu computer drag --app <app> (--from-element-index <n> --to-element-index <n> | --from-x <x> --from-y <y> --to-x <x> --to-y <y>) [--window-id <id> | --window-index <n>] [--restore-window] [--no-screenshot] [--full-tree] [--json]',
+    allowedFlags: [
+      ...COMPUTER_ACTION_FLAGS,
+      'from-element-index',
+      'to-element-index',
+      'from-x',
+      'from-y',
+      'to-x',
+      'to-y'
+    ]
+  },
+  {
+    path: ['computer', 'type-text'],
+    summary: 'Type literal text at the current app focus or into an element',
+    usage:
+      'vshu computer type-text --app <app> (--text <text> | --text-stdin) [--element-index <n>] [--window-id <id> | --window-index <n>] [--restore-window] [--no-screenshot] [--full-tree] [--json]',
+    allowedFlags: [...COMPUTER_ACTION_FLAGS, 'element-index', 'text', 'text-stdin']
+  },
+  {
+    path: ['computer', 'press-key'],
+    summary: 'Press a single key such as Return or Escape',
+    usage:
+      'vshu computer press-key --app <app> --key <key> [--window-id <id> | --window-index <n>] [--allow-system-shortcut] [--restore-window] [--no-screenshot] [--full-tree] [--json]',
+    allowedFlags: [...COMPUTER_ACTION_FLAGS, 'key', 'allow-system-shortcut']
+  },
+  {
+    path: ['computer', 'hotkey'],
+    summary: 'Press a platform-aware key combination',
+    usage:
+      'vshu computer hotkey --app <app> --key <key-combo> [--window-id <id> | --window-index <n>] [--allow-system-shortcut] [--restore-window] [--no-screenshot] [--full-tree] [--json]',
+    allowedFlags: [...COMPUTER_ACTION_FLAGS, 'key', 'allow-system-shortcut']
+  },
+  {
+    path: ['computer', 'paste-text'],
+    summary: 'Paste exact text at the current app focus',
+    usage:
+      'vshu computer paste-text --app <app> (--text <text> | --text-stdin) [--window-id <id> | --window-index <n>] [--restore-window] [--no-screenshot] [--full-tree] [--json]',
+    allowedFlags: [...COMPUTER_ACTION_FLAGS, 'text', 'text-stdin']
+  },
+  {
+    path: ['computer', 'set-value'],
+    summary: 'Set the value of a settable app element',
+    usage:
+      'vshu computer set-value --app <app> --element-index <n> (--value <text> | --value-stdin) [--window-id <id> | --window-index <n>] [--restore-window] [--no-screenshot] [--full-tree] [--json]',
+    allowedFlags: [...COMPUTER_ACTION_FLAGS, 'element-index', 'value', 'value-stdin']
+  }
+]

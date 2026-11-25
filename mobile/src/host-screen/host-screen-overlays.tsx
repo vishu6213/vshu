@@ -1,0 +1,224 @@
+import { useState } from 'react'
+import { openExternalLink } from '../platform/external-links/external-link'
+import { Pressable, Text, View } from 'react-native'
+import { workspaceRouteHref } from '../navigation/workspace-execution-host'
+import { useWorkspaceServer } from '../worktree/execution-hosts/workspace-server'
+import { ActionSheetContent } from '../components/sheets/ActionSheetModal'
+import { BottomDrawer } from '../components/bottom-drawer/BottomDrawer'
+import { BottomDrawerModalHost } from '../components/bottom-drawer/bottom-drawer-modal-host'
+import { ConfirmModal } from '../components/sheets/ConfirmModal'
+import { VshuHookTrustDrawer } from '../components/hook-trust/VshuHookTrustDrawer'
+import { NewWorktreeModalController } from '../new-workspace/creation/modal/NewWorktreeModalController'
+import { hostNewWorktreeSessionRoute } from '../host-new-worktree-session-route'
+import type { Worktree } from '../worktree/workspace-list/workspace-list-types'
+import { useMobileColorScheme } from '../theme/use-mobile-color-scheme'
+import { hostScreenStyles as styles } from './host-screen-styles'
+import { WorkspaceOptionsSheet } from './workspace-options/workspace-options-sheet'
+import { HostNewBotSheet } from './host-new-bot-sheet'
+import { WorkspaceDetailsSheet } from './workspace-actions/workspace-details-sheet'
+import { WorkspaceRenameSheet } from './workspace-actions/workspace-rename-sheet'
+import { WorkspaceStatusSheet } from './workspace-actions/workspace-status-sheet'
+import { useWorkspaceRowMenuActions } from './workspace-actions/use-workspace-row-menu-actions'
+import type { HostScreenController } from './use-host-screen-controller'
+import { useMobileTranslation } from '../i18n/use-mobile-translation'
+
+export function HostScreenOverlays({ controller }: { controller: HostScreenController }) {
+  const t = useMobileTranslation()
+  useMobileColorScheme()
+  const {
+    actions,
+    catalog,
+    client,
+    connState,
+    existingWorktreePaths,
+    hostCapabilities,
+    hostDisplay,
+    hostId,
+    state
+  } = controller
+  const actionTarget = state.actionTarget
+  // Tied to the menu's row, so a menu closed elsewhere never reopens on the rename sheet.
+  const [renameTarget, setRenameTarget] = useState<Worktree | null>(null)
+  const [statusTarget, setStatusTarget] = useState<Worktree | null>(null)
+  const closeActionSheet = () => {
+    setRenameTarget(null)
+    setStatusTarget(null)
+    state.setConfirmDelete(null)
+    state.setActionTarget(null)
+  }
+  // A server row's screens are offered by what that server supports, not the desktop.
+  const actionServer = useWorkspaceServer({
+    client,
+    connState,
+    desktopCapabilities: hostCapabilities,
+    executionHost: actionTarget?.hostId
+  })
+  const rowMenuActions = useWorkspaceRowMenuActions({
+    controller,
+    row: actionTarget,
+    server: actionServer,
+    onRename: setRenameTarget,
+    onMoveToStatus: setStatusTarget
+  })
+
+  return (
+    <>
+      <WorkspaceOptionsSheet controller={controller} />
+      <HostNewBotSheet controller={controller} />
+
+      {/* iOS cannot present over a closing sibling Modal; delete's confirm, trust prompt and failure share one. */}
+      <BottomDrawerModalHost>
+        <BottomDrawer visible={actionTarget != null} onClose={closeActionSheet}>
+          {state.confirmDelete ? (
+            <View>
+              <View style={styles.confirmContent}>
+                <Text style={styles.confirmTitle}>{t('common.delete', 'Delete')}</Text>
+                <Text style={styles.confirmMessage}>
+                  {t(
+                    'hostScreen.hostScreenOverlays.deleteConfirmMessage',
+                    'Delete "{{name}}" ({{branch}})?',
+                    {
+                      name: state.confirmDelete.displayName || state.confirmDelete.repo,
+                      branch: state.confirmDelete.branch
+                    }
+                  )}
+                </Text>
+                {state.confirmDelete.recipeEnvironment ? (
+                  <Text style={styles.confirmMessage}>
+                    {state.confirmDelete.recipeEnvironment.destroys === false
+                      ? t(
+                          'hostScreen.hostScreenOverlays.deleteKeepsEnvironment',
+                          'The environment "{{environment}}" that Vshu created for it keeps running: its recipe has no destroy step.',
+                          { environment: state.confirmDelete.recipeEnvironment.name }
+                        )
+                      : t(
+                          'hostScreen.hostScreenOverlays.deleteDestroysEnvironment',
+                          'This also destroys the environment "{{environment}}" that Vshu created for it, with any uncommitted work and running terminals on it.',
+                          { environment: state.confirmDelete.recipeEnvironment.name }
+                        )}
+                  </Text>
+                ) : null}
+              </View>
+              <View style={styles.confirmButtons}>
+                <Pressable
+                  style={({ pressed }) => [
+                    styles.confirmBtn,
+                    styles.confirmBtnCancel,
+                    pressed && styles.confirmBtnPressed
+                  ]}
+                  onPress={() => state.setConfirmDelete(null)}
+                >
+                  <Text style={styles.confirmBtnCancelText}>{t('common.cancel', 'Cancel')}</Text>
+                </Pressable>
+                <Pressable
+                  style={({ pressed }) => [
+                    styles.confirmBtn,
+                    styles.confirmBtnDestructive,
+                    pressed && styles.confirmBtnPressed
+                  ]}
+                  onPress={() => {
+                    if (state.confirmDelete) {
+                      void actions.handleDeleteWorktree(state.confirmDelete)
+                    }
+                    state.setConfirmDelete(null)
+                    state.setActionTarget(null)
+                  }}
+                >
+                  <Text style={styles.confirmBtnDestructiveText}>
+                    {t('common.delete', 'Delete')}
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+          ) : actionTarget && renameTarget === actionTarget ? (
+            <WorkspaceRenameSheet
+              hostId={hostId ?? ''}
+              hostName={hostDisplay.title}
+              row={actionTarget}
+              rename={actions.renameWorktree}
+              blockedOffline={actions.workspaceRenameWrite.blockedOffline}
+              onClose={closeActionSheet}
+            />
+          ) : actionTarget && statusTarget === actionTarget ? (
+            <WorkspaceStatusSheet
+              row={actionTarget}
+              statuses={state.view.workspaceStatuses}
+              onPick={actions.setWorktreeStatus}
+              onClose={closeActionSheet}
+            />
+          ) : (
+            <ActionSheetContent actions={rowMenuActions}>
+              {actionTarget ? (
+                <WorkspaceDetailsSheet
+                  row={actionTarget}
+                  onOpenLink={(url) => {
+                    openExternalLink(url)
+                    state.setActionTarget(null)
+                  }}
+                />
+              ) : null}
+            </ActionSheetContent>
+          )}
+        </BottomDrawer>
+
+        <VshuHookTrustDrawer
+          visible={actions.archiveTrustRequest != null}
+          prompt={actions.archiveTrustRequest?.prompt ?? null}
+          onRunOnce={() => void actions.approveArchiveTrust(false)}
+          onAlwaysTrust={() => void actions.approveArchiveTrust(true)}
+          onDontRun={actions.skipArchiveHook}
+          onClose={actions.cancelArchiveTrust}
+        />
+
+        <ConfirmModal
+          visible={actions.archiveHookFailure != null}
+          title={t('hostScreen.hostScreenOverlays.deleteFailed', 'Failed to delete "{{name}}"', {
+            name:
+              actions.archiveHookFailure?.item.displayName || actions.archiveHookFailure?.item.repo
+          })}
+          message={actions.archiveHookFailure?.message}
+          confirmLabel={t('common.delete', 'Delete')}
+          destructive
+          onConfirm={actions.deleteDespiteArchiveHookFailure}
+          onCancel={actions.dismissArchiveHookFailure}
+        />
+      </BottomDrawerModalHost>
+
+      <ConfirmModal
+        visible={state.confirmRemoveHost}
+        title={t('hostScreen.hostScreenOverlays.removeHost', 'Remove Host')}
+        message={t(
+          'hostScreen.hostScreenOverlays.removeHostMessage',
+          'Remove "{{name}}"? You can re-pair later.',
+          { name: state.hostName }
+        )}
+        confirmLabel={t('common.remove', 'Remove')}
+        destructive
+        onConfirm={() => void actions.handleRemoveHost()}
+        onCancel={() => state.setConfirmRemoveHost(false)}
+      />
+
+      <NewWorktreeModalController
+        visible={state.showNewWorktree}
+        client={client}
+        hostCapabilities={hostCapabilities}
+        hostId={hostId}
+        hostLabelById={state.hostLabelById}
+        existingWorktreePaths={existingWorktreePaths}
+        existingWorktrees={state.worktrees}
+        // Use the platform opener: React Native Linking.openURL resolves without opening anything inside the shell’s WebView.
+        openExternalUrl={openExternalLink}
+        onCreated={(worktreeId, worktreeName, warning, executionHost) => {
+          void catalog.fetchWorktrees({ allowDuringModal: true })
+          actions.navigateFromHostList(
+            workspaceRouteHref(
+              hostNewWorktreeSessionRoute(hostId, worktreeId, worktreeName, warning),
+              executionHost
+            )
+          )
+        }}
+        onClose={actions.closeNewWorktreeModal}
+      />
+    </>
+  )
+}

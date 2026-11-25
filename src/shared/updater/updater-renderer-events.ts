@@ -1,0 +1,5 @@
+export const VSHU_UPDATER_QUIT_AND_INSTALL_STARTED_EVENT = 'vshu:updater-quit-and-install-started'
+export const VSHU_UPDATER_QUIT_AND_INSTALL_ABORTED_EVENT = 'vshu:updater-quit-and-install-aborted'
+export const VSHU_AUTOMATIC_UPDATE_PREPARE_EVENT = 'vshu:automatic-update-prepare'
+export const VSHU_APP_RESTART_STARTED_EVENT = 'vshu:app-restart-started'
+export const VSHU_APP_RESTART_ABORTED_EVENT = 'vshu:app-restart-aborted'

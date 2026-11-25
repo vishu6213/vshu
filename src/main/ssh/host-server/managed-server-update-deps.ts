@@ -1,0 +1,38 @@
+import { getAppEnvironment } from '../../../shared/app-lifecycle/app-environment'
+import type { ManagedServerUpdateDeps } from './managed-server-update-check'
+import { autoUpdateManagedVshudEnvironment } from '../../managed-server/lifecycle/vshud-managed-auto-update'
+import { requireManagedVshudTargetStore } from '../../managed-server/lifecycle/vshud-managed-runtime-context'
+import {
+  vshudUpdateFailedThisLaunch,
+  recordVshudUpdateFailedThisLaunch
+} from '../../managed-server/lifecycle/vshud-managed-update-failure-memory'
+
+export function managedServerUpdateDeps(userDataPath: string): ManagedServerUpdateDeps {
+  const registry = requireManagedVshudTargetStore()
+  const appVersion = getAppEnvironment().getVersion()
+  return {
+    autoUpdate: async (environmentId, options) =>
+      await autoUpdateManagedVshudEnvironment(userDataPath, {
+        environmentId,
+        appVersion,
+        ...options
+      }),
+    // Re-read the store: caller snapshots may predate an overlapping check's failure.
+    recordedUpdateFailure: (target) => {
+      const failure = (registry.getTarget(target.id) ?? target).managedServerUpdateFailure
+      return failure?.appVersion === appVersion ? failure.reason : null
+    },
+    // Only attempted failures suppress retry; keep launch-only state out of peer-published SshTarget.
+    failedThisLaunch: (target) => vshudUpdateFailedThisLaunch({ kind: 'ssh', id: target.id }),
+    recordUpdateFailure: (target, reason) => {
+      recordVshudUpdateFailedThisLaunch(
+        { kind: 'ssh', id: target.id },
+        { code: 'vshud_update_failed', reason }
+      )
+      registry.updateTarget(target.id, { managedServerUpdateFailure: { reason, appVersion } })
+    },
+    clearUpdateFailure: (target) => {
+      registry.updateTarget(target.id, { managedServerUpdateFailure: undefined })
+    }
+  }
+}

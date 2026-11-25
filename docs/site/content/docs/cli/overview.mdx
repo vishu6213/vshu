@@ -1,0 +1,127 @@
+---
+title: Vshu CLI overview
+description: Use the Vshu CLI to script Vshu from a terminal, manage worktrees, control agent terminals, automate the built-in browser, and install agent skills.
+keywords:
+  - vshu cli
+  - Vshu CLI
+  - vshu command line
+  - Vshu skills
+  - npx skills add
+  - agent CLI
+---
+
+import { Callout } from '@/components/docs/prose'
+
+The Vshu CLI is the `vshu` command-line interface for scripting a running Vshu editor from any shell. Use it to create and inspect worktrees, drive agent terminals, open files and diffs, automate the built-in browser, run scheduled automations, share HTML/Markdown artifacts, and control Vshu-native tools from scripts or AI agents.
+
+It ships with the desktop app; register it under [Settings → General → Vshu CLI](/docs/settings). On Linux the command is `vshu-ide`, because GNOME Orca's screen reader already owns `/usr/bin/orca` — see [Install → Linux](/docs/install#linux).
+
+Agents can install the matching Vshu CLI skill with:
+
+```bash
+npx skills add https://github.com/vishu6213/vshu --skill vshu-cli
+# headless / no Settings UI:
+vshu skills install --skill vshu-cli
+```
+
+See [Skills registry & MCP](/docs/cli/skills) for every installable Vshu skill, including `vshu skills install` / `vshu skills update`.
+
+## Install & verify
+
+```
+command -v vshu
+vshu status --json
+```
+
+## Worktree commands
+
+```
+vshu worktree ps --json
+vshu worktree create --repo id:<repoId> --name my-task --issue 123 --json
+vshu worktree create --repo id:<repoId> --name review-pr-123 --pr 123 --json
+vshu worktree current --json
+vshu worktree set --worktree active --comment "reproduced bug" --json
+vshu worktree set --worktree active --gitlab-issue 42 --gitlab-mr 77 --json
+vshu worktree set --worktree active --pr null --json
+vshu worktree rm --worktree id:<id> --force --json
+```
+
+For selectors, setup flags, parent/child worktrees, and the broader command map, see [Vshu CLI reference](/docs/cli/reference).
+
+## Terminal commands
+
+```
+vshu terminal list --json
+vshu terminal read --json
+vshu terminal send --text "npm test" --enter --json
+vshu terminal wait --for tui-idle --timeout-ms 30000 --json
+vshu terminal create --worktree path:/projects/app --command "npm test" --json
+vshu terminal split --direction vertical --command "npm run dev" --json
+```
+
+`terminal send` is for shells, dev servers and REPLs. To message another agent, use `vshu orchestration send`; for tracked multi-agent work, use [Orchestration](/docs/cli/orchestration).
+
+## File commands
+
+Open files and diffs as tabs in their Vshu worktree from a shell. They open without changing what you are looking at; add `--focus` to be brought to the file:
+
+```
+vshu file open src/App.tsx
+vshu file diff src/App.tsx --staged
+vshu file open-changed --mode both
+```
+
+Use `--worktree <selector>` when the shell's current directory is not inside the target worktree.
+
+## Browser profiles
+
+Browser profiles isolate tab session state, so a script or agent can test with different cookies, local storage, and logged-in identities. The CLI exposes profile commands under `vshu tab profile`; start with `vshu tab profile list --json`, then use `create`, `set`, `clone`, or `use-default` as needed.
+
+## Scheduled automations
+
+Use `vshu automations` to create, inspect, run, and remove scheduled Vshu tasks from a shell. Start with [Scheduled automations](/docs/cli/automations) when you want a recurring prompt to run against a repo or an existing worktree.
+
+## Artifacts
+
+Share HTML or Markdown as public view links through the signed-in Vshu account (`vshu artifacts share|update|list|delete`). Publishing follows **Settings → Artifacts → Allow publishing public artifact links**: on by default for new profiles, while profiles created before this default keep their previous setting. Command details: [CLI reference → Artifacts](/docs/cli/reference#artifacts).
+
+## Browser automation
+
+The CLI also drives the built-in browser with a snapshot-interact-re-snapshot loop:
+
+```
+vshu goto --url https://example.com --json
+vshu snapshot --json     # returns refs like @e1, @e3
+vshu click --element @e3 --json
+vshu fill --element @e1 --value "user@example.com" --json
+vshu screenshot --json
+```
+
+For responsive browser checks, switch the active tab to a named device profile:
+
+```
+vshu set device --name "iPhone 12" --json
+vshu screenshot --json
+```
+
+## Mobile emulator
+
+The CLI can also drive an iOS Simulator through Vshu's mobile emulator bridge. It is scoped to the active worktree, so agents and scripts can attach a simulator, list the worktree's attached devices with `vshu emulator list`, tap normalized coordinates, type text, send gestures, rotate the device, and shut it down without leaving Vshu.
+
+```
+vshu emulator list --json
+vshu emulator attach "<device-name-or-udid>" --json
+vshu emulator tap 0.5 0.7 --json
+vshu emulator type "hello" --json
+vshu emulator gesture '[{"type":"begin","x":0.5,"y":0.8},{"type":"move","x":0.5,"y":0.4},{"type":"end","x":0.5,"y":0.2}]' --json
+vshu emulator rotate landscape_left --json
+vshu emulator kill --json
+```
+
+Use `--worktree <selector>`, `--device <udid-or-name>`, or `--emulator <id>` when a script needs an explicit target.
+
+<Callout>
+  For the full command surface including tabs, waits, cookies, and frames, see [Vshu CLI
+  reference](/docs/cli/reference), then install the Vshu CLI skill (see [Skills
+  registry](/docs/cli/skills)) and point your agent at it.
+</Callout>

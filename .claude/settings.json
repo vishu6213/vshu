@@ -1,0 +1,11 @@
+{
+  "extraKnownMarketplaces": {
+    "vshu-agent-plugins": {
+      "source": { "source": "directory", "path": "./config/agent-plugins" }
+    }
+  },
+  "enabledPlugins": {
+    "vshu-typescript@vshu-agent-plugins": true,
+    "typescript-lsp@claude-plugins-official": false
+  }
+}

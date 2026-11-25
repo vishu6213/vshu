@@ -1,0 +1,145 @@
+import { ipcMain } from 'electron'
+import type { Store } from '../persistence/loading-store/store'
+import type { VshuRuntimeService } from '../runtime/vshu-runtime'
+import { parseTerminalSurfaceCloseTarget } from '../../shared/workspace-layout/terminal-surfaces/terminal-surface-close-target'
+import { isFrozenVshudSourceSessionPartition } from '../persistence/migrating-vshud-catalog/source/catalog/vshud-source-visibility'
+import { isWslMoveWindowWriteHeld } from '../persistence/moving-wsl-projects/quiescence/wsl-move-window-write-hold'
+import { visibleSessionHostIds } from '../persistence/migrating-vshud-catalog/retained-source/vshud-retained-source-session'
+import { markAgentLaunchesClosedByUser } from '../agent-launch/agent-launch-pane-attachment'
+import { windowViewPatchForMain, windowViewSaveForMain } from '../persistence/window-save-view'
+import { reportWindowSaveDrift } from '../persistence/window-save-divergence'
+import { windowSaveKeepingMainSleepRecords } from '../persistence/window-save-sleep-records'
+import { isNoopWindowSessionPatch } from '../persistence/window-session-patch-noop'
+import { noteWindowSessionSaveUnchanged } from '../browser/extensions/tabs-and-windows/browser-extension-discarded-tabs'
+import { VSHU_LAYOUT_OWNER_IS_MAIN } from '../../shared/workspace-layout/layout-owner-switch'
+import type {
+  WorkspaceSessionPatch,
+  WorkspaceSessionState
+} from '../../shared/workspace-session/workspace-session-state-types'
+import {
+  applyWorkspaceSessionEntriesPatch,
+  fieldsStoredDifferently,
+  type WorkspaceSessionEntriesPatch,
+  type WorkspaceSessionEntriesPatchResult
+} from '../../shared/workspace-session/workspace-session-entries-patch'
+
+export function registerSessionHandlers(store: Store, runtime: VshuRuntimeService): void {
+  // Why: renderer saves would change a fenced host's frozen source partition, or write back what a
+  // WSL move rewrote under this window before main reloads it.
+  const isFenced = (hostId?: string | null): boolean =>
+    isFrozenVshudSourceSessionPartition(store, hostId) || isWslMoveWindowWriteHeld()
+
+  // Optional hostId preserves local-partition behavior for older renderers.
+  ipcMain.handle('session:get', (_event, hostId?: string | null) => {
+    return store.getWorkspaceSession(hostId)
+  })
+
+  // Repo catalogs omit folder-only SSH hosts; enumerate session partitions directly (#12723).
+  ipcMain.handle('session:list-host-ids', () => {
+    return visibleSessionHostIds(store, store.getWorkspaceSessionHostIds())
+  })
+
+  // Main owns layout membership; merge the window's view and facts, then report layout drift.
+  const sessionForMain = (args: WorkspaceSessionState, hostId: string | null | undefined) => {
+    const stored = store.getWorkspaceSession(hostId)
+    reportWindowSaveDrift(stored, args, hostId, 'session:set')
+    return windowViewSaveForMain(stored, args, hostId, (session, partition) =>
+      runtime.shutdownReconnectFactsFor(session, partition)
+    )
+  }
+  const patchForMain = (args: WorkspaceSessionPatch, hostId: string | null | undefined) => {
+    const stored = store.getWorkspaceSession(hostId)
+    reportWindowSaveDrift(stored, { ...stored, ...args }, hostId, 'session:patch')
+    return windowViewPatchForMain(stored, args, hostId, (session, partition) =>
+      runtime.shutdownReconnectFactsFor(session, partition)
+    )
+  }
+
+  ipcMain.handle('session:set', (_event, args: WorkspaceSessionState, hostId?: string | null) => {
+    if (!isFenced(hostId)) {
+      store.setWorkspaceSession(
+        VSHU_LAYOUT_OWNER_IS_MAIN
+          ? sessionForMain(args, hostId)
+          : windowSaveKeepingMainSleepRecords(store.getWorkspaceSession(hostId), args, 'set'),
+        hostId
+      )
+    }
+  })
+
+  const patchWindowSession = (
+    toPatch: (stored: WorkspaceSessionState) => WorkspaceSessionPatch,
+    hostId: string | null | undefined
+  ): WorkspaceSessionEntriesPatchResult['status'] => {
+    if (isFenced(hostId)) {
+      return 'skipped'
+    }
+    const stored = store.getWorkspaceSession(hostId)
+    const args = toPatch(stored)
+    const save = VSHU_LAYOUT_OWNER_IS_MAIN
+      ? patchForMain(args, hostId)
+      : windowSaveKeepingMainSleepRecords(stored, args, 'patch')
+    if (!VSHU_LAYOUT_OWNER_IS_MAIN && isNoopWindowSessionPatch(stored, save)) {
+      noteWindowSessionSaveUnchanged(hostId)
+      return 'unchanged'
+    }
+    store.patchWorkspaceSession(save, hostId)
+    return 'applied'
+  }
+
+  ipcMain.handle('session:patch', (_event, args: WorkspaceSessionPatch, hostId?: string | null) => {
+    patchWindowSession(() => args, hostId)
+  })
+
+  // Changed keys only: rebuilt into whole fields from the stored partition, then saved as a patch.
+  ipcMain.handle(
+    'session:patch-entries',
+    (
+      _event,
+      args: WorkspaceSessionEntriesPatch,
+      hostId?: string | null
+    ): WorkspaceSessionEntriesPatchResult => {
+      const status = patchWindowSession(
+        (stored) => applyWorkspaceSessionEntriesPatch(stored, args),
+        hostId
+      )
+      if (status === 'skipped') {
+        return { status }
+      }
+      // Normalization, fences and main's sleep records can store something else, saved or not.
+      const normalizedFields = fieldsStoredDifferently(store.getWorkspaceSession(hostId), args)
+      return normalizedFields.length > 0 ? { status, normalizedFields } : { status }
+    }
+  )
+
+  // Window saves cannot shrink main-owned membership; closes must commit explicitly.
+  ipcMain.handle(
+    'session:close-terminal-surface',
+    (_event, args: { worktreeId?: unknown; target?: unknown; reason?: unknown } | undefined) => {
+      const target = parseTerminalSurfaceCloseTarget(args?.target)
+      if (typeof args?.worktreeId !== 'string' || !target) {
+        throw new Error('invalid_terminal_surface')
+      }
+      // Only main may close tabs for process exit.
+      const reason = args.reason === 'cleanup' ? 'cleanup' : 'user'
+      if (reason === 'user') {
+        markAgentLaunchesClosedByUser(args.worktreeId, target)
+      }
+      return runtime.closeTerminalSurfaceFromRenderer({
+        worktreeId: args.worktreeId,
+        target,
+        reason
+      })
+    }
+  )
+
+  ipcMain.handle('session:flush', () => {
+    // Lifecycle success requires durable writes; Store.flush only logs failures.
+    return store.flushPendingOrThrowAsync()
+  })
+
+  ipcMain.handle(
+    'session:read-terminal-scrollback',
+    (_event, args: { ref?: unknown } | undefined) =>
+      typeof args?.ref === 'string' ? store.readTerminalScrollbackSnapshotAsync(args.ref) : null
+  )
+}

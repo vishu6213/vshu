@@ -1,0 +1,11 @@
+/*
+ * Vshu visual identity: black, glass and brushed chrome. Additive by design: these sheets only
+ * override tokens and restyle existing class names and data attributes, so upstream merges
+ * rarely touch them. Loaded by components/vshu-ambient/VshuAmbientBackground.tsx.
+ */
+@import './tokens.css';
+@import './ambient.css';
+@import './glass-shell.css';
+@import './controls.css';
+@import './floating.css';
+@import './settings.css';

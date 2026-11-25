@@ -1,0 +1,12 @@
+{
+  "title": "The Vshu Model",
+  "defaultOpen": true,
+  "pages": [
+    "worktrees",
+    "vshu-yaml",
+    "tabs-panes-splits",
+    "agents-sessions",
+    "session-restore",
+    "quick-open"
+  ]
+}

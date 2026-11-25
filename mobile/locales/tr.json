@@ -1,0 +1,9 @@
+{
+  "ios": {
+    "NSCameraUsageDescription": "Vshu'nun QR kodlarını taramak için kamerayı kullanmasına izin verin.",
+    "NSLocalNetworkUsageDescription": "Vshu, yerel ağınızdaki masaüstü uygulamasına bağlanır.",
+    "NSMicrophoneUsageDescription": "Vshu’nun sesli dikte için mikrofonunuzu kullanmasına izin verin; konuşma bu telefonda veya eşlenmiş bilgisayarınızda yazıya dökülür.",
+    "NSPhotoLibraryAddUsageDescription": "Vshu'nun oturumlarınızdaki görselleri Fotoğraflar'a kaydetmesine izin verin.",
+    "NSPhotoLibraryUsageDescription": "Vshu'nun arşivinizdeki fotoğrafları eşleştirdiğiniz masaüstü bilgisayardaki bir terminal oturumuna eklemesine izin verin."
+  }
+}

@@ -1,0 +1,154 @@
+import { mkdtemp, rm } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+vi.mock('electron', () => ({
+  app: { isPackaged: false },
+  safeStorage: { isEncryptionAvailable: () => false }
+}))
+
+import type { VshuProfileCloudSummary } from '../../shared/vshu-profiles/vshu-profiles'
+import { ensureActiveVshuProfile } from '../vshu-profiles/profile-index-store'
+import {
+  linkVshuProfileToCloud,
+  unlinkVshuProfileFromCloud
+} from '../vshu-profiles/cloud-auth/profile-cloud-index'
+import { signOutCloudSession } from '../vshu-profiles/cloud-session/profile-cloud-session-owner'
+
+import { ArtifactCloudService } from './artifact-cloud-service'
+
+const createdPaths: string[] = []
+const apiUrl = 'http://localhost:3000'
+const cloudA: VshuProfileCloudSummary = {
+  cloudProfileId: 'cloud-a',
+  userId: 'user-a',
+  email: 'a@example.com',
+  linkedAt: 1
+}
+const cloudB: VshuProfileCloudSummary = {
+  cloudProfileId: 'cloud-b',
+  userId: 'user-b',
+  email: 'b@example.com',
+  linkedAt: 2
+}
+
+function createResponse(
+  slug = 'artifact-a',
+  expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+): Response {
+  return new Response(
+    JSON.stringify({
+      artifact: {
+        version: 1,
+        slug,
+        title: null,
+        originalFileName: 'report.html',
+        sourceContentType: 'text/html',
+        renderedContentType: 'text/html',
+        createdAt: '2026-08-06T00:00:00.000Z',
+        updatedAt: '2026-08-06T00:00:00.000Z',
+        expiresAt,
+        byteSize: 12,
+        deletedAt: null
+      },
+      shareUrl: `https://share.vshu.dev/a/${slug}`,
+      editToken: 'edit-secret'
+    }),
+    { status: 200, headers: { 'content-type': 'application/json' } }
+  )
+}
+
+async function setup(): Promise<{
+  userDataPath: string
+  profileId: string
+  service: ArtifactCloudService
+}> {
+  const userDataPath = await mkdtemp(join(tmpdir(), 'vshu-artifact-service-'))
+  createdPaths.push(userDataPath)
+  const active = ensureActiveVshuProfile(userDataPath)
+  linkVshuProfileToCloud(active.profile.id, cloudA, userDataPath)
+  return {
+    userDataPath,
+    profileId: active.profile.id,
+    service: new ArtifactCloudService(userDataPath, () => true)
+  }
+}
+
+const writeRequest = {
+  sourceKey: '/repo/report.html',
+  content: '<h1>Hi</h1>',
+  contentType: 'text/html' as const,
+  fileName: 'report.html',
+  apiUrl,
+  authToken: 'token-a'
+}
+
+beforeEach(() => {
+  // Keep fixed response expirations independent of the runner's wall clock.
+  vi.useFakeTimers({ toFake: ['Date'] })
+  vi.setSystemTime('2026-08-07T00:00:00.000Z')
+})
+
+afterEach(async () => {
+  vi.useRealTimers()
+  vi.unstubAllGlobals()
+  vi.unstubAllEnvs()
+  vi.restoreAllMocks()
+  await Promise.all(
+    createdPaths.splice(0).map((path) => rm(path, { recursive: true, force: true }))
+  )
+})
+
+describe('ArtifactCloudService record authorization', () => {
+  it('does not persist an edit token when a POST completes after relink', async () => {
+    const { userDataPath, profileId, service } = await setup()
+    let resolvePost: ((response: Response) => void) | undefined
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockImplementation(
+        () =>
+          new Promise<Response>((resolve) => {
+            resolvePost = resolve
+          })
+      )
+    )
+    const pending = service.share(writeRequest)
+    await vi.waitFor(() => expect(resolvePost).toBeTypeOf('function'))
+
+    signOutCloudSession(profileId, userDataPath)
+    unlinkVshuProfileFromCloud(profileId, userDataPath)
+    linkVshuProfileToCloud(profileId, cloudB, userDataPath)
+    resolvePost?.(createResponse())
+
+    await expect(pending).rejects.toThrow(/account changed/)
+    await expect(service.update({ ...writeRequest, authToken: 'token-b' })).rejects.toThrow(
+      /has not been shared/
+    )
+  })
+
+  it('allows a POST to finish across a same-account metadata refresh', async () => {
+    const { userDataPath, profileId, service } = await setup()
+    let resolvePost: ((response: Response) => void) | undefined
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockImplementation(
+        () =>
+          new Promise<Response>((resolve) => {
+            resolvePost = resolve
+          })
+      )
+    )
+    const pending = service.share(writeRequest)
+    await vi.waitFor(() => expect(resolvePost).toBeTypeOf('function'))
+
+    linkVshuProfileToCloud(
+      profileId,
+      { ...cloudA, displayName: 'Updated name', linkedAt: 99 },
+      userDataPath
+    )
+    resolvePost?.(createResponse())
+
+    await expect(pending).resolves.toMatchObject({ status: 'ok' })
+  })
+})

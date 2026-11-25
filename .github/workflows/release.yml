@@ -1,0 +1,82 @@
+# Builds the Windows installer and publishes it to a GitHub Release when a version tag is pushed.
+# Installed copies of Vshu read latest.yml from the newest release to offer in-app updates.
+#
+#   1. Bump "version" in package.json and commit.
+#   2. git tag v<version> && git push origin v<version>
+#
+# The tag must equal v<package.json version>. See RELEASING.md.
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing tag to (re)build and publish, e.g. v1.0.1
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.event.inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  windows:
+    name: Windows installer
+    runs-on: windows-latest
+    timeout-minutes: 120
+    env:
+      RELEASE_TAG: ${{ github.event.inputs.tag || github.ref_name }}
+      # gh (preinstalled on the runner) publishes with the workflow token; no other secrets.
+      GH_TOKEN: ${{ github.token }}
+      NODE_OPTIONS: --max-old-space-size=8192
+    steps:
+      - name: Check out the tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Check the tag matches package.json
+        shell: bash
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          if [ "$RELEASE_TAG" != "v$version" ]; then
+            echo "::error::Tag $RELEASE_TAG does not match package.json version $version (expected v$version)."
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Builds the CLI and app bundles, rebuilds native addons for Electron (MSVC is on the
+      # runner), and packages the NSIS installer with config/electron-builder.simple.cjs.
+      - name: Build the installer
+        run: node scripts/release-vshu.mjs --build-only
+
+      - name: Publish the GitHub Release
+        run: node scripts/release-vshu.mjs --skip-build --clobber
+
+      - name: Keep the build output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vshu-windows-${{ env.RELEASE_TAG }}
+          path: |
+            dist/*-windows-setup.exe
+            dist/*-windows-setup.exe.blockmap
+            dist/latest.yml
+          if-no-files-found: ignore
+          retention-days: 14

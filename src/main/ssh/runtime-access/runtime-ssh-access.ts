@@ -1,0 +1,258 @@
+import {
+  RuntimeSshAccessLinkRequestSchema,
+  RuntimeSshAccessUnlinkRequestSchema,
+  type RuntimeSshAccessLinkRequest,
+  type RuntimeSshAccessUnlinkRequest
+} from '../../../shared/remote-runtime/host-catalog/runtime-ssh-access'
+import { resolveEnvironment } from '../../../shared/remote-runtime/host-store/runtime-environment-store'
+import { assertRuntimeEnvironmentNotReconciling } from '../../../shared/remote-runtime/host-catalog/runtime-environment-reconciliation-record'
+import { redactRuntimeEnvironment } from '../../../shared/remote-runtime/host-catalog/runtime-environments'
+import {
+  cancelRuntimeEnvironmentSshAccessLink,
+  completeRuntimeEnvironmentSshAccessUnlink,
+  linkVerifiedRuntimeEnvironmentSshAccess,
+  prepareRuntimeEnvironmentSshAccessLink,
+  prepareRuntimeEnvironmentSshAccessUnlink
+} from '../../../shared/remote-runtime/host-store/runtime-environment-ssh-access-store'
+import { getManagedVshudFenceEnvironmentId } from '../../../shared/remote-runtime/ssh/managed-vshud-ssh-owner'
+import type { SshTarget } from '../../../shared/remote-runtime/ssh/ssh-types'
+import { runTargetLifecycle } from '../../ipc/ssh/ssh-target-lifecycle-queue'
+import { requireManagedVshudInfrastructure } from '../../managed-server/lifecycle/vshud-managed-runtime-context'
+import {
+  closeVshudManagedTunnel,
+  ensureVshudManagedTunnel,
+  startVshudManagedTunnel
+} from '../../managed-server/lifecycle/vshud-managed-tunnel'
+import { verifyRuntimeEnvironmentSshTunnel } from './runtime-ssh-access-verification'
+import { fingerprintRuntimeSshTarget } from './runtime-ssh-target-fingerprint'
+import { vshudTargetBlockerMessage } from '../targets/ssh-target-vshud-claims'
+import { dependentStateSummary } from '../targets/ssh-target-vshud-dependents'
+import type { VshudMigrationBlocker } from '../../../shared/vshud-migration/vshud-migration-preflight'
+
+type TargetClaims = ReturnType<typeof requireManagedVshudInfrastructure>['claims']
+
+function requireTarget(claims: TargetClaims, targetId: string): SshTarget & { generation: number } {
+  const target = claims.listTargets().find((entry) => entry.id === targetId)
+  const generation = target?.generation
+  if (!target || generation === undefined || !Number.isSafeInteger(generation) || generation <= 0) {
+    throw new Error('SSH access requires an existing durable SSH target generation.')
+  }
+  if (target.vshudProvisioning) {
+    throw new Error('This SSH target has pending server provisioning.')
+  }
+  return { ...target, generation }
+}
+
+// Give link-specific recovery steps; bare codes and host-conversion wording are unhelpful here.
+function sshAccessBlockerMessage(targetId: string, blocker: VshudMigrationBlocker): string {
+  switch (blocker.code) {
+    case 'vshud_migration_dependent_state':
+      return `This SSH target is still used by saved Vshu state: ${dependentStateSummary(blocker.dependencies)}. Remove it, or link SSH access through an SSH target with nothing saved.`
+    case 'vshud_migration_direct_ssh_repositories':
+    case 'vshud_migration_direct_ssh_folder_workspaces':
+      return 'This SSH target already has direct SSH projects. Remove them, or link SSH access through another SSH target.'
+    case 'vshud_migration_direct_ssh_terminal_leases':
+      return 'This SSH target still owns terminal sessions. Close them before linking SSH access.'
+    case 'vshud_migration_saved_port_forwards':
+      return 'This SSH target has saved port forwards. Remove them, or link SSH access through another SSH target.'
+    case 'vshud_migration_target_not_found':
+    case 'vshud_migration_target_owned':
+    case 'vshud_migration_owner_unrecorded':
+    case 'vshud_migration_dependency_unverifiable':
+      return vshudTargetBlockerMessage(targetId, blocker)
+  }
+}
+
+function requireAccessOnlyTarget(claims: TargetClaims, targetId: string, environmentId: string) {
+  const target = requireTarget(claims, targetId)
+  // Omitting the environment bypasses the same-owner shortcut and rechecks direct authority.
+  const blockers = claims
+    .preflight(targetId)
+    .blockers.filter(
+      (entry) =>
+        !(
+          entry.code === 'vshud_migration_target_owned' &&
+          getManagedVshudFenceEnvironmentId(target) === environmentId
+        )
+    )
+  if (blockers.length) {
+    throw new Error(
+      `SSH access cannot claim direct SSH authority: ${blockers[0].code}. ${sshAccessBlockerMessage(targetId, blockers[0])}`
+    )
+  }
+  return target
+}
+
+function requireFence(
+  claims: TargetClaims,
+  environmentId: string,
+  fence: {
+    sshTargetId: string
+    sshTargetGeneration: number
+    targetFingerprint?: string
+  },
+  allowUnowned = false
+): SshTarget {
+  const target = requireTarget(claims, fence.sshTargetId)
+  const owner = getManagedVshudFenceEnvironmentId(target)
+  if (
+    target.generation !== fence.sshTargetGeneration ||
+    !fence.targetFingerprint ||
+    fingerprintRuntimeSshTarget(target) !== fence.targetFingerprint ||
+    (owner !== environmentId && !(allowUnowned && !target.vshudFence))
+  ) {
+    throw new Error('The SSH target registration, connection configuration, or owner changed.')
+  }
+  return target
+}
+
+export async function linkRuntimeSshAccess(
+  userDataPath: string,
+  input: RuntimeSshAccessLinkRequest,
+  options: {
+    signal?: AbortSignal
+    invalidateTransport?: (environmentId: string) => void | Promise<void>
+  } = {}
+) {
+  const args = RuntimeSshAccessLinkRequestSchema.parse(input)
+  const environmentId = (await resolveEnvironment(userDataPath, args.selector)).id
+  return runTargetLifecycle(`runtime-ssh-access:${userDataPath}:${environmentId}`, () =>
+    runTargetLifecycle(args.sshTargetId, async () => {
+      const { claims, connectionManager } = requireManagedVshudInfrastructure()
+      const environment = await resolveEnvironment(userDataPath, environmentId)
+      assertRuntimeEnvironmentNotReconciling(environment)
+      if (environment.vshudDeployment) {
+        throw new Error('Managed deployments cannot use independent SSH access.')
+      }
+      const target = requireAccessOnlyTarget(claims, args.sshTargetId, environmentId)
+      const fence = {
+        sshTargetId: target.id,
+        sshTargetGeneration: target.generation,
+        targetFingerprint: fingerprintRuntimeSshTarget(target)
+      }
+      if (environment.sshAccess) {
+        const access = environment.sshAccess
+        if (
+          environment.pendingSshAccessOperation ||
+          access.requestId !== args.requestId ||
+          access.sshTargetId !== args.sshTargetId ||
+          access.remotePort !== args.remotePort
+        ) {
+          throw new Error('This server already has a different SSH access request.')
+        }
+        requireFence(claims, environmentId, access)
+        await ensureVshudManagedTunnel(userDataPath, environmentId)
+        requireFence(claims, environmentId, access)
+        await options.invalidateTransport?.(environmentId)
+        return redactRuntimeEnvironment(await resolveEnvironment(userDataPath, environmentId))
+      }
+      const prepared = await prepareRuntimeEnvironmentSshAccessLink(userDataPath, {
+        expectedEnvironment: environment,
+        requestId: args.requestId,
+        remotePort: args.remotePort,
+        ...fence
+      })
+      await claims.flush()
+      requireAccessOnlyTarget(claims, target.id, environmentId)
+      requireFence(claims, environmentId, fence, true)
+      // The durable link intent already binds this target to the environment.
+      claims.claim(target.id, environmentId, { ownerRecorded: true })
+      await claims.flush()
+      let tunnelStarted = false
+      let linkCommitted = false
+      try {
+        options.signal?.throwIfAborted()
+        const claimed = requireFence(claims, environmentId, fence)
+        // A cancel drops the pending connect, which frees both lifecycle queues behind it.
+        const cancelConnect = (): void =>
+          void connectionManager.disconnect(claimed.id).catch(() => {})
+        options.signal?.addEventListener('abort', cancelConnect, { once: true })
+        const connection = await connectionManager
+          .connect(claimed)
+          .finally(() => options.signal?.removeEventListener('abort', cancelConnect))
+        options.signal?.throwIfAborted()
+        requireFence(claims, environmentId, fence)
+        tunnelStarted = true
+        const localPort = await startVshudManagedTunnel(
+          environmentId,
+          claimed,
+          connection,
+          args.remotePort
+        )
+        const proof = await verifyRuntimeEnvironmentSshTunnel(prepared, localPort, options.signal)
+        options.signal?.throwIfAborted()
+        requireAccessOnlyTarget(claims, target.id, environmentId)
+        requireFence(claims, environmentId, fence)
+        const linked = redactRuntimeEnvironment(
+          await linkVerifiedRuntimeEnvironmentSshAccess(userDataPath, {
+            expectedEnvironment: prepared,
+            requestId: args.requestId,
+            ...proof,
+            tunnel: {
+              sshTargetId: target.id,
+              sshTargetGeneration: fence.sshTargetGeneration,
+              localPort,
+              remotePort: args.remotePort
+            }
+          })
+        )
+        linkCommitted = true
+        await options.invalidateTransport?.(environmentId)
+        return linked
+      } catch (error) {
+        if (tunnelStarted && !linkCommitted) {
+          await closeVshudManagedTunnel(environmentId)
+        }
+        throw error
+      }
+    })
+  )
+}
+
+export async function unlinkRuntimeSshAccess(
+  userDataPath: string,
+  input: RuntimeSshAccessUnlinkRequest,
+  options: { invalidateTransport: (environmentId: string) => void | Promise<void> }
+) {
+  const args = RuntimeSshAccessUnlinkRequestSchema.parse(input)
+  const environmentId = (await resolveEnvironment(userDataPath, args.selector)).id
+  return runTargetLifecycle(`runtime-ssh-access:${userDataPath}:${environmentId}`, async () => {
+    const environment = await resolveEnvironment(userDataPath, environmentId)
+    assertRuntimeEnvironmentNotReconciling(environment)
+    if (environment.vshudDeployment) {
+      throw new Error('Managed deployments cannot unlink independent SSH access.')
+    }
+    const access = environment.pendingSshAccessOperation ?? environment.sshAccess
+    if (!access) {
+      return redactRuntimeEnvironment(environment)
+    }
+    return runTargetLifecycle(access.sshTargetId, async () => {
+      const { claims } = requireManagedVshudInfrastructure()
+      requireFence(claims, environmentId, access, !!environment.pendingSshAccessOperation)
+      const prepared =
+        environment.pendingSshAccessOperation?.operation === 'link'
+          ? await cancelRuntimeEnvironmentSshAccessLink(userDataPath, {
+              expectedEnvironment: environment,
+              requestId: args.requestId
+            })
+          : await prepareRuntimeEnvironmentSshAccessUnlink(userDataPath, {
+              expectedEnvironment: environment,
+              requestId: args.requestId
+            })
+      await options.invalidateTransport(environmentId)
+      await closeVshudManagedTunnel(environmentId)
+      const target = requireFence(claims, environmentId, access, true)
+      if (target.vshudFence && !claims.release(target.id, environmentId)) {
+        throw new Error('The SSH target owner changed before access could be released.')
+      }
+      await claims.flush()
+      requireFence(claims, environmentId, access, true)
+      return redactRuntimeEnvironment(
+        await completeRuntimeEnvironmentSshAccessUnlink(userDataPath, {
+          expectedEnvironment: prepared,
+          requestId: args.requestId
+        })
+      )
+    })
+  })
+}

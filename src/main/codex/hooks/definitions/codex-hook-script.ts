@@ -1,0 +1,96 @@
+import {
+  WINDOWS_CLAUDE_BACKGROUND_JOB_GUARD,
+  buildPosixClaudeBackgroundJobGuardLines
+} from '../../../agent-hooks/installation/scripts/claude-background-job-guard'
+import { buildPosixAgentHookPostCommand } from '../../../agent-hooks/installation/scripts/hook-post-command'
+import { buildHookTmuxPaneCapture } from '../../../agent-hooks/installation/scripts/hook-process-capture'
+import {
+  buildPosixHookPayloadCapture,
+  buildPosixHookSpoolLines,
+  buildWindowsHookEnvironmentGuardLines
+} from '../../../agent-hooks/installation/scripts/hook-stdin-contract'
+import { buildWindowsAgentHookCurlPostCommand } from '../../../agent-hooks/installation/commands/windows-agent-hook-post-command'
+
+export function getManagedScript(target: 'local' | 'posix' = 'local'): string {
+  if (target === 'local' && process.platform === 'win32') {
+    return [
+      '@echo off',
+      'setlocal',
+      // Reload the endpoint so surviving PTYs reach the current server after restart.
+      'if defined VSHU_AGENT_HOOK_ENDPOINT if exist "%VSHU_AGENT_HOOK_ENDPOINT%" call "%VSHU_AGENT_HOOK_ENDPOINT%" 2>nul',
+      ...buildWindowsHookEnvironmentGuardLines(),
+      WINDOWS_CLAUDE_BACKGROUND_JOB_GUARD,
+      buildWindowsAgentHookCurlPostCommand('codex'),
+      'exit /b 0',
+      ''
+    ].join('\r\n')
+  }
+
+  return [
+    '#!/bin/sh',
+    ...buildPosixHookPayloadCapture(),
+    ...buildHookTmuxPaneCapture(),
+    ...buildPosixHookSpoolLines('codex'),
+    ...buildPosixClaudeBackgroundJobGuardLines(),
+    // Reload endpoint state so surviving PTYs keep reporting after restart.
+    'load_hook_endpoint() {',
+    '  endpoint_path="$1"',
+    '  unset VSHU_AGENT_HOOK_TRANSPORT',
+    '  case "$endpoint_path" in',
+    '    *.cmd)',
+    // WSLENV passes endpoint.cmd; parse known assignments because cmd set lines are not POSIX syntax.
+    '      endpoint_cr=$(printf "\\r")',
+    '      while IFS= read -r endpoint_line || [ -n "$endpoint_line" ]; do',
+    '        endpoint_line=${endpoint_line%"$endpoint_cr"}',
+    '        case "$endpoint_line" in',
+    '          "set VSHU_AGENT_HOOK_PORT="*) VSHU_AGENT_HOOK_PORT=${endpoint_line#*=} ;;',
+    '          "set VSHU_AGENT_HOOK_TOKEN="*) VSHU_AGENT_HOOK_TOKEN=${endpoint_line#*=} ;;',
+    '          "set VSHU_AGENT_HOOK_ENV="*) VSHU_AGENT_HOOK_ENV=${endpoint_line#*=} ;;',
+    '          "set VSHU_AGENT_HOOK_VERSION="*) VSHU_AGENT_HOOK_VERSION=${endpoint_line#*=} ;;',
+    '          "set VSHU_AGENT_HOOK_TRANSPORT="*) VSHU_AGENT_HOOK_TRANSPORT=${endpoint_line#*=} ;;',
+    '        esac',
+    '      done < "$endpoint_path"',
+    '      ;;',
+    '    *)',
+    '      . "$endpoint_path" 2>/dev/null || :',
+    '      ;;',
+    '  esac',
+    '}',
+    'if [ -n "$VSHU_AGENT_HOOK_ENDPOINT" ] && [ -r "$VSHU_AGENT_HOOK_ENDPOINT" ]; then',
+    '  load_hook_endpoint "$VSHU_AGENT_HOOK_ENDPOINT"',
+    'fi',
+    'if [ -z "$VSHU_AGENT_HOOK_PORT" ] || [ -z "$VSHU_AGENT_HOOK_TOKEN" ] || [ -z "$VSHU_PANE_KEY" ]; then',
+    '  spool_hook_event',
+    '  exit 0',
+    'fi',
+    'post_codex_hook() {',
+    '  curl_bin="$1"',
+    '  connect_timeout="${2:-0.5}"',
+    '  max_time="${3:-1.5}"',
+    // Send JSON through stdin to keep it off argv and avoid path-encoding IDS alerts.
+    ...buildPosixAgentHookPostCommand('codex', {
+      curlCommand: '"$curl_bin"',
+      indent: '    '
+    }).map((line) => `  ${line}`),
+    '}',
+    'is_wsl_runtime() {',
+    '  [ -n "$WSL_DISTRO_NAME" ] && return 0',
+    '  grep -qiE "microsoft|wsl" /proc/sys/kernel/osrelease /proc/version 2>/dev/null',
+    '}',
+    'if post_codex_hook curl >/dev/null 2>&1; then',
+    '  exit 0',
+    'fi',
+    'if is_wsl_runtime; then',
+    '  windows_curl=$(command -v curl.exe 2>/dev/null || true)',
+    '  if [ -n "$windows_curl" ] && [ -x "$windows_curl" ]; then',
+    '    if post_codex_hook "$windows_curl" 3 5 >/dev/null 2>&1; then',
+    '      exit 0',
+    '    fi',
+    '    # post_codex_hook "$windows_curl" 3 5 >/dev/null 2>&1 || true',
+    '  fi',
+    'fi',
+    'spool_hook_event',
+    'exit 0',
+    ''
+  ].join('\n')
+}

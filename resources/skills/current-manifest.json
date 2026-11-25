@@ -1,0 +1,181 @@
+{
+  "schemaVersion": 3,
+  "skills": [
+    {
+      "name": "jira-tickets",
+      "sourcePath": "skills/jira-tickets",
+      "packageDigest": "d54644e18313c38d0283dbec3f050f548f9704d789c529b9201b8fbda0338acb",
+      "files": [
+        {
+          "path": "SKILL.md",
+          "size": 2639,
+          "executable": false,
+          "classification": "text",
+          "exactSha256": "3c2b30c33b1751f00bac2b24a44e3015b9d63f3de3ca3163882d3fbb0eaaa231",
+          "textNormalizedSha256": "3c2b30c33b1751f00bac2b24a44e3015b9d63f3de3ca3163882d3fbb0eaaa231",
+          "identitySha256": "3c2b30c33b1751f00bac2b24a44e3015b9d63f3de3ca3163882d3fbb0eaaa231"
+        }
+      ]
+    },
+    {
+      "name": "linear-tickets",
+      "sourcePath": "skills/linear-tickets",
+      "packageDigest": "125c0af47bb66b6059e661c20b2efbe275d0d3afc55da1e14c6ea34f3ce50c50",
+      "files": [
+        {
+          "path": "SKILL.md",
+          "size": 2741,
+          "executable": false,
+          "classification": "text",
+          "exactSha256": "7186e09eaebb8740220bb228607fe1f421150b821185672572efdbd14025f6c2",
+          "textNormalizedSha256": "7186e09eaebb8740220bb228607fe1f421150b821185672572efdbd14025f6c2",
+          "identitySha256": "7186e09eaebb8740220bb228607fe1f421150b821185672572efdbd14025f6c2"
+        }
+      ]
+    },
+    {
+      "name": "orchestration",
+      "sourcePath": "skills/orchestration",
+      "packageDigest": "171fd3af536a34519b813ff5ec793a8b16ab25067eeccbf0ec6b509c606cc9cf",
+      "files": [
+        {
+          "path": "SKILL.md",
+          "size": 3926,
+          "executable": false,
+          "classification": "text",
+          "exactSha256": "5ca82606ed20e66a21ff440cbd883467f218b5bd336c5eafbc3e3c20012e84b5",
+          "textNormalizedSha256": "5ca82606ed20e66a21ff440cbd883467f218b5bd336c5eafbc3e3c20012e84b5",
+          "identitySha256": "5ca82606ed20e66a21ff440cbd883467f218b5bd336c5eafbc3e3c20012e84b5"
+        }
+      ]
+    },
+    {
+      "name": "vshu-cli",
+      "sourcePath": "skills/vshu-cli",
+      "packageDigest": "7654f7f3381c59dde957d825a43d70df62feebbfd6d90b9b15841521126b7ba9",
+      "files": [
+        {
+          "path": "SKILL.md",
+          "size": 3139,
+          "executable": false,
+          "classification": "text",
+          "exactSha256": "4d227c9cdb6b8002f10b833e40becf09a93d77e1c56032b20616bc3ea72393cd",
+          "textNormalizedSha256": "4d227c9cdb6b8002f10b833e40becf09a93d77e1c56032b20616bc3ea72393cd",
+          "identitySha256": "4d227c9cdb6b8002f10b833e40becf09a93d77e1c56032b20616bc3ea72393cd"
+        }
+      ]
+    },
+    {
+      "name": "vshu-computer-use",
+      "sourcePath": "skills/vshu-computer-use",
+      "packageDigest": "051a7392fbaeea82d4865042aac3726d180428b3b8ed4e7aff673e5bcd37032b",
+      "files": [
+        {
+          "path": "SKILL.md",
+          "size": 2837,
+          "executable": false,
+          "classification": "text",
+          "exactSha256": "edbd04519566ec040ea019be072c61a4f9e4421254d2b85e678c311307710c88",
+          "textNormalizedSha256": "edbd04519566ec040ea019be072c61a4f9e4421254d2b85e678c311307710c88",
+          "identitySha256": "edbd04519566ec040ea019be072c61a4f9e4421254d2b85e678c311307710c88"
+        }
+      ]
+    },
+    {
+      "name": "vshu-emulator",
+      "sourcePath": "skills/vshu-emulator",
+      "packageDigest": "e21ea881927fb019dca194ce96916f540710ebf8e8e6dcdcc69cd280002453a4",
+      "files": [
+        {
+          "path": "SKILL.md",
+          "size": 2847,
+          "executable": false,
+          "classification": "text",
+          "exactSha256": "14019b42c7d415770bde6d1ae414e3267102c2b26952723c69b58b0722305fe4",
+          "textNormalizedSha256": "14019b42c7d415770bde6d1ae414e3267102c2b26952723c69b58b0722305fe4",
+          "identitySha256": "14019b42c7d415770bde6d1ae414e3267102c2b26952723c69b58b0722305fe4"
+        }
+      ]
+    },
+    {
+      "name": "vshu-emulator-android",
+      "sourcePath": "skills/vshu-emulator-android",
+      "packageDigest": "a9d66f5efcd62c364e899d58dc3e6d68f64fb3d5ddceeaa3e55eedc34bd0cb36",
+      "files": [
+        {
+          "path": "SKILL.md",
+          "size": 2744,
+          "executable": false,
+          "classification": "text",
+          "exactSha256": "bfe2f6257353d9dacd9e08cac45730c9c0e609440f0c684a8ae265074c9765c7",
+          "textNormalizedSha256": "bfe2f6257353d9dacd9e08cac45730c9c0e609440f0c684a8ae265074c9765c7",
+          "identitySha256": "bfe2f6257353d9dacd9e08cac45730c9c0e609440f0c684a8ae265074c9765c7"
+        }
+      ]
+    },
+    {
+      "name": "vshu-jira",
+      "sourcePath": "skills/vshu-jira",
+      "packageDigest": "3f645295fbe283ed156deb5ce2c3717884fd497c1f2861873757070d6b93fe93",
+      "files": [
+        {
+          "path": "SKILL.md",
+          "size": 2590,
+          "executable": false,
+          "classification": "text",
+          "exactSha256": "1a1426579cbd9815acfc975d2e71102ff43e602f6b7899837297a47dbbbe04cd",
+          "textNormalizedSha256": "1a1426579cbd9815acfc975d2e71102ff43e602f6b7899837297a47dbbbe04cd",
+          "identitySha256": "1a1426579cbd9815acfc975d2e71102ff43e602f6b7899837297a47dbbbe04cd"
+        }
+      ]
+    },
+    {
+      "name": "vshu-linear",
+      "sourcePath": "skills/vshu-linear",
+      "packageDigest": "e415c85defcee4ac8e0e4526d2914c6d90d48ad40b8cdca6b62241adc02a3290",
+      "files": [
+        {
+          "path": "SKILL.md",
+          "size": 2598,
+          "executable": false,
+          "classification": "text",
+          "exactSha256": "d26dd55ec1a4a44bb0492f52960846e4c732aa65664d20fcd515c0a7dfd9da00",
+          "textNormalizedSha256": "d26dd55ec1a4a44bb0492f52960846e4c732aa65664d20fcd515c0a7dfd9da00",
+          "identitySha256": "d26dd55ec1a4a44bb0492f52960846e4c732aa65664d20fcd515c0a7dfd9da00"
+        }
+      ]
+    },
+    {
+      "name": "vshu-per-workspace-env",
+      "sourcePath": "skills/vshu-per-workspace-env",
+      "packageDigest": "663821eaf787e672385cb02f8fe46722f7efc1e6715e62a9f92e5a450fdd05b8",
+      "files": [
+        {
+          "path": "SKILL.md",
+          "size": 2766,
+          "executable": false,
+          "classification": "text",
+          "exactSha256": "77bbf58c964d6f881aa8e0405f3e0df3ee482242e2475fd809519315f451d9ec",
+          "textNormalizedSha256": "77bbf58c964d6f881aa8e0405f3e0df3ee482242e2475fd809519315f451d9ec",
+          "identitySha256": "77bbf58c964d6f881aa8e0405f3e0df3ee482242e2475fd809519315f451d9ec"
+        }
+      ]
+    },
+    {
+      "name": "vshu-plugin-authoring",
+      "sourcePath": "skills/vshu-plugin-authoring",
+      "packageDigest": "5fd7924c27b886fcef65f17eeaabb5c6256b125461bb9880a08af19b922759f9",
+      "files": [
+        {
+          "path": "SKILL.md",
+          "size": 2828,
+          "executable": false,
+          "classification": "text",
+          "exactSha256": "9a67ec56e3ac31455f34311cbfa3d84843959b35c35c839782a992851f46f02b",
+          "textNormalizedSha256": "9a67ec56e3ac31455f34311cbfa3d84843959b35c35c839782a992851f46f02b",
+          "identitySha256": "9a67ec56e3ac31455f34311cbfa3d84843959b35c35c839782a992851f46f02b"
+        }
+      ]
+    }
+  ]
+}
