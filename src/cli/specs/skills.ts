@@ -1,0 +1,131 @@
+import type { CommandSpec } from '../discovery/command-spec'
+import { CLI_GLOBAL_FLAGS as GLOBAL_FLAGS } from '../../shared/cli/cli-argument-boundary'
+import { LOCAL_COMMAND_FLAGS } from '../arguments/args'
+
+const SKILL_UPDATE_NOTE =
+  'A copy that matches an older Vshu release and has only SKILL.md can update in place. ' +
+  'A copy with extra files or other differences may be skipped.'
+const SKILL_REPLACE_NOTE =
+  'Use --force to replace skipped copies where possible. ' +
+  'Vshu moves each copy it replaces, including any extra files, to ~/.agents/.vshu-skill-backups first, ' +
+  'and prints where each one went.'
+
+export const SKILL_COMMAND_SPECS: CommandSpec[] = [
+  {
+    path: ['skills', 'installed'],
+    summary: 'List installed skill selectors',
+    usage: 'vshu skills installed [--json]',
+    allowedFlags: [...GLOBAL_FLAGS],
+    notes: [
+      'Lists discovery IDs and names without reading skill contents into the CLI.',
+      'Package metadata is validated when the selected skills are shared.',
+      'Use an exact ID or an unambiguous name with `vshu skills share --skill <selector>`.'
+    ]
+  },
+  {
+    path: ['skills', 'share'],
+    summary: 'Publish explicitly selected installed skills behind one unlisted link',
+    usage:
+      'vshu skills share --skill <selector> [--skill <selector> ...] --bundle-name <name> ' +
+      '[--release-notes <text>] [--json]',
+    allowedFlags: [...GLOBAL_FLAGS, 'skill', 'bundle-name', 'release-notes'],
+    notes: [
+      'Requires the default-off permission in Settings → Share Skills.',
+      'The bundle name may be human-readable; Vshu converts it to a portable lowercase package name.',
+      'Selectors are exact discovery IDs or unambiguous names from `vshu skills installed`.',
+      'Only discovered skill directories can be selected; arbitrary paths and --all are not supported.',
+      'The resulting link is unlisted. Anyone with it can inspect and install the bundle.'
+    ],
+    examples: [
+      'vshu skills share --skill frontend --bundle-name "Frontend Skills"',
+      'vshu skills share --skill frontend --skill testing --bundle-name "Team Toolkit" --json'
+    ]
+  },
+  {
+    path: ['skills', 'list'],
+    summary: 'List version-matched skill guides bundled with this Vshu CLI',
+    usage: 'vshu skills list [--json]',
+    allowedFlags: [...GLOBAL_FLAGS],
+    notes: [
+      'Reads bundled guide metadata locally without contacting the Vshu runtime.',
+      'With --json, prints a topics array of canonical names and one-line descriptions.',
+      'Use `vshu skills get <name>` for the compact guide, `--full` for its full reference package, or `vshu skills install` to install skills.'
+    ]
+  },
+  {
+    path: ['skills', 'get'],
+    aliases: [['skills', 'show']],
+    summary: 'Print a version-matched skill guide as Markdown',
+    usage: 'vshu skills get <topic> [--full | --reference <name>] [--json]',
+    allowedFlags: [...GLOBAL_FLAGS, 'topic', 'full', 'reference', 'references'],
+    positionalArgs: ['topic'],
+    notes: [
+      'Reads bundled guide content locally without contacting the Vshu runtime.',
+      'Prints the compact guide by default. Use --full to print the full guide with bundled references when provided.',
+      'Use --reference <name> to print one bundled reference alone, which is what an action gate in the compact guide needs; --references lists the available names.',
+      'A reference name may be given bare (recovery-and-cleanup) or as the guide spells it (references/recovery-and-cleanup.md).',
+      'Use --json for a deterministic object containing canonical topic metadata and content.'
+    ],
+    examples: [
+      'vshu skills get vshu-cli',
+      'vshu skills get orchestration --full',
+      'vshu skills get orchestration --references',
+      'vshu skills get orchestration --reference recovery-and-cleanup'
+    ]
+  },
+  {
+    path: ['skills', 'install'],
+    summary: 'Install bundled Vshu skills on this machine',
+    usage:
+      'vshu skills install [--skill <name>]... [--all] [--agent <name>[,<name>]] ' +
+      '[--local] [--force] [--dry-run] [--json]',
+    allowedFlags: [...LOCAL_COMMAND_FLAGS, 'skill', 'all', 'agent', 'local', 'force', 'dry-run'],
+    notes: [
+      'Reads the bundled skill registry locally without contacting the Vshu runtime, ' +
+        'and needs no network, Node, Git or npx.',
+      'Writes the copy this Vshu build ships into the shared .agents/skills folder and ' +
+        'links it into each detected agent\u2019s skills folder, the same way the app\u2019s ' +
+        'Update skills does.',
+      SKILL_UPDATE_NOTE,
+      SKILL_REPLACE_NOTE,
+      'Installs globally (all projects) by default. Use --local to install into the ' +
+        'current project; it links only into agent folders the project already has.',
+      'Targets the coding agents Vshu detects on this host. Use --agent <name>[,<name>...] ' +
+        'to choose them yourself, or --agent universal for the shared folder alone.',
+      'Use --dry-run to print what would change and the plan digest without writing; a ' +
+        'real run plans again and writes only if the plan still matches.',
+      'Exits 1 when a location failed or changed while it ran; skipped folders are warnings.',
+      'Omit --skill and --all to list installable skill names.'
+    ],
+    examples: [
+      'vshu skills install --skill vshu-cli --skill orchestration',
+      'vshu skills install --skill vshu-cli --local',
+      'vshu skills install --skill vshu-cli --agent claude,codex',
+      'vshu skills install --all --dry-run'
+    ]
+  },
+  {
+    path: ['skills', 'update'],
+    summary: 'Update Vshu skills to the version this Vshu build ships',
+    usage:
+      'vshu skills update [--skill <name>]... [--all] [--agent <name>[,<name>]] ' +
+      '[--local] [--force] [--dry-run] [--json]',
+    allowedFlags: [...LOCAL_COMMAND_FLAGS, 'skill', 'all', 'agent', 'local', 'force', 'dry-run'],
+    notes: [
+      'Runs the same planner as `vshu skills install`, but only at locations that already ' +
+        'hold the skill; it never adds a skill, or an existing skill for another agent.',
+      SKILL_UPDATE_NOTE,
+      SKILL_REPLACE_NOTE,
+      'Use `vshu skills install` to add a skill for a newly detected agent.',
+      'Updates the global install by default. Use --local to update the current project.',
+      'Use --dry-run to print what would change and the plan digest without writing.',
+      'With --json, both dry runs and real runs print the plan, and real runs the result.',
+      'Omit --skill and --all to list updatable skill names.'
+    ],
+    examples: [
+      'vshu skills update --all',
+      'vshu skills update --skill vshu-cli --dry-run',
+      'vshu skills update --all --force'
+    ]
+  }
+]

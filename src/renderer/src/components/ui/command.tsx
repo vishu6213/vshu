@@ -1,0 +1,421 @@
+'use client'
+
+import * as React from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { Command as CommandPrimitive } from 'cmdk'
+import { SearchIcon } from 'lucide-react'
+import * as DialogPrimitive from 'radix-ui/dialog'
+
+import { usePortalContainer } from './portal-container-context'
+import { cn } from '@/lib/class-names'
+import { handleOverlayCloseAutoFocus } from '@/lib/overlay-interaction/overlay-focus-ownership'
+import { getWheelScrollDeltaY } from '@/lib/wheel-scroll-delta'
+import { OverlayFocusScope, useOverlayFocusScope } from './use-overlay-focus-scope'
+import { useTranslate } from '@/i18n/use-translate'
+import { handleImeOverlayEscape } from '@/lib/text-input/ime/ime-overlay-escape'
+import { useImeTextFieldProps } from '@/lib/text-input/ime/ime-text-field'
+import { DialogOverlay } from '@/components/ui/dialog'
+import {
+  COMMAND_ITEM_BASE_CLASS,
+  commandGroupVariants,
+  commandItemVariants,
+  commandSeparatorVariants
+} from './command-list-variants'
+
+// Why outline-none: a list without a search field takes focus itself; its highlighted row shows focus.
+const commandVariants = cva('flex h-full w-full flex-col overflow-hidden rounded-md outline-none', {
+  variants: {
+    surface: {
+      default: 'bg-popover text-popover-foreground',
+      inline: 'bg-transparent text-foreground',
+      menu: 'rounded-none bg-transparent text-foreground'
+    },
+    density: {
+      default: '',
+      // Why: matches DropdownMenuItem type so a searchable picker reads like its sibling menus.
+      menu: '[&_[cmdk-item]]:py-[4px] [&_[cmdk-item]]:text-[12px]',
+      // Why: the agent picker's flat pane: a 36px search row over full-width 36px model rows.
+      model: [
+        '[&_[data-cmdk-input-wrapper]]:h-9 [&_[data-cmdk-input-wrapper]]:bg-transparent [&_[data-cmdk-input-wrapper]]:px-2.5 [&_[data-cmdk-input-wrapper]]:py-0 [&_[data-cmdk-input-wrapper]_svg]:size-3.5',
+        '[&_[cmdk-input]]:h-9 [&_[cmdk-input]]:py-0 [&_[cmdk-input]]:text-[13px] [&_[cmdk-group]]:p-0',
+        '[&_[cmdk-item]]:h-9 [&_[cmdk-item]]:rounded-none [&_[cmdk-item]]:px-2.5 [&_[cmdk-item]]:py-0 [&_[cmdk-item]]:text-[13px]'
+      ],
+      // Why: a flat launcher card (split-pane landing): field on a divider over a fixed-height list of 36px rows.
+      card: [
+        'rounded-[12px] border border-border',
+        // Field height, list padding, list height (5 rows + padding) and field inset (list padding + row px, so icons align) move as one set.
+        '[&_[data-cmdk-input-wrapper]]:h-10 [&_[cmdk-list]]:p-2 [&_[cmdk-list]]:h-[196px] [&_[data-cmdk-input-wrapper]]:px-[18px]',
+        '[&_[data-cmdk-input-wrapper]]:gap-2.5 [&_[data-cmdk-input-wrapper]]:bg-transparent [&_[data-cmdk-input-wrapper]]:py-0 [&_[data-cmdk-input-wrapper]_svg]:mr-0 [&_[data-cmdk-input-wrapper]_svg]:opacity-80',
+        '[&_[cmdk-input]]:h-full [&_[cmdk-input]]:py-0 [&_[cmdk-input]]:leading-none [&_[cmdk-input]]:text-ellipsis [&_[cmdk-group]]:p-0',
+        '[&_[cmdk-item]]:h-9 [&_[cmdk-item]]:gap-2.5 [&_[cmdk-item]]:rounded-[7px] [&_[cmdk-item]]:px-2.5 [&_[cmdk-item]]:py-0'
+      ]
+    }
+  },
+  compoundVariants: [
+    {
+      density: 'menu',
+      className:
+        '[&_[cmdk-empty]]:text-[12px] [&_[cmdk-input-wrapper]_svg]:size-3.5 [&_[cmdk-input]]:h-8 [&_[cmdk-input]]:text-[12px] [&_[cmdk-item]]:rounded-md [&_[cmdk-item]]:leading-[17px] [&_[cmdk-item]]:font-[450]'
+    }
+  ],
+  defaultVariants: { surface: 'default', density: 'default' }
+})
+
+function Command({
+  className,
+  surface,
+  density,
+  ...props
+}: React.ComponentProps<typeof CommandPrimitive> & VariantProps<typeof commandVariants>) {
+  return (
+    <CommandPrimitive
+      data-slot="command"
+      className={cn(commandVariants({ surface, density }), className)}
+      {...props}
+    />
+  )
+}
+
+function CommandDialog({
+  children,
+  title,
+  description,
+  shouldFilter,
+  onOpenAutoFocus,
+  onCloseAutoFocus,
+  contentClassName,
+  overlayClassName,
+  surface = 'default',
+  commandProps,
+  ...props
+}: React.ComponentProps<typeof DialogPrimitive.Root> & {
+  title?: string
+  description?: string
+  shouldFilter?: boolean
+  onOpenAutoFocus?: (e: Event) => void
+  onCloseAutoFocus?: (e: Event) => void
+  contentClassName?: string
+  overlayClassName?: string
+  /** `palette` is the larger full-search surface (worktree jump palette). */
+  surface?: 'default' | 'palette'
+  commandProps?: React.ComponentProps<typeof CommandPrimitive>
+}) {
+  const t = useTranslate()
+  const { ref: focusScopeRef, scope } = useOverlayFocusScope()
+  const { className: commandClassName, ...commandRootProps } = commandProps ?? {}
+
+  return (
+    <DialogPrimitive.Root {...props}>
+      <DialogPrimitive.Portal container={usePortalContainer() ?? undefined}>
+        <DialogOverlay className={overlayClassName} />
+        <OverlayFocusScope value={scope}>
+          <DialogPrimitive.Content
+            data-slot="command-dialog-content"
+            ref={focusScopeRef}
+            // Match DialogContent’s surface/border/shadow recipe so the palette remains distinct in dark mode.
+            className={cn(
+              'fixed top-[20%] left-[50%] z-50 w-[660px] max-w-[90vw] translate-x-[-50%] rounded-lg border border-black/14 bg-dialog-surface text-foreground shadow-[0_20px_60px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.08)] outline-none dark:border-white/14 dark:shadow-[0_24px_72px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.06)] data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
+              surface === 'palette' &&
+                'rounded-xl border-border/70 shadow-[0_26px_84px_rgba(0,0,0,0.32)]',
+              contentClassName
+            )}
+            onEscapeKeyDown={(event) => handleImeOverlayEscape(event)}
+            onOpenAutoFocus={onOpenAutoFocus}
+            onCloseAutoFocus={(event) => handleOverlayCloseAutoFocus(event, onCloseAutoFocus)}
+          >
+            <DialogPrimitive.Title className="sr-only">
+              {title ?? t('auto.components.ui.command.paletteTitle', 'Command Palette')}
+            </DialogPrimitive.Title>
+            <DialogPrimitive.Description className="sr-only">
+              {description ??
+                t(
+                  'auto.components.ui.command.paletteDescription',
+                  'Search for a command to run...'
+                )}
+            </DialogPrimitive.Description>
+            <Command
+              shouldFilter={shouldFilter}
+              className={cn(
+                '[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3',
+                commandClassName
+              )}
+              {...commandRootProps}
+            >
+              {children}
+            </Command>
+          </DialogPrimitive.Content>
+        </OverlayFocusScope>
+      </DialogPrimitive.Portal>
+    </DialogPrimitive.Root>
+  )
+}
+
+const commandInputVariants = cva('flex items-center bg-muted/30 px-3 py-1', {
+  variants: {
+    variant: {
+      default: 'border-b border-border',
+      framed: 'rounded-md border border-input',
+      menu: 'h-8 border-b border-black/7 bg-transparent px-2.5 py-0 dark:border-white/10'
+    }
+  },
+  defaultVariants: { variant: 'default' }
+})
+
+function withoutTrailingEllipsis(value: string | undefined): string | undefined {
+  return value
+    ?.trim()
+    .replace(/(?:\.{3}|…)$/, '')
+    .trimEnd()
+}
+
+function CommandInput({
+  className,
+  variant,
+  wrapperClassName,
+  iconClassName,
+  leading,
+  trailing,
+  truncatePlaceholder = false,
+  ref,
+  ...props
+}: React.ComponentProps<typeof CommandPrimitive.Input> &
+  VariantProps<typeof commandInputVariants> & {
+    wrapperClassName?: string
+    iconClassName?: string
+    /** Rendered between the search icon and the field (e.g. a scope chip). */
+    leading?: React.ReactNode
+    /** Rendered after the field, inside the input frame (e.g. a filter control). */
+    trailing?: React.ReactNode
+    /** Ellipsize a controlled input's placeholder, including while focused. */
+    truncatePlaceholder?: boolean
+  }) {
+  const imeProps = useImeTextFieldProps<HTMLInputElement>(props)
+  const placeholderHint = truncatePlaceholder ? props.placeholder : props['aria-placeholder']
+  const repeatsName =
+    withoutTrailingEllipsis(placeholderHint) === withoutTrailingEllipsis(props['aria-label'])
+  const input = (
+    <CommandPrimitive.Input
+      ref={ref}
+      data-slot="command-input"
+      className={cn(
+        'flex h-10 w-full rounded-md bg-transparent py-3 text-sm text-ellipsis outline-none placeholder:text-muted-foreground placeholder:text-ellipsis disabled:cursor-not-allowed disabled:opacity-50',
+        variant === 'menu' && 'h-8 py-0 text-[13px]',
+        className
+      )}
+      {...props}
+      {...imeProps}
+      placeholder={truncatePlaceholder ? undefined : props.placeholder}
+      aria-placeholder={repeatsName ? undefined : placeholderHint}
+    />
+  )
+  return (
+    <div
+      className={cn(commandInputVariants({ variant }), wrapperClassName)}
+      data-cmdk-input-wrapper=""
+    >
+      <SearchIcon
+        className={cn(
+          'mr-2 h-4 w-4 shrink-0 opacity-50',
+          variant === 'menu' && 'hidden',
+          iconClassName
+        )}
+      />
+      {leading}
+      {truncatePlaceholder ? (
+        <div className="relative flex min-w-0 flex-1">
+          {input}
+          {props.value === '' ? (
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 flex items-center"
+            >
+              <span className="truncate text-sm text-muted-foreground">{props.placeholder}</span>
+            </span>
+          ) : null}
+        </div>
+      ) : (
+        input
+      )}
+      {trailing}
+    </div>
+  )
+}
+
+function CommandList({
+  className,
+  animateHeight = false,
+  ref,
+  ...props
+}: React.ComponentProps<typeof CommandPrimitive.List> & {
+  /** Glide to the filtered height (cmdk publishes it) instead of jumping. */
+  animateHeight?: boolean
+}) {
+  const internalRef = React.useRef<HTMLDivElement>(null)
+
+  // Radix dialog scroll-lock cancels wheel defaults on external portals; a non-passive list listener restores scrolling.
+  React.useEffect(() => {
+    const el = internalRef.current
+    if (!el) {
+      return
+    }
+    const onWheel = (e: WheelEvent): void => {
+      if (el.scrollHeight <= el.clientHeight) {
+        return
+      }
+      e.preventDefault()
+      el.scrollTop += getWheelScrollDeltaY(e, el.clientHeight)
+    }
+    el.addEventListener('wheel', onWheel, { passive: false })
+    return () => el.removeEventListener('wheel', onWheel)
+  }, [])
+
+  const mergedRef = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      internalRef.current = node
+      if (typeof ref === 'function') {
+        ref(node)
+      } else if (ref) {
+        ref.current = node
+      }
+    },
+    [ref]
+  )
+
+  return (
+    <CommandPrimitive.List
+      ref={mergedRef}
+      data-slot="command-list"
+      className={cn(
+        'max-h-[min(400px,60vh)] overflow-y-auto overflow-x-hidden scrollbar-sleek scroll-pb-4 scroll-pt-4',
+        animateHeight &&
+          'h-[min(var(--cmdk-list-height),400px,60vh)] transition-[height] duration-150 ease-out motion-reduce:transition-none',
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function CommandEmpty({
+  className,
+  ...props
+}: React.ComponentProps<typeof CommandPrimitive.Empty>) {
+  return (
+    <CommandPrimitive.Empty
+      data-slot="command-empty"
+      className={cn('py-6 text-center text-sm text-muted-foreground', className)}
+      {...props}
+    />
+  )
+}
+
+function CommandGroup({
+  className,
+  variant,
+  ...props
+}: React.ComponentProps<typeof CommandPrimitive.Group> &
+  VariantProps<typeof commandGroupVariants>) {
+  return (
+    <CommandPrimitive.Group
+      data-slot="command-group"
+      className={cn(commandGroupVariants({ variant }), className)}
+      {...props}
+    />
+  )
+}
+
+function CommandItem({
+  className,
+  selection,
+  density,
+  emphasis,
+  shape,
+  ref,
+  ...props
+}: React.ComponentProps<typeof CommandPrimitive.Item> & VariantProps<typeof commandItemVariants>) {
+  return (
+    <CommandPrimitive.Item
+      ref={ref}
+      data-slot="command-item"
+      className={cn(
+        COMMAND_ITEM_BASE_CLASS,
+        commandItemVariants({ selection, density, emphasis, shape }),
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+type CommandOptionProps = Omit<React.ComponentProps<'div'>, 'onSelect'> &
+  VariantProps<typeof commandItemVariants> & {
+    selected: boolean
+    /** Rendered as `data-value`, the identity automation reads from command rows. */
+    value?: string
+    disabled?: boolean
+    onHighlight?: () => void
+    onSelect?: () => void
+  }
+
+/** A listbox option cmdk never sees, for windowed lists that own selection; omitting `cmdk-item` keeps cmdk's DOM queries off it. */
+function CommandOption({
+  className,
+  selection,
+  density,
+  emphasis,
+  shape,
+  selected,
+  value,
+  disabled = false,
+  onHighlight,
+  onSelect,
+  ...props
+}: CommandOptionProps): React.JSX.Element {
+  return (
+    <div
+      data-slot="command-item"
+      data-value={value}
+      role="option"
+      aria-selected={selected}
+      data-selected={selected}
+      aria-disabled={disabled}
+      data-disabled={disabled}
+      // Like cmdk, moving over the already-highlighted option does no work.
+      onPointerMove={disabled || selected ? undefined : onHighlight}
+      onClick={disabled ? undefined : onSelect}
+      className={cn(
+        COMMAND_ITEM_BASE_CLASS,
+        commandItemVariants({ selection, density, emphasis, shape }),
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function CommandSeparator({
+  className,
+  variant,
+  ...props
+}: React.ComponentProps<typeof CommandPrimitive.Separator> &
+  VariantProps<typeof commandSeparatorVariants>) {
+  return (
+    <CommandPrimitive.Separator
+      data-slot="command-separator"
+      className={cn(commandSeparatorVariants({ variant }), className)}
+      {...props}
+    />
+  )
+}
+
+export {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandOption,
+  CommandSeparator
+}

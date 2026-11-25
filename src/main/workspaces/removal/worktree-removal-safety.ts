@@ -1,0 +1,239 @@
+import { lstat, stat, readFile, realpath } from 'node:fs/promises'
+import type { WorktreeMeta } from '../../../shared/worktree/meta-types'
+import type { GitWorktreeInfo } from '../../../shared/worktree/types'
+import { NESTED_WORKTREE_REMOVAL_PREFIX } from '../../../shared/worktree/removal/nested-removal'
+import { areWorktreePathsEqual } from '../../git/worktrees/catalog/worktree-path-comparison'
+import {
+  containsPath,
+  getPathOps,
+  isHomeDirectoryRemovalPath,
+  isRemovalHomeAuthorityResolved,
+  type WorktreeRemovalHomeAuthority
+} from './worktree-removal-home-guard'
+import {
+  gitFileProvesOrphanedWorktreeDirectory,
+  type WorktreeProofAccess
+} from './worktree-orphan-gitdir-proof'
+
+const VSHU_CREATION_SOURCES = new Set<NonNullable<WorktreeMeta['vshuCreationSource']>>([
+  'desktop',
+  'runtime',
+  'cli',
+  'ssh'
+])
+const VSHU_OWNED_PROVENANCE_META_KEYS = [
+  'vshuCreatedAt',
+  'vshuCreationSource',
+  'vshuCreationWorkspaceLayout',
+  'automationProvenance',
+  'cliProvenance',
+  'creatorProvenance'
+] as const
+type UnregisteredVshuCleanupMeta = Pick<
+  WorktreeMeta,
+  | 'vshuCreatedAt'
+  | 'vshuCreationSource'
+  | 'createdAt'
+  | 'createdWithAgent'
+  | 'pushTarget'
+  | 'sparseBaseRef'
+  | 'sparsePresetId'
+  | 'preserveBranchOnDelete'
+>
+
+export const ORPHANED_WORKTREE_DIRECTORY_MESSAGE =
+  'Worktree is no longer registered with Git but its directory remains.'
+export const UNREGISTERED_MISSING_WORKTREE_MESSAGE =
+  'Worktree is no longer registered with Git and its directory is already gone.'
+
+export function isDangerousWorktreeRemovalPath(
+  worktreePath: string,
+  repoPath: string,
+  home: WorktreeRemovalHomeAuthority
+): boolean {
+  if (!worktreePath.trim()) {
+    return true
+  }
+
+  if (areWorktreePathsEqual(worktreePath, repoPath)) {
+    return true
+  }
+
+  const pathOps = getPathOps(worktreePath, repoPath)
+  const resolvedWorktreePath = pathOps.resolve(worktreePath)
+  const rootPath = pathOps.parse(resolvedWorktreePath).root
+  if (resolvedWorktreePath === rootPath) {
+    return true
+  }
+
+  const resolvedRepoPath = pathOps.resolve(repoPath)
+  if (containsPath(resolvedWorktreePath, resolvedRepoPath, pathOps)) {
+    return true
+  }
+
+  // Preserve raw syntax so the home guard can also apply the target path's own rules.
+  return isHomeDirectoryRemovalPath(worktreePath, pathOps, home)
+}
+
+export function getRegisteredDeletableWorktree(
+  repoPath: string,
+  requestedWorktreePath: string,
+  worktrees: readonly GitWorktreeInfo[],
+  home: WorktreeRemovalHomeAuthority
+): GitWorktreeInfo {
+  const worktree = findRegisteredDeletableWorktree(repoPath, requestedWorktreePath, worktrees, home)
+  if (!worktree) {
+    throw new Error(`Refusing to delete unregistered worktree path: ${requestedWorktreePath}`)
+  }
+  return worktree
+}
+
+export function findRegisteredDeletableWorktree(
+  repoPath: string,
+  requestedWorktreePath: string,
+  worktrees: readonly GitWorktreeInfo[],
+  home: WorktreeRemovalHomeAuthority
+): GitWorktreeInfo | null {
+  const worktree = worktrees.find((item) => areWorktreePathsEqual(item.path, requestedWorktreePath))
+  if (!worktree) {
+    return null
+  }
+  if (
+    !isRemovalHomeAuthorityResolved(home) ||
+    worktree.isMainWorktree ||
+    isDangerousWorktreeRemovalPath(worktree.path, repoPath, home)
+  ) {
+    throw new Error(`Refusing to delete protected worktree path: ${worktree.path}`)
+  }
+  assertWorktreeDoesNotContainRegisteredWorktree(worktree.path, worktrees)
+  return worktree
+}
+
+export function assertWorktreeDoesNotContainRegisteredWorktree(
+  worktreePath: string,
+  worktrees: readonly Pick<GitWorktreeInfo, 'path'>[]
+): void {
+  const nestedWorktree = worktrees.find((item) => {
+    if (areWorktreePathsEqual(item.path, worktreePath)) {
+      return false
+    }
+    return containsPath(worktreePath, item.path, getPathOps(worktreePath, item.path))
+  })
+  if (nestedWorktree) {
+    // Git remove --force deletes nested worktree files as untracked directories, leaving their registrations behind.
+    throw new Error(`${NESTED_WORKTREE_REMOVAL_PREFIX} ${nestedWorktree.path}`)
+  }
+}
+
+export async function canSafelyRemoveOrphanedWorktreeDirectory(
+  worktreePath: string,
+  repoPath: string,
+  home: WorktreeRemovalHomeAuthority,
+  access: WorktreeProofAccess = {
+    statPath: lstat,
+    layoutStatPath: stat,
+    readPath: (path) => readFile(path, 'utf8'),
+    realPath: realpath
+  }
+): Promise<boolean> {
+  // A .git file can also belong to a dotfiles home; unknown host home must never authorize deletion.
+  if (!isRemovalHomeAuthorityResolved(home)) {
+    return false
+  }
+
+  if (isDangerousWorktreeRemovalPath(worktreePath, repoPath, home)) {
+    return false
+  }
+
+  const pathOps = getPathOps(worktreePath, repoPath)
+  const gitFilePath = pathOps.join(worktreePath, '.git')
+  return gitFileProvesOrphanedWorktreeDirectory({
+    gitFilePath,
+    worktreePath,
+    repoPath,
+    pathOps,
+    access
+  })
+}
+
+export function canCleanupUnregisteredVshuWorktreeDirectory(args: {
+  meta: UnregisteredVshuCleanupMeta | null | undefined
+}): boolean {
+  if (hasCurrentVshuCreationProvenance(args.meta)) {
+    return true
+  }
+
+  if (hasLegacyVshuCreationEvidence(args.meta)) {
+    return true
+  }
+
+  // Users can create ordinary Git worktrees under Vshu's root; path shape alone does not prove ownership.
+  return false
+}
+
+function hasCurrentVshuCreationProvenance(
+  meta: Pick<WorktreeMeta, 'vshuCreatedAt' | 'vshuCreationSource'> | null | undefined
+): boolean {
+  return (
+    typeof meta?.vshuCreatedAt === 'number' &&
+    !!meta.vshuCreationSource &&
+    VSHU_CREATION_SOURCES.has(meta.vshuCreationSource)
+  )
+}
+
+function hasLegacyVshuCreationEvidence(
+  meta: UnregisteredVshuCleanupMeta | null | undefined
+): boolean {
+  return Boolean(
+    meta?.createdAt ||
+    meta?.createdWithAgent ||
+    meta?.pushTarget ||
+    meta?.sparseBaseRef ||
+    meta?.sparsePresetId ||
+    meta?.preserveBranchOnDelete
+  )
+}
+
+export function stripVshuProvenanceMetaUpdates(
+  updates: Partial<WorktreeMeta> | null | undefined
+): Partial<WorktreeMeta> {
+  const sanitized = { ...updates }
+  for (const key of VSHU_OWNED_PROVENANCE_META_KEYS) {
+    delete sanitized[key]
+  }
+  return sanitized
+}
+
+function isMissingPathError(error: unknown): boolean {
+  const code =
+    error && typeof error === 'object' && 'code' in error
+      ? String((error as NodeJS.ErrnoException).code)
+      : undefined
+  if (code === 'ENOENT' || code === 'ENOTDIR') {
+    return true
+  }
+
+  let message = ''
+  if (error instanceof Error) {
+    message = error.message
+  } else if (error && typeof error === 'object' && 'message' in error) {
+    message = String((error as { message: unknown }).message)
+  } else if (typeof error === 'string') {
+    message = error
+  }
+  return /\b(ENOENT|ENOTDIR)\b|no such file or directory|cannot find (?:the )?(?:file|path)|(?:file|path) not found/i.test(
+    message
+  )
+}
+
+export async function isWorktreePathMissing(
+  worktreePath: string,
+  statPath: (path: string) => Promise<unknown> = lstat
+): Promise<boolean> {
+  try {
+    await statPath(worktreePath)
+    return false
+  } catch (error) {
+    return isMissingPathError(error)
+  }
+}

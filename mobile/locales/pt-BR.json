@@ -1,0 +1,9 @@
+{
+  "ios": {
+    "NSCameraUsageDescription": "Permita que o Vshu use a câmera para ler códigos QR.",
+    "NSLocalNetworkUsageDescription": "O Vshu se conecta ao aplicativo para desktop na sua rede local (LAN).",
+    "NSMicrophoneUsageDescription": "Permita que o Vshu use seu microfone para ditado por voz, transcrito neste celular ou no seu computador pareado.",
+    "NSPhotoLibraryAddUsageDescription": "Permita que o Vshu salve imagens das suas sessões no app Fotos.",
+    "NSPhotoLibraryUsageDescription": "Permita que o Vshu anexe fotos da sua biblioteca a uma sessão de terminal no seu desktop pareado."
+  }
+}

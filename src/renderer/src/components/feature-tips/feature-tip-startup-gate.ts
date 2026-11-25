@@ -1,0 +1,126 @@
+import {
+  getCompletedFeatureTipIds,
+  getOrderedUnseenFeatureTips,
+  type FeatureTip,
+  type FeatureTipId,
+  type FeatureTipSeenId
+} from '../../../../shared/feature-education/feature-tips'
+import { resolveAiVaultSearchSettings } from '../../../../shared/ai-vault/search/ai-vault-search-settings'
+import { isBotsEnabled } from '../../../../shared/bots-switch'
+import type { CliInstallStatus } from '../../../../shared/cli/cli-install-types'
+import type { FeatureInteractionState } from '../../../../shared/feature-education/interactions/feature-interactions'
+import type { GlobalSettings } from '../../../../shared/settings/global-settings-types'
+import type { ChatUiLaunchTipVariant } from '../../../../shared/feature-education/chat-ui-launch-tip-audience'
+import type { OnboardingState } from '../../../../shared/onboarding/onboarding-state-types'
+import { shouldShowOnboarding } from '../onboarding/should-show-onboarding'
+
+export type FeatureTipsAppOpenDecision =
+  | { kind: 'open'; tipId: FeatureTipId }
+  | { kind: 'skip' }
+  | { kind: 'suppress-for-onboarding' }
+
+export function isCliFeatureTipCompleted(status: CliInstallStatus): boolean {
+  // Why: unsupported launch modes cannot complete setup, but an installed
+  // launcher still needs attention until it is reachable on PATH.
+  return !status.supported || (status.state === 'installed' && status.pathConfigured === true)
+}
+
+export type FeatureTipSettings = {
+  voice?: GlobalSettings['voice']
+  aiVaultSearch?: GlobalSettings['aiVaultSearch']
+  botsEnabled?: GlobalSettings['botsEnabled']
+  telemetry?: GlobalSettings['telemetry']
+}
+
+export function isSessionSearchFeatureTipCompleted(
+  settings: FeatureTipSettings | null | undefined,
+  webClient: boolean
+): boolean {
+  // Why: the browser client cannot index transcripts, so there is nothing to turn on.
+  return webClient || resolveAiVaultSearchSettings(settings).enabled
+}
+
+/** Bots are on and this client can make one; a paired web client cannot list or create bots. */
+function botsTipAudience(
+  settings: FeatureTipSettings | null | undefined,
+  webClient: boolean
+): boolean {
+  return !webClient && isBotsEnabled(settings)
+}
+
+/** Unseen tips whose feature the user has not already set up, in display order. */
+export function getPendingFeatureTips(args: {
+  seenTipIds: readonly FeatureTipSeenId[]
+  cliInstalled: boolean
+  /** Null until this computer's bot list is first read. */
+  hasBot: boolean | null
+  featureInteractions: FeatureInteractionState
+  chatUiLaunchTipVariant: ChatUiLaunchTipVariant
+  settings: FeatureTipSettings | null | undefined
+  webClient: boolean
+}): FeatureTip[] {
+  return getOrderedUnseenFeatureTips({
+    seenTipIds: new Set(args.seenTipIds),
+    telemetry: args.settings?.telemetry,
+    completedTipIds: getCompletedFeatureTipIds({
+      cliInstalled: args.cliInstalled,
+      voiceDictationEnabled: args.settings?.voice?.enabled === true,
+      sessionSearchTipCompleted: isSessionSearchFeatureTipCompleted(args.settings, args.webClient),
+      chatUiLaunchTipCompleted:
+        args.webClient ||
+        args.chatUiLaunchTipVariant === 'none' ||
+        // Why: recorded on Chat UI at the launch snapshot, so either still on it or switched back on purpose.
+        args.chatUiLaunchTipVariant === 'chat-ui-on',
+      botsTipCompleted: !botsTipAudience(args.settings, args.webClient) || args.hasBot !== false,
+      featureInteractions: args.featureInteractions
+    })
+  })
+}
+
+export function getFeatureTipsAppOpenDecision(args: {
+  activeModal: string
+  cliInstalled: boolean | null
+  hasBot: boolean | null
+  featureTipsSeenIds: readonly FeatureTipSeenId[]
+  featureInteractions: FeatureInteractionState
+  /** Null until main answers. */
+  chatUiLaunchTipVariant: ChatUiLaunchTipVariant | null
+  onboarding: OnboardingState | null
+  persistedUIReady: boolean
+  promptedThisSession: boolean
+  settings: FeatureTipSettings | null | undefined
+  suppressedByOnboardingThisSession: boolean
+  webClient: boolean
+}): FeatureTipsAppOpenDecision {
+  if (args.onboarding !== null && shouldShowOnboarding(args.onboarding)) {
+    return { kind: 'suppress-for-onboarding' }
+  }
+
+  if (
+    args.promptedThisSession ||
+    args.suppressedByOnboardingThisSession ||
+    !args.persistedUIReady ||
+    !args.settings ||
+    args.onboarding === null ||
+    args.activeModal !== 'none' ||
+    args.cliInstalled === null ||
+    args.chatUiLaunchTipVariant === null ||
+    (args.hasBot === null &&
+      !args.featureTipsSeenIds.includes('bots-teammate') &&
+      botsTipAudience(args.settings, args.webClient)) ||
+    shouldShowOnboarding(args.onboarding)
+  ) {
+    return { kind: 'skip' }
+  }
+
+  const nextTip = getPendingFeatureTips({
+    seenTipIds: args.featureTipsSeenIds,
+    cliInstalled: args.cliInstalled,
+    hasBot: args.hasBot,
+    featureInteractions: args.featureInteractions,
+    chatUiLaunchTipVariant: args.chatUiLaunchTipVariant,
+    settings: args.settings,
+    webClient: args.webClient
+  })[0]
+  return nextTip ? { kind: 'open', tipId: nextTip.id } : { kind: 'skip' }
+}

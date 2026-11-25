@@ -1,0 +1,12 @@
+{
+  "name": "vshu-agent-plugins",
+  "owner": { "name": "Vshu" },
+  "description": "Repository-local plugins for coding agents working in Vshu",
+  "plugins": [
+    {
+      "name": "vshu-typescript",
+      "source": "./vshu-typescript",
+      "description": "TypeScript 7 diagnostics and code navigation from the repo's own compiler"
+    }
+  ]
+}

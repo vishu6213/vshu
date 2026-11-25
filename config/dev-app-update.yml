@@ -1,0 +1,4 @@
+provider: github
+owner: vishu6213
+repo: vshu
+updaterCacheDirName: vshu-updater

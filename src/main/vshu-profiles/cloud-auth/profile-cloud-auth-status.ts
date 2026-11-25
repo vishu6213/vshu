@@ -1,0 +1,73 @@
+import type { VshuProfileAuthStatus } from '../../../shared/vshu-profiles/vshu-profiles'
+import type { ActiveVshuProfileState } from '../profile-index-store'
+import { getVshuCloudAuthConfig, isVshuCloudDevAuthEnabled } from './profile-cloud-auth-config'
+import { readCloudSession } from '../cloud-session/profile-cloud-session-owner'
+import { sessionBelongsToProfile } from '../cloud-session/profile-cloud-session-identity'
+
+export function getVshuProfileAuthStatusFromProfile(
+  active: ActiveVshuProfileState,
+  userDataPath: string
+): VshuProfileAuthStatus {
+  const configState = getVshuCloudAuthConfig()
+  const devAuthEnabled = isVshuCloudDevAuthEnabled()
+  const configured = configState.configured || devAuthEnabled
+  const cloud = active.profile.cloud
+  if (!cloud) {
+    return {
+      activeProfileId: active.profile.id,
+      configured,
+      state: configured ? 'local' : 'unconfigured',
+      persistence: 'none',
+      setupMessage: configured ? undefined : configState.setupMessage
+    }
+  }
+
+  const session = readCloudSession(active.profile.id, userDataPath)
+  if (!configured) {
+    return {
+      activeProfileId: active.profile.id,
+      configured: false,
+      state: 'unconfigured',
+      persistence: session.status === 'found' ? session.persistence : 'none',
+      cloud,
+      credentialError:
+        session.status === 'decrypt-failed' || session.status === 'unreadable'
+          ? session.error
+          : undefined,
+      setupMessage: configState.setupMessage
+    }
+  }
+  if (session.status === 'found' && !sessionBelongsToProfile(session.session, cloud)) {
+    return {
+      activeProfileId: active.profile.id,
+      configured,
+      state: 'reconnect-required',
+      persistence: 'none',
+      cloud,
+      credentialError: 'The saved sign-in belongs to a different Vshu account. Sign in again.'
+    }
+  }
+  if (session.status === 'found') {
+    return {
+      activeProfileId: active.profile.id,
+      configured,
+      state: 'connected',
+      persistence: session.persistence,
+      cloud,
+      organizations: session.session.organizations,
+      capabilities: session.session.capabilities
+    }
+  }
+
+  return {
+    activeProfileId: active.profile.id,
+    configured,
+    state: 'reconnect-required',
+    persistence: 'none',
+    cloud,
+    credentialError:
+      session.status === 'decrypt-failed' || session.status === 'unreadable'
+        ? session.error
+        : undefined
+  }
+}

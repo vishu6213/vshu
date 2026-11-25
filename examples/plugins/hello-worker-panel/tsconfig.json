@@ -1,0 +1,4 @@
+{
+  "extends": "./.vshu/types/tsconfig.json",
+  "include": ["src"]
+}

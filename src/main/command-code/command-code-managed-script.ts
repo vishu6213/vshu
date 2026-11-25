@@ -1,0 +1,142 @@
+import { posixCurlCommand } from '../agent-hooks/installation/scripts/hook-post-command'
+import { VSHU_AGENT_HOOKS_DISABLED_ENV } from '../../shared/agent-hook-listener/transport/agent-hook-suppression-env'
+import { buildPosixScrubSafeEnvRestoreLines } from '../../shared/agent-hook-listener/transport/agent-hook-scrub-safe-env'
+import { buildWindowsAgentHookPostCommand } from '../agent-hooks/installation/commands/windows-agent-hook-post-command'
+import {
+  buildPosixHookPayloadCapture,
+  buildPosixHookSpoolLines,
+  buildWindowsHookEnvironmentGuardLines
+} from '../agent-hooks/installation/scripts/hook-stdin-contract'
+
+export type CommandCodeManagedScriptTarget = 'local' | 'posix'
+
+export function buildCommandCodeManagedScript(
+  target: CommandCodeManagedScriptTarget = 'local'
+): string {
+  if (target === 'local' && process.platform === 'win32') {
+    return [
+      '@echo off',
+      'setlocal',
+      `if "%${VSHU_AGENT_HOOKS_DISABLED_ENV}%"=="1" exit /b 0`,
+      'if "%VSHU_AGENT_HOOK_PORT%"=="" if defined VSHU_AGENT_HOOK_ENDPOINT if exist "%VSHU_AGENT_HOOK_ENDPOINT%" call "%VSHU_AGENT_HOOK_ENDPOINT%" 2>nul',
+      'if "%VSHU_AGENT_HOOK_TOKEN%"=="" if not "%VSHU_AGENT_HOOK_PORT%"=="" call :sourceEndpointByPort',
+      ...buildWindowsHookEnvironmentGuardLines(),
+      buildWindowsAgentHookPostCommand('command-code'),
+      'exit /b 0',
+      ':sourceEndpointByPort',
+      'if not defined APPDATA exit /b 0',
+      'if exist "%APPDATA%\\vshu-dev\\agent-hooks" for /r "%APPDATA%\\vshu-dev\\agent-hooks" %%F in (endpoint.cmd) do call :maybeSourceEndpoint "%%~fF"',
+      // Per-worktree `pnpm dev` profiles live one level down; FOR /R cannot take a FOR variable as its root.
+      'if "%VSHU_AGENT_HOOK_TOKEN%"=="" if exist "%APPDATA%\\vshu-dev-wt" for /d %%P in ("%APPDATA%\\vshu-dev-wt\\*") do call :scanEndpointDir "%%~fP\\agent-hooks"',
+      'if "%VSHU_AGENT_HOOK_TOKEN%"=="" if exist "%APPDATA%\\vshu\\agent-hooks" for /r "%APPDATA%\\vshu\\agent-hooks" %%F in (endpoint.cmd) do call :maybeSourceEndpoint "%%~fF"',
+      'exit /b 0',
+      ':scanEndpointDir',
+      'if not "%VSHU_AGENT_HOOK_TOKEN%"=="" exit /b 0',
+      'if exist "%~1" for /r "%~1" %%F in (endpoint.cmd) do call :maybeSourceEndpoint "%%~fF"',
+      'exit /b 0',
+      ':maybeSourceEndpoint',
+      'if not "%VSHU_AGENT_HOOK_TOKEN%"=="" exit /b 0',
+      'for /f "tokens=2 delims==" %%P in (\'findstr /b /c:"set VSHU_AGENT_HOOK_PORT=" "%~1" 2^>nul\') do if "%%P"=="%VSHU_AGENT_HOOK_PORT%" call "%~1" 2>nul',
+      'exit /b 0',
+      ''
+    ].join('\r\n')
+  }
+
+  return [
+    '#!/bin/sh',
+    // Command Code strips TOKEN-named variables from hook env; pane identity survives.
+    ...buildPosixScrubSafeEnvRestoreLines(),
+    ...buildPosixHookPayloadCapture(),
+    `if [ "\${${VSHU_AGENT_HOOKS_DISABLED_ENV}:-}" = 1 ]; then exit 0; fi`,
+    ...buildPosixHookSpoolLines('command-code'),
+    '__vshu_read_ancestor_var() {',
+    '  __vshu_name="$1"',
+    '  __vshu_pid="${PPID:-}"',
+    '  while [ -n "$__vshu_pid" ] && [ "$__vshu_pid" != "0" ] && [ "$__vshu_pid" != "1" ]; do',
+    '    __vshu_env=""',
+    '    if [ -r "/proc/$__vshu_pid/environ" ]; then',
+    '      __vshu_env=$(tr "\\000" "\\n" < "/proc/$__vshu_pid/environ" 2>/dev/null)',
+    '    fi',
+    '    if [ -z "$__vshu_env" ]; then',
+    '      __vshu_env=$(ps eww -p "$__vshu_pid" -o command= 2>/dev/null | tr " " "\\n")',
+    '    fi',
+    // A scrubbed hook may recover identity, but must never cross a background launch.
+    `    if printf '%s\\n' "$__vshu_env" | grep -qx '${VSHU_AGENT_HOOKS_DISABLED_ENV}=1'; then return 1; fi`,
+    '    __vshu_value=$(printf "%s\\n" "$__vshu_env" | sed -n "s/^${__vshu_name}=//p" | head -n 1)',
+    '    if [ -n "$__vshu_value" ]; then',
+    '      printf "%s\\n" "$__vshu_value"',
+    '      return 0',
+    '    fi',
+    '    __vshu_pid=$(ps -o ppid= -p "$__vshu_pid" 2>/dev/null | tr -d " ")',
+    '  done',
+    '  return 1',
+    '}',
+    '__vshu_fill_token_from_ancestor() {',
+    '  __vshu_value=$(__vshu_read_ancestor_var VSHU_AGENT_HOOK_TOKEN) || return 0',
+    '  [ -n "$__vshu_value" ] && export "VSHU_AGENT_HOOK_TOKEN=$__vshu_value"',
+    '}',
+    '__vshu_endpoint_value() {',
+    '  __vshu_endpoint_name="$1"',
+    '  __vshu_endpoint_path="$2"',
+    '  sed -n "s/^${__vshu_endpoint_name}=//p" "$__vshu_endpoint_path" 2>/dev/null | head -n 1',
+    '}',
+    '__vshu_fill_from_endpoint_file() {',
+    '  __vshu_endpoint_path="$1"',
+    '  [ -r "$__vshu_endpoint_path" ] || return 0',
+    '  __vshu_endpoint_port=$(__vshu_endpoint_value VSHU_AGENT_HOOK_PORT "$__vshu_endpoint_path")',
+    '  if [ -n "${VSHU_AGENT_HOOK_PORT:-}" ] && [ -n "$__vshu_endpoint_port" ] && [ "$__vshu_endpoint_port" != "$VSHU_AGENT_HOOK_PORT" ]; then',
+    '    return 0',
+    '  fi',
+    '  for __vshu_endpoint_name in VSHU_AGENT_HOOK_PORT VSHU_AGENT_HOOK_TOKEN VSHU_AGENT_HOOK_ENV VSHU_AGENT_HOOK_VERSION; do',
+    '    eval "__vshu_current=\\${$__vshu_endpoint_name:-}"',
+    '    [ -z "$__vshu_current" ] || continue',
+    '    __vshu_endpoint_value=$(__vshu_endpoint_value "$__vshu_endpoint_name" "$__vshu_endpoint_path")',
+    '    [ -n "$__vshu_endpoint_value" ] && export "$__vshu_endpoint_name=$__vshu_endpoint_value"',
+    '  done',
+    '}',
+    'if [ -n "$VSHU_AGENT_HOOK_ENDPOINT" ] && [ -r "$VSHU_AGENT_HOOK_ENDPOINT" ]; then',
+    '  __vshu_fill_from_endpoint_file "$VSHU_AGENT_HOOK_ENDPOINT"',
+    'fi',
+    '# Recover stripped token metadata by matching the preserved loopback port.',
+    'if [ -z "$VSHU_AGENT_HOOK_TOKEN" ] && [ -n "$VSHU_AGENT_HOOK_PORT" ]; then',
+    '  for endpoint in \\',
+    '    "$HOME/Library/Application Support/vshu-dev/agent-hooks"/*/endpoint.env \\',
+    '    "$HOME/Library/Application Support/vshu-dev/agent-hooks/endpoint.env" \\',
+    '    "${XDG_CONFIG_HOME:-$HOME/.config}/vshu-dev/agent-hooks"/*/endpoint.env \\',
+    '    "${XDG_CONFIG_HOME:-$HOME/.config}/vshu-dev/agent-hooks/endpoint.env" \\',
+    '    "$HOME/Library/Application Support/vshu-dev-wt"/*/agent-hooks/*/endpoint.env \\',
+    '    "${XDG_CONFIG_HOME:-$HOME/.config}/vshu-dev-wt"/*/agent-hooks/*/endpoint.env \\',
+    '    "$HOME/Library/Application Support/vshu/agent-hooks/endpoint.env" \\',
+    '    "${XDG_CONFIG_HOME:-$HOME/.config}/vshu/agent-hooks/endpoint.env"; do',
+    '    [ -r "$endpoint" ] || continue',
+    '    endpoint_port=$(sed -n "s/^VSHU_AGENT_HOOK_PORT=//p" "$endpoint" | head -n 1)',
+    '    if [ "$endpoint_port" = "$VSHU_AGENT_HOOK_PORT" ]; then',
+    '      __vshu_fill_from_endpoint_file "$endpoint"',
+    '      break',
+    '    fi',
+    '  done',
+    'fi',
+    // Last resort for hosts without an endpoint file: read only the token from the parent TUI.
+    'if [ -z "$VSHU_AGENT_HOOK_TOKEN" ] && [ -n "$VSHU_PANE_KEY" ] && [ -n "$VSHU_AGENT_HOOK_PORT" ]; then',
+    '  __vshu_fill_token_from_ancestor',
+    'fi',
+    'if [ -z "$VSHU_AGENT_HOOK_PORT" ] || [ -z "$VSHU_AGENT_HOOK_TOKEN" ] || [ -z "$VSHU_PANE_KEY" ]; then',
+    '  spool_hook_event',
+    '  exit 0',
+    'fi',
+    // Bound stalled posts and pipe large payloads through stdin to avoid EDR command-line false positives.
+    `printf '%s' "$payload" | ${posixCurlCommand()} -sS -X POST "http://127.0.0.1:\${VSHU_AGENT_HOOK_PORT}/hook/command-code" \\`,
+    '  --connect-timeout 0.5 --max-time 1.5 \\',
+    '  -H "Content-Type: application/x-www-form-urlencoded" \\',
+    '  -H "X-Vshu-Agent-Hook-Token: ${VSHU_AGENT_HOOK_TOKEN}" \\',
+    '  --data-urlencode "paneKey=${VSHU_PANE_KEY}" \\',
+    '  --data-urlencode "tabId=${VSHU_TAB_ID}" \\',
+    '  --data-urlencode "launchToken=${VSHU_AGENT_LAUNCH_TOKEN}" \\',
+    '  --data-urlencode "worktreeId=${VSHU_WORKTREE_ID}" \\',
+    '  --data-urlencode "env=${VSHU_AGENT_HOOK_ENV}" \\',
+    '  --data-urlencode "version=${VSHU_AGENT_HOOK_VERSION}" \\',
+    '  --data-urlencode "payload@-" >/dev/null 2>&1 || spool_hook_event',
+    'exit 0',
+    ''
+  ].join('\n')
+}

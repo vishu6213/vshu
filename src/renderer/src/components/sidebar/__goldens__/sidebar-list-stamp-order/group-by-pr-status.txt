@@ -1,0 +1,520 @@
+=== sort=manual projectOrder=manual pinnedInGroups=false ===
+visible: vshu::/w/feat-a vshu-ssh::/w/remote-x vshu::/w/feat-b api::/w/api-y lab::/w/gitlab-mr shared::/w/same shared::/w/same vshu::/vshu vshu::/w/Zeta vshu-ssh::/vshu-ssh api::/api vshu::/w/feat-c lab::/lab ext::/ext
+PENDING key=pending:creation-1 creation=creation-1 repo=api
+HEADER key=pinned label="Pinned" count=6 tone="text-foreground" icon=Pin hostCounts={local:4 ssh:gpu-vm:2} hostIds={local:[vshu::/w/feat-a,vshu::/w/feat-b,lab::/w/gitlab-mr,vshu::/w/feat-c] ssh:gpu-vm:[vshu-ssh::/w/remote-x,shared::/w/same]} ids=[vshu::/w/feat-a,vshu-ssh::/w/remote-x,vshu::/w/feat-b,lab::/w/gitlab-mr,shared::/w/same,vshu::/w/feat-c]
+ITEM rowKey=pinned:|vshu::/w/feat-a depth=0 groupDepth=0 children=2 lineageKey=lineage:vshu::/w/feat-a hostLabel="Local Linux" placement=pinned owning=project:p-vshu
+ITEM rowKey=pinned:|vshu::/w/feat-b depth=1 groupDepth=0 children=1 lineageKey=lineage:vshu::/w/feat-b hostLabel="Local Linux" placement=pinned owning=project:p-vshu parent=pinned:|vshu::/w/feat-a
+ITEM rowKey=pinned:|vshu::/w/feat-c depth=2 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=pinned owning=project:p-vshu parent=pinned:|vshu::/w/feat-b
+ITEM rowKey=pinned:|lab::/w/gitlab-mr depth=1 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" showProject=true placement=pinned owning=project:repo:lab parent=pinned:|vshu::/w/feat-a
+ITEM rowKey=pinned:ssh:gpu-vm|vshu-ssh::/w/remote-x depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=pinned owning=project:p-vshu
+ITEM rowKey=pinned:ssh:gpu-vm|shared::/w/same depth=0 groupDepth=0 lastChild=true children=0 hostLabel="GPU VM" placement=pinned owning=project:repo:shared
+HEADER key=pr:in-review label="In review" count=1 tone="text-workspace-status-review" icon=ConductorReviewIcon hostCounts={runtime:env-1:1} hostIds={runtime:env-1:[api::/w/api-y]} ids=[api::/w/api-y]
+ITEM rowKey=pr:in-review:runtime:env-1|api::/w/api-y depth=0 groupDepth=0 lastChild=true children=0 hostLabel="env-1" placement=natural owning=project:repo:api
+HEADER key=pr:in-progress label="In progress" count=9 tone="text-workspace-status-progress" icon=ConductorProgressIcon hostCounts={local:6 ssh:gpu-vm:2 runtime:env-1:1} hostIds={local:[shared::/w/same,vshu::/vshu,lab::/lab,ext::/ext] ssh:gpu-vm:[vshu-ssh::/vshu-ssh] runtime:env-1:[api::/api]} ids=[shared::/w/same,vshu::/vshu,vshu-ssh::/vshu-ssh,api::/api,lab::/lab,ext::/ext]
+ITEM rowKey=pr:in-progress:local|shared::/w/same depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:shared
+ITEM rowKey=pr:in-progress:|vshu::/vshu depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:|vshu-ssh::/vshu-ssh depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:runtime:env-1|api::/api depth=0 groupDepth=0 children=0 hostLabel="env-1" placement=natural owning=project:repo:api
+ITEM rowKey=pr:in-progress:|lab::/lab depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:lab
+ITEM rowKey=pr:in-progress:|ext::/ext depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:repo:ext
+FOLDER key=folder-workspace:local|folder:fw-review projectGroup=pg-folders depth=0 groupDepth=0
+FOLDER key=folder-workspace:local|folder:fw-notes projectGroup=pg-folders depth=0 groupDepth=0
+FOLDER key=folder-workspace:ssh:gpu-vm|folder:fw-remote projectGroup=pg-remote-folders depth=0 groupDepth=0
+HEADER key=pr:closed label="Closed" count=1 tone="text-zinc-600 dark:text-zinc-300" icon=CircleX hostCounts={local:1} hostIds={local:[vshu::/w/Zeta]} ids=[vshu::/w/Zeta]
+ITEM rowKey=pr:closed:|vshu::/w/Zeta depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+renderedKeys: 25
+placeholders: -
+selectionOrder: |vshu::/w/feat-a |vshu::/w/feat-b |vshu::/w/feat-c |lab::/w/gitlab-mr ssh:gpu-vm|vshu-ssh::/w/remote-x ssh:gpu-vm|shared::/w/same runtime:env-1|api::/w/api-y local|shared::/w/same |vshu::/vshu |vshu-ssh::/vshu-ssh runtime:env-1|api::/api |lab::/lab |ext::/ext local|folder:fw-review local|folder:fw-notes ssh:gpu-vm|folder:fw-remote |vshu::/w/Zeta
+cmd1-9 mounted: 1=vshu::/w/feat-a#lineage:vshu::/w/feat-a 2=vshu::/w/feat-b#lineage:vshu::/w/feat-b 3=vshu::/w/feat-c 4=lab::/w/gitlab-mr 5=vshu-ssh::/w/remote-x@ssh:gpu-vm 6=shared::/w/same@ssh:gpu-vm 7=api::/w/api-y@runtime:env-1 8=shared::/w/same@local 9=vshu::/vshu
+cmd1-9 unmounted: 1=vshu::/w/feat-a 2=vshu::/w/feat-b 3=vshu::/w/feat-c 4=lab::/w/gitlab-mr 5=vshu-ssh::/w/remote-x@ssh:gpu-vm 6=shared::/w/same@ssh:gpu-vm 7=api::/w/api-y@runtime:env-1 8=shared::/w/same@local 9=vshu::/vshu
+cmd ids unmounted: vshu::/w/feat-a vshu::/w/feat-b vshu::/w/feat-c lab::/w/gitlab-mr vshu-ssh::/w/remote-x shared::/w/same api::/w/api-y vshu::/vshu vshu-ssh::/vshu-ssh api::/api lab::/lab ext::/ext folder:fw-review folder:fw-notes folder:fw-remote vshu::/w/Zeta
+-- collapsed: pinned pr:in-progress lineage:vshu::/w/feat-a --
+visible: vshu::/w/feat-a vshu-ssh::/w/remote-x vshu::/w/feat-b api::/w/api-y lab::/w/gitlab-mr shared::/w/same shared::/w/same vshu::/vshu vshu::/w/Zeta vshu-ssh::/vshu-ssh api::/api vshu::/w/feat-c lab::/lab ext::/ext
+PENDING key=pending:creation-1 creation=creation-1 repo=api
+HEADER key=pinned label="Pinned" count=6 tone="text-foreground" icon=Pin hostCounts={local:4 ssh:gpu-vm:2} hostIds={local:[vshu::/w/feat-a,vshu::/w/feat-b,lab::/w/gitlab-mr,vshu::/w/feat-c] ssh:gpu-vm:[vshu-ssh::/w/remote-x,shared::/w/same]} ids=[vshu::/w/feat-a,vshu-ssh::/w/remote-x,vshu::/w/feat-b,lab::/w/gitlab-mr,shared::/w/same,vshu::/w/feat-c]
+HEADER key=pr:in-review label="In review" count=1 tone="text-workspace-status-review" icon=ConductorReviewIcon hostCounts={runtime:env-1:1} hostIds={runtime:env-1:[api::/w/api-y]} ids=[api::/w/api-y]
+ITEM rowKey=pr:in-review:runtime:env-1|api::/w/api-y depth=0 groupDepth=0 lastChild=true children=0 hostLabel="env-1" placement=natural owning=project:repo:api
+HEADER key=pr:in-progress label="In progress" count=9 tone="text-workspace-status-progress" icon=ConductorProgressIcon hostCounts={local:6 ssh:gpu-vm:2 runtime:env-1:1} hostIds={local:[shared::/w/same,vshu::/vshu,lab::/lab,ext::/ext] ssh:gpu-vm:[vshu-ssh::/vshu-ssh] runtime:env-1:[api::/api]} ids=[shared::/w/same,vshu::/vshu,vshu-ssh::/vshu-ssh,api::/api,lab::/lab,ext::/ext]
+HEADER key=pr:closed label="Closed" count=1 tone="text-zinc-600 dark:text-zinc-300" icon=CircleX hostCounts={local:1} hostIds={local:[vshu::/w/Zeta]} ids=[vshu::/w/Zeta]
+ITEM rowKey=pr:closed:|vshu::/w/Zeta depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+SECTION pinned: pinned:|vshu::/w/feat-a pinned:|vshu::/w/feat-b pinned:|vshu::/w/feat-c pinned:|lab::/w/gitlab-mr pinned:ssh:gpu-vm|vshu-ssh::/w/remote-x pinned:ssh:gpu-vm|shared::/w/same
+SECTION pr:in-progress: pr:in-progress:local|shared::/w/same pr:in-progress:|vshu::/vshu pr:in-progress:|vshu-ssh::/vshu-ssh pr:in-progress:runtime:env-1|api::/api pr:in-progress:|lab::/lab pr:in-progress:|ext::/ext
+renderedKeys: 7
+placeholders: -
+selectionOrder: runtime:env-1|api::/w/api-y |vshu::/w/Zeta
+cmd1-9 mounted: 1=api::/w/api-y@runtime:env-1 2=vshu::/w/Zeta
+cmd1-9 unmounted: 1=api::/w/api-y@runtime:env-1 2=vshu::/w/Zeta
+cmd ids unmounted: api::/w/api-y vshu::/w/Zeta
+=== sort=manual projectOrder=manual pinnedInGroups=true ===
+visible: vshu::/w/feat-a vshu-ssh::/w/remote-x vshu::/w/feat-b api::/w/api-y lab::/w/gitlab-mr shared::/w/same shared::/w/same vshu::/vshu vshu::/w/Zeta vshu-ssh::/vshu-ssh api::/api vshu::/w/feat-c lab::/lab ext::/ext
+PENDING key=pending:creation-1 creation=creation-1 repo=api
+HEADER key=pinned label="Pinned" count=6 tone="text-foreground" icon=Pin hostCounts={local:4 ssh:gpu-vm:2} hostIds={local:[vshu::/w/feat-a,vshu::/w/feat-b,lab::/w/gitlab-mr,vshu::/w/feat-c] ssh:gpu-vm:[vshu-ssh::/w/remote-x,shared::/w/same]} ids=[vshu::/w/feat-a,vshu-ssh::/w/remote-x,vshu::/w/feat-b,lab::/w/gitlab-mr,shared::/w/same,vshu::/w/feat-c]
+ITEM rowKey=pinned:|vshu::/w/feat-a depth=0 groupDepth=0 children=2 lineageKey=lineage:vshu::/w/feat-a hostLabel="Local Linux" placement=pinned owning=project:p-vshu
+ITEM rowKey=pinned:|vshu::/w/feat-b depth=1 groupDepth=0 children=1 lineageKey=lineage:vshu::/w/feat-b hostLabel="Local Linux" placement=pinned owning=project:p-vshu parent=pinned:|vshu::/w/feat-a
+ITEM rowKey=pinned:|vshu::/w/feat-c depth=2 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=pinned owning=project:p-vshu parent=pinned:|vshu::/w/feat-b
+ITEM rowKey=pinned:|lab::/w/gitlab-mr depth=1 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" showProject=true placement=pinned owning=project:repo:lab parent=pinned:|vshu::/w/feat-a
+ITEM rowKey=pinned:ssh:gpu-vm|vshu-ssh::/w/remote-x depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=pinned owning=project:p-vshu
+ITEM rowKey=pinned:ssh:gpu-vm|shared::/w/same depth=0 groupDepth=0 lastChild=true children=0 hostLabel="GPU VM" placement=pinned owning=project:repo:shared
+HEADER key=pr:done label="Done" count=1 tone="text-workspace-status-done" icon=ConductorDoneIcon hostCounts={local:1} hostIds={local:[vshu::/w/feat-b]} ids=[vshu::/w/feat-b]
+ITEM rowKey=pr:done:|vshu::/w/feat-b depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+HEADER key=pr:in-review label="In review" count=2 tone="text-workspace-status-review" icon=ConductorReviewIcon hostCounts={local:1 runtime:env-1:1} hostIds={local:[vshu::/w/feat-a] runtime:env-1:[api::/w/api-y]} ids=[vshu::/w/feat-a,api::/w/api-y]
+ITEM rowKey=pr:in-review:|vshu::/w/feat-a depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-review:runtime:env-1|api::/w/api-y depth=0 groupDepth=0 lastChild=true children=0 hostLabel="env-1" placement=natural owning=project:repo:api
+HEADER key=pr:in-progress label="In progress" count=13 tone="text-workspace-status-progress" icon=ConductorProgressIcon hostCounts={ssh:gpu-vm:4 local:8 runtime:env-1:1} hostIds={ssh:gpu-vm:[vshu-ssh::/w/remote-x,shared::/w/same,vshu-ssh::/vshu-ssh] local:[lab::/w/gitlab-mr,shared::/w/same,vshu::/vshu,vshu::/w/feat-c,lab::/lab,ext::/ext] runtime:env-1:[api::/api]} ids=[vshu-ssh::/w/remote-x,lab::/w/gitlab-mr,shared::/w/same,shared::/w/same,vshu::/vshu,vshu-ssh::/vshu-ssh,api::/api,vshu::/w/feat-c,lab::/lab,ext::/ext]
+ITEM rowKey=pr:in-progress:ssh:gpu-vm|vshu-ssh::/w/remote-x depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:|lab::/w/gitlab-mr depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:lab
+ITEM rowKey=pr:in-progress:ssh:gpu-vm|shared::/w/same depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=natural owning=project:repo:shared
+ITEM rowKey=pr:in-progress:local|shared::/w/same depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:shared
+ITEM rowKey=pr:in-progress:|vshu::/vshu depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:|vshu-ssh::/vshu-ssh depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:runtime:env-1|api::/api depth=0 groupDepth=0 children=0 hostLabel="env-1" placement=natural owning=project:repo:api
+ITEM rowKey=pr:in-progress:|vshu::/w/feat-c depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:|lab::/lab depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:lab
+ITEM rowKey=pr:in-progress:|ext::/ext depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:repo:ext
+FOLDER key=folder-workspace:local|folder:fw-review projectGroup=pg-folders depth=0 groupDepth=0
+FOLDER key=folder-workspace:local|folder:fw-notes projectGroup=pg-folders depth=0 groupDepth=0
+FOLDER key=folder-workspace:ssh:gpu-vm|folder:fw-remote projectGroup=pg-remote-folders depth=0 groupDepth=0
+HEADER key=pr:closed label="Closed" count=1 tone="text-zinc-600 dark:text-zinc-300" icon=CircleX hostCounts={local:1} hostIds={local:[vshu::/w/Zeta]} ids=[vshu::/w/Zeta]
+ITEM rowKey=pr:closed:|vshu::/w/Zeta depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+PREFERRED |vshu::/w/feat-a -> pr:in-review:|vshu::/w/feat-a
+PREFERRED |vshu::/w/feat-b -> pr:done:|vshu::/w/feat-b
+PREFERRED |vshu::/w/feat-c -> pr:in-progress:|vshu::/w/feat-c
+PREFERRED |lab::/w/gitlab-mr -> pr:in-progress:|lab::/w/gitlab-mr
+PREFERRED ssh:gpu-vm|vshu-ssh::/w/remote-x -> pr:in-progress:ssh:gpu-vm|vshu-ssh::/w/remote-x
+PREFERRED ssh:gpu-vm|shared::/w/same -> pr:in-progress:ssh:gpu-vm|shared::/w/same
+renderedKeys: 32
+placeholders: -
+selectionOrder: |vshu::/w/feat-b |vshu::/w/feat-a runtime:env-1|api::/w/api-y ssh:gpu-vm|vshu-ssh::/w/remote-x |lab::/w/gitlab-mr ssh:gpu-vm|shared::/w/same local|shared::/w/same |vshu::/vshu |vshu-ssh::/vshu-ssh runtime:env-1|api::/api |vshu::/w/feat-c |lab::/lab |ext::/ext local|folder:fw-review local|folder:fw-notes ssh:gpu-vm|folder:fw-remote |vshu::/w/Zeta
+cmd1-9 mounted: 1=vshu::/w/feat-b#lineage:vshu::/w/feat-b 2=vshu::/w/feat-a#lineage:vshu::/w/feat-a 3=api::/w/api-y@runtime:env-1 4=vshu-ssh::/w/remote-x@ssh:gpu-vm 5=lab::/w/gitlab-mr 6=shared::/w/same@ssh:gpu-vm 7=shared::/w/same@local 8=vshu::/vshu 9=vshu-ssh::/vshu-ssh
+cmd1-9 unmounted: 1=vshu::/w/feat-b 2=vshu::/w/feat-a 3=api::/w/api-y@runtime:env-1 4=vshu-ssh::/w/remote-x@ssh:gpu-vm 5=lab::/w/gitlab-mr 6=shared::/w/same@ssh:gpu-vm 7=shared::/w/same@local 8=vshu::/vshu 9=vshu-ssh::/vshu-ssh
+cmd ids unmounted: vshu::/w/feat-b vshu::/w/feat-a api::/w/api-y vshu-ssh::/w/remote-x lab::/w/gitlab-mr shared::/w/same vshu::/vshu vshu-ssh::/vshu-ssh api::/api vshu::/w/feat-c lab::/lab ext::/ext folder:fw-review folder:fw-notes folder:fw-remote vshu::/w/Zeta
+-- collapsed: pinned pr:in-review pr:closed lineage:vshu::/w/feat-a --
+visible: vshu::/w/feat-a vshu-ssh::/w/remote-x vshu::/w/feat-b api::/w/api-y lab::/w/gitlab-mr shared::/w/same shared::/w/same vshu::/vshu vshu::/w/Zeta vshu-ssh::/vshu-ssh api::/api vshu::/w/feat-c lab::/lab ext::/ext
+PENDING key=pending:creation-1 creation=creation-1 repo=api
+HEADER key=pinned label="Pinned" count=6 tone="text-foreground" icon=Pin hostCounts={local:4 ssh:gpu-vm:2} hostIds={local:[vshu::/w/feat-a,vshu::/w/feat-b,lab::/w/gitlab-mr,vshu::/w/feat-c] ssh:gpu-vm:[vshu-ssh::/w/remote-x,shared::/w/same]} ids=[vshu::/w/feat-a,vshu-ssh::/w/remote-x,vshu::/w/feat-b,lab::/w/gitlab-mr,shared::/w/same,vshu::/w/feat-c]
+HEADER key=pr:done label="Done" count=1 tone="text-workspace-status-done" icon=ConductorDoneIcon hostCounts={local:1} hostIds={local:[vshu::/w/feat-b]} ids=[vshu::/w/feat-b]
+ITEM rowKey=pr:done:|vshu::/w/feat-b depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+HEADER key=pr:in-review label="In review" count=2 tone="text-workspace-status-review" icon=ConductorReviewIcon hostCounts={local:1 runtime:env-1:1} hostIds={local:[vshu::/w/feat-a] runtime:env-1:[api::/w/api-y]} ids=[vshu::/w/feat-a,api::/w/api-y]
+HEADER key=pr:in-progress label="In progress" count=13 tone="text-workspace-status-progress" icon=ConductorProgressIcon hostCounts={ssh:gpu-vm:4 local:8 runtime:env-1:1} hostIds={ssh:gpu-vm:[vshu-ssh::/w/remote-x,shared::/w/same,vshu-ssh::/vshu-ssh] local:[lab::/w/gitlab-mr,shared::/w/same,vshu::/vshu,vshu::/w/feat-c,lab::/lab,ext::/ext] runtime:env-1:[api::/api]} ids=[vshu-ssh::/w/remote-x,lab::/w/gitlab-mr,shared::/w/same,shared::/w/same,vshu::/vshu,vshu-ssh::/vshu-ssh,api::/api,vshu::/w/feat-c,lab::/lab,ext::/ext]
+ITEM rowKey=pr:in-progress:ssh:gpu-vm|vshu-ssh::/w/remote-x depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:|lab::/w/gitlab-mr depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:lab
+ITEM rowKey=pr:in-progress:ssh:gpu-vm|shared::/w/same depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=natural owning=project:repo:shared
+ITEM rowKey=pr:in-progress:local|shared::/w/same depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:shared
+ITEM rowKey=pr:in-progress:|vshu::/vshu depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:|vshu-ssh::/vshu-ssh depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:runtime:env-1|api::/api depth=0 groupDepth=0 children=0 hostLabel="env-1" placement=natural owning=project:repo:api
+ITEM rowKey=pr:in-progress:|vshu::/w/feat-c depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:|lab::/lab depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:lab
+ITEM rowKey=pr:in-progress:|ext::/ext depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:repo:ext
+FOLDER key=folder-workspace:local|folder:fw-review projectGroup=pg-folders depth=0 groupDepth=0
+FOLDER key=folder-workspace:local|folder:fw-notes projectGroup=pg-folders depth=0 groupDepth=0
+FOLDER key=folder-workspace:ssh:gpu-vm|folder:fw-remote projectGroup=pg-remote-folders depth=0 groupDepth=0
+HEADER key=pr:closed label="Closed" count=1 tone="text-zinc-600 dark:text-zinc-300" icon=CircleX hostCounts={local:1} hostIds={local:[vshu::/w/Zeta]} ids=[vshu::/w/Zeta]
+SECTION pinned: pinned:|vshu::/w/feat-a pinned:|vshu::/w/feat-b pinned:|vshu::/w/feat-c pinned:|lab::/w/gitlab-mr pinned:ssh:gpu-vm|vshu-ssh::/w/remote-x pinned:ssh:gpu-vm|shared::/w/same
+SECTION pr:in-review: pr:in-review:|vshu::/w/feat-a pr:in-review:runtime:env-1|api::/w/api-y
+SECTION pr:closed: pr:closed:|vshu::/w/Zeta
+PREFERRED |vshu::/w/feat-a -> pr:in-review:|vshu::/w/feat-a
+PREFERRED |vshu::/w/feat-b -> pr:done:|vshu::/w/feat-b
+PREFERRED |vshu::/w/feat-c -> pr:in-progress:|vshu::/w/feat-c
+PREFERRED |lab::/w/gitlab-mr -> pr:in-progress:|lab::/w/gitlab-mr
+PREFERRED ssh:gpu-vm|vshu-ssh::/w/remote-x -> pr:in-progress:ssh:gpu-vm|vshu-ssh::/w/remote-x
+PREFERRED ssh:gpu-vm|shared::/w/same -> pr:in-progress:ssh:gpu-vm|shared::/w/same
+renderedKeys: 23
+placeholders: -
+selectionOrder: |vshu::/w/feat-b ssh:gpu-vm|vshu-ssh::/w/remote-x |lab::/w/gitlab-mr ssh:gpu-vm|shared::/w/same local|shared::/w/same |vshu::/vshu |vshu-ssh::/vshu-ssh runtime:env-1|api::/api |vshu::/w/feat-c |lab::/lab |ext::/ext local|folder:fw-review local|folder:fw-notes ssh:gpu-vm|folder:fw-remote
+cmd1-9 mounted: 1=vshu::/w/feat-b 2=vshu-ssh::/w/remote-x@ssh:gpu-vm 3=lab::/w/gitlab-mr 4=shared::/w/same@ssh:gpu-vm 5=shared::/w/same@local 6=vshu::/vshu 7=vshu-ssh::/vshu-ssh 8=api::/api@runtime:env-1 9=vshu::/w/feat-c
+cmd1-9 unmounted: 1=vshu::/w/feat-b 2=vshu-ssh::/w/remote-x@ssh:gpu-vm 3=lab::/w/gitlab-mr 4=shared::/w/same@ssh:gpu-vm 5=shared::/w/same@local 6=vshu::/vshu 7=vshu-ssh::/vshu-ssh 8=api::/api@runtime:env-1 9=vshu::/w/feat-c
+cmd ids unmounted: vshu::/w/feat-b vshu-ssh::/w/remote-x lab::/w/gitlab-mr shared::/w/same vshu::/vshu vshu-ssh::/vshu-ssh api::/api vshu::/w/feat-c lab::/lab ext::/ext folder:fw-review folder:fw-notes folder:fw-remote
+=== sort=manual projectOrder=recent pinnedInGroups=false === same as sort=manual projectOrder=manual pinnedInGroups=false
+=== sort=manual projectOrder=recent pinnedInGroups=true === same as sort=manual projectOrder=manual pinnedInGroups=true
+=== sort=name projectOrder=manual pinnedInGroups=false ===
+visible: api::/w/api-y vshu::/w/feat-a vshu::/w/feat-b vshu::/w/feat-c lab::/w/gitlab-mr api::/api ext::/ext lab::/lab vshu-ssh::/vshu-ssh vshu::/vshu vshu-ssh::/w/remote-x shared::/w/same shared::/w/same vshu::/w/Zeta
+PENDING key=pending:creation-1 creation=creation-1 repo=api
+HEADER key=pinned label="Pinned" count=6 tone="text-foreground" icon=Pin hostCounts={local:4 ssh:gpu-vm:2} hostIds={local:[vshu::/w/feat-a,vshu::/w/feat-b,vshu::/w/feat-c,lab::/w/gitlab-mr] ssh:gpu-vm:[vshu-ssh::/w/remote-x,shared::/w/same]} ids=[vshu::/w/feat-a,vshu::/w/feat-b,vshu::/w/feat-c,lab::/w/gitlab-mr,vshu-ssh::/w/remote-x,shared::/w/same]
+ITEM rowKey=pinned:|vshu::/w/feat-a depth=0 groupDepth=0 children=2 lineageKey=lineage:vshu::/w/feat-a hostLabel="Local Linux" placement=pinned owning=project:p-vshu
+ITEM rowKey=pinned:|vshu::/w/feat-b depth=1 groupDepth=0 children=1 lineageKey=lineage:vshu::/w/feat-b hostLabel="Local Linux" placement=pinned owning=project:p-vshu parent=pinned:|vshu::/w/feat-a
+ITEM rowKey=pinned:|vshu::/w/feat-c depth=2 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=pinned owning=project:p-vshu parent=pinned:|vshu::/w/feat-b
+ITEM rowKey=pinned:|lab::/w/gitlab-mr depth=1 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" showProject=true placement=pinned owning=project:repo:lab parent=pinned:|vshu::/w/feat-a
+ITEM rowKey=pinned:ssh:gpu-vm|vshu-ssh::/w/remote-x depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=pinned owning=project:p-vshu
+ITEM rowKey=pinned:ssh:gpu-vm|shared::/w/same depth=0 groupDepth=0 lastChild=true children=0 hostLabel="GPU VM" placement=pinned owning=project:repo:shared
+HEADER key=pr:in-review label="In review" count=1 tone="text-workspace-status-review" icon=ConductorReviewIcon hostCounts={runtime:env-1:1} hostIds={runtime:env-1:[api::/w/api-y]} ids=[api::/w/api-y]
+ITEM rowKey=pr:in-review:runtime:env-1|api::/w/api-y depth=0 groupDepth=0 lastChild=true children=0 hostLabel="env-1" placement=natural owning=project:repo:api
+HEADER key=pr:in-progress label="In progress" count=9 tone="text-workspace-status-progress" icon=ConductorProgressIcon hostCounts={runtime:env-1:1 local:6 ssh:gpu-vm:2} hostIds={runtime:env-1:[api::/api] local:[ext::/ext,lab::/lab,vshu::/vshu,shared::/w/same] ssh:gpu-vm:[vshu-ssh::/vshu-ssh]} ids=[api::/api,ext::/ext,lab::/lab,vshu-ssh::/vshu-ssh,vshu::/vshu,shared::/w/same]
+ITEM rowKey=pr:in-progress:runtime:env-1|api::/api depth=0 groupDepth=0 children=0 hostLabel="env-1" placement=natural owning=project:repo:api
+ITEM rowKey=pr:in-progress:|ext::/ext depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:ext
+ITEM rowKey=pr:in-progress:|lab::/lab depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:lab
+ITEM rowKey=pr:in-progress:|vshu-ssh::/vshu-ssh depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:|vshu::/vshu depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:local|shared::/w/same depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:repo:shared
+FOLDER key=folder-workspace:local|folder:fw-review projectGroup=pg-folders depth=0 groupDepth=0
+FOLDER key=folder-workspace:local|folder:fw-notes projectGroup=pg-folders depth=0 groupDepth=0
+FOLDER key=folder-workspace:ssh:gpu-vm|folder:fw-remote projectGroup=pg-remote-folders depth=0 groupDepth=0
+HEADER key=pr:closed label="Closed" count=1 tone="text-zinc-600 dark:text-zinc-300" icon=CircleX hostCounts={local:1} hostIds={local:[vshu::/w/Zeta]} ids=[vshu::/w/Zeta]
+ITEM rowKey=pr:closed:|vshu::/w/Zeta depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+renderedKeys: 25
+placeholders: -
+selectionOrder: |vshu::/w/feat-a |vshu::/w/feat-b |vshu::/w/feat-c |lab::/w/gitlab-mr ssh:gpu-vm|vshu-ssh::/w/remote-x ssh:gpu-vm|shared::/w/same runtime:env-1|api::/w/api-y runtime:env-1|api::/api |ext::/ext |lab::/lab |vshu-ssh::/vshu-ssh |vshu::/vshu local|shared::/w/same local|folder:fw-review local|folder:fw-notes ssh:gpu-vm|folder:fw-remote |vshu::/w/Zeta
+cmd1-9 mounted: 1=vshu::/w/feat-a#lineage:vshu::/w/feat-a 2=vshu::/w/feat-b#lineage:vshu::/w/feat-b 3=vshu::/w/feat-c 4=lab::/w/gitlab-mr 5=vshu-ssh::/w/remote-x@ssh:gpu-vm 6=shared::/w/same@ssh:gpu-vm 7=api::/w/api-y@runtime:env-1 8=api::/api@runtime:env-1 9=ext::/ext
+cmd1-9 unmounted: 1=vshu::/w/feat-a 2=vshu::/w/feat-b 3=vshu::/w/feat-c 4=lab::/w/gitlab-mr 5=vshu-ssh::/w/remote-x@ssh:gpu-vm 6=shared::/w/same@ssh:gpu-vm 7=api::/w/api-y@runtime:env-1 8=api::/api@runtime:env-1 9=ext::/ext
+cmd ids unmounted: vshu::/w/feat-a vshu::/w/feat-b vshu::/w/feat-c lab::/w/gitlab-mr vshu-ssh::/w/remote-x shared::/w/same api::/w/api-y api::/api ext::/ext lab::/lab vshu-ssh::/vshu-ssh vshu::/vshu folder:fw-review folder:fw-notes folder:fw-remote vshu::/w/Zeta
+-- collapsed: pinned pr:in-progress lineage:vshu::/w/feat-a --
+visible: api::/w/api-y vshu::/w/feat-a vshu::/w/feat-b vshu::/w/feat-c lab::/w/gitlab-mr api::/api ext::/ext lab::/lab vshu-ssh::/vshu-ssh vshu::/vshu vshu-ssh::/w/remote-x shared::/w/same shared::/w/same vshu::/w/Zeta
+PENDING key=pending:creation-1 creation=creation-1 repo=api
+HEADER key=pinned label="Pinned" count=6 tone="text-foreground" icon=Pin hostCounts={local:4 ssh:gpu-vm:2} hostIds={local:[vshu::/w/feat-a,vshu::/w/feat-b,vshu::/w/feat-c,lab::/w/gitlab-mr] ssh:gpu-vm:[vshu-ssh::/w/remote-x,shared::/w/same]} ids=[vshu::/w/feat-a,vshu::/w/feat-b,vshu::/w/feat-c,lab::/w/gitlab-mr,vshu-ssh::/w/remote-x,shared::/w/same]
+HEADER key=pr:in-review label="In review" count=1 tone="text-workspace-status-review" icon=ConductorReviewIcon hostCounts={runtime:env-1:1} hostIds={runtime:env-1:[api::/w/api-y]} ids=[api::/w/api-y]
+ITEM rowKey=pr:in-review:runtime:env-1|api::/w/api-y depth=0 groupDepth=0 lastChild=true children=0 hostLabel="env-1" placement=natural owning=project:repo:api
+HEADER key=pr:in-progress label="In progress" count=9 tone="text-workspace-status-progress" icon=ConductorProgressIcon hostCounts={runtime:env-1:1 local:6 ssh:gpu-vm:2} hostIds={runtime:env-1:[api::/api] local:[ext::/ext,lab::/lab,vshu::/vshu,shared::/w/same] ssh:gpu-vm:[vshu-ssh::/vshu-ssh]} ids=[api::/api,ext::/ext,lab::/lab,vshu-ssh::/vshu-ssh,vshu::/vshu,shared::/w/same]
+HEADER key=pr:closed label="Closed" count=1 tone="text-zinc-600 dark:text-zinc-300" icon=CircleX hostCounts={local:1} hostIds={local:[vshu::/w/Zeta]} ids=[vshu::/w/Zeta]
+ITEM rowKey=pr:closed:|vshu::/w/Zeta depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+SECTION pinned: pinned:|vshu::/w/feat-a pinned:|vshu::/w/feat-b pinned:|vshu::/w/feat-c pinned:|lab::/w/gitlab-mr pinned:ssh:gpu-vm|vshu-ssh::/w/remote-x pinned:ssh:gpu-vm|shared::/w/same
+SECTION pr:in-progress: pr:in-progress:runtime:env-1|api::/api pr:in-progress:|ext::/ext pr:in-progress:|lab::/lab pr:in-progress:|vshu-ssh::/vshu-ssh pr:in-progress:|vshu::/vshu pr:in-progress:local|shared::/w/same
+renderedKeys: 7
+placeholders: -
+selectionOrder: runtime:env-1|api::/w/api-y |vshu::/w/Zeta
+cmd1-9 mounted: 1=api::/w/api-y@runtime:env-1 2=vshu::/w/Zeta
+cmd1-9 unmounted: 1=api::/w/api-y@runtime:env-1 2=vshu::/w/Zeta
+cmd ids unmounted: api::/w/api-y vshu::/w/Zeta
+=== sort=name projectOrder=manual pinnedInGroups=true ===
+visible: api::/w/api-y vshu::/w/feat-a vshu::/w/feat-b vshu::/w/feat-c lab::/w/gitlab-mr api::/api ext::/ext lab::/lab vshu-ssh::/vshu-ssh vshu::/vshu vshu-ssh::/w/remote-x shared::/w/same shared::/w/same vshu::/w/Zeta
+PENDING key=pending:creation-1 creation=creation-1 repo=api
+HEADER key=pinned label="Pinned" count=6 tone="text-foreground" icon=Pin hostCounts={local:4 ssh:gpu-vm:2} hostIds={local:[vshu::/w/feat-a,vshu::/w/feat-b,vshu::/w/feat-c,lab::/w/gitlab-mr] ssh:gpu-vm:[vshu-ssh::/w/remote-x,shared::/w/same]} ids=[vshu::/w/feat-a,vshu::/w/feat-b,vshu::/w/feat-c,lab::/w/gitlab-mr,vshu-ssh::/w/remote-x,shared::/w/same]
+ITEM rowKey=pinned:|vshu::/w/feat-a depth=0 groupDepth=0 children=2 lineageKey=lineage:vshu::/w/feat-a hostLabel="Local Linux" placement=pinned owning=project:p-vshu
+ITEM rowKey=pinned:|vshu::/w/feat-b depth=1 groupDepth=0 children=1 lineageKey=lineage:vshu::/w/feat-b hostLabel="Local Linux" placement=pinned owning=project:p-vshu parent=pinned:|vshu::/w/feat-a
+ITEM rowKey=pinned:|vshu::/w/feat-c depth=2 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=pinned owning=project:p-vshu parent=pinned:|vshu::/w/feat-b
+ITEM rowKey=pinned:|lab::/w/gitlab-mr depth=1 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" showProject=true placement=pinned owning=project:repo:lab parent=pinned:|vshu::/w/feat-a
+ITEM rowKey=pinned:ssh:gpu-vm|vshu-ssh::/w/remote-x depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=pinned owning=project:p-vshu
+ITEM rowKey=pinned:ssh:gpu-vm|shared::/w/same depth=0 groupDepth=0 lastChild=true children=0 hostLabel="GPU VM" placement=pinned owning=project:repo:shared
+HEADER key=pr:done label="Done" count=1 tone="text-workspace-status-done" icon=ConductorDoneIcon hostCounts={local:1} hostIds={local:[vshu::/w/feat-b]} ids=[vshu::/w/feat-b]
+ITEM rowKey=pr:done:|vshu::/w/feat-b depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+HEADER key=pr:in-review label="In review" count=2 tone="text-workspace-status-review" icon=ConductorReviewIcon hostCounts={runtime:env-1:1 local:1} hostIds={runtime:env-1:[api::/w/api-y] local:[vshu::/w/feat-a]} ids=[api::/w/api-y,vshu::/w/feat-a]
+ITEM rowKey=pr:in-review:runtime:env-1|api::/w/api-y depth=0 groupDepth=0 children=0 hostLabel="env-1" placement=natural owning=project:repo:api
+ITEM rowKey=pr:in-review:|vshu::/w/feat-a depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+HEADER key=pr:in-progress label="In progress" count=13 tone="text-workspace-status-progress" icon=ConductorProgressIcon hostCounts={local:8 runtime:env-1:1 ssh:gpu-vm:4} hostIds={local:[vshu::/w/feat-c,lab::/w/gitlab-mr,ext::/ext,lab::/lab,vshu::/vshu,shared::/w/same] runtime:env-1:[api::/api] ssh:gpu-vm:[vshu-ssh::/vshu-ssh,vshu-ssh::/w/remote-x,shared::/w/same]} ids=[vshu::/w/feat-c,lab::/w/gitlab-mr,api::/api,ext::/ext,lab::/lab,vshu-ssh::/vshu-ssh,vshu::/vshu,vshu-ssh::/w/remote-x,shared::/w/same,shared::/w/same]
+ITEM rowKey=pr:in-progress:|vshu::/w/feat-c depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:|lab::/w/gitlab-mr depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:lab
+ITEM rowKey=pr:in-progress:runtime:env-1|api::/api depth=0 groupDepth=0 children=0 hostLabel="env-1" placement=natural owning=project:repo:api
+ITEM rowKey=pr:in-progress:|ext::/ext depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:ext
+ITEM rowKey=pr:in-progress:|lab::/lab depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:lab
+ITEM rowKey=pr:in-progress:|vshu-ssh::/vshu-ssh depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:|vshu::/vshu depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:ssh:gpu-vm|vshu-ssh::/w/remote-x depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:local|shared::/w/same depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:shared
+ITEM rowKey=pr:in-progress:ssh:gpu-vm|shared::/w/same depth=0 groupDepth=0 lastChild=true children=0 hostLabel="GPU VM" placement=natural owning=project:repo:shared
+FOLDER key=folder-workspace:local|folder:fw-review projectGroup=pg-folders depth=0 groupDepth=0
+FOLDER key=folder-workspace:local|folder:fw-notes projectGroup=pg-folders depth=0 groupDepth=0
+FOLDER key=folder-workspace:ssh:gpu-vm|folder:fw-remote projectGroup=pg-remote-folders depth=0 groupDepth=0
+HEADER key=pr:closed label="Closed" count=1 tone="text-zinc-600 dark:text-zinc-300" icon=CircleX hostCounts={local:1} hostIds={local:[vshu::/w/Zeta]} ids=[vshu::/w/Zeta]
+ITEM rowKey=pr:closed:|vshu::/w/Zeta depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+PREFERRED |vshu::/w/feat-a -> pr:in-review:|vshu::/w/feat-a
+PREFERRED |vshu::/w/feat-b -> pr:done:|vshu::/w/feat-b
+PREFERRED |vshu::/w/feat-c -> pr:in-progress:|vshu::/w/feat-c
+PREFERRED |lab::/w/gitlab-mr -> pr:in-progress:|lab::/w/gitlab-mr
+PREFERRED ssh:gpu-vm|vshu-ssh::/w/remote-x -> pr:in-progress:ssh:gpu-vm|vshu-ssh::/w/remote-x
+PREFERRED ssh:gpu-vm|shared::/w/same -> pr:in-progress:ssh:gpu-vm|shared::/w/same
+renderedKeys: 32
+placeholders: -
+selectionOrder: |vshu::/w/feat-b runtime:env-1|api::/w/api-y |vshu::/w/feat-a |vshu::/w/feat-c |lab::/w/gitlab-mr runtime:env-1|api::/api |ext::/ext |lab::/lab |vshu-ssh::/vshu-ssh |vshu::/vshu ssh:gpu-vm|vshu-ssh::/w/remote-x local|shared::/w/same ssh:gpu-vm|shared::/w/same local|folder:fw-review local|folder:fw-notes ssh:gpu-vm|folder:fw-remote |vshu::/w/Zeta
+cmd1-9 mounted: 1=vshu::/w/feat-b#lineage:vshu::/w/feat-b 2=api::/w/api-y@runtime:env-1 3=vshu::/w/feat-a#lineage:vshu::/w/feat-a 4=vshu::/w/feat-c 5=lab::/w/gitlab-mr 6=api::/api@runtime:env-1 7=ext::/ext 8=lab::/lab 9=vshu-ssh::/vshu-ssh
+cmd1-9 unmounted: 1=vshu::/w/feat-b 2=api::/w/api-y@runtime:env-1 3=vshu::/w/feat-a 4=vshu::/w/feat-c 5=lab::/w/gitlab-mr 6=api::/api@runtime:env-1 7=ext::/ext 8=lab::/lab 9=vshu-ssh::/vshu-ssh
+cmd ids unmounted: vshu::/w/feat-b api::/w/api-y vshu::/w/feat-a vshu::/w/feat-c lab::/w/gitlab-mr api::/api ext::/ext lab::/lab vshu-ssh::/vshu-ssh vshu::/vshu vshu-ssh::/w/remote-x shared::/w/same folder:fw-review folder:fw-notes folder:fw-remote vshu::/w/Zeta
+-- collapsed: pinned pr:in-review pr:closed lineage:vshu::/w/feat-a --
+visible: api::/w/api-y vshu::/w/feat-a vshu::/w/feat-b vshu::/w/feat-c lab::/w/gitlab-mr api::/api ext::/ext lab::/lab vshu-ssh::/vshu-ssh vshu::/vshu vshu-ssh::/w/remote-x shared::/w/same shared::/w/same vshu::/w/Zeta
+PENDING key=pending:creation-1 creation=creation-1 repo=api
+HEADER key=pinned label="Pinned" count=6 tone="text-foreground" icon=Pin hostCounts={local:4 ssh:gpu-vm:2} hostIds={local:[vshu::/w/feat-a,vshu::/w/feat-b,vshu::/w/feat-c,lab::/w/gitlab-mr] ssh:gpu-vm:[vshu-ssh::/w/remote-x,shared::/w/same]} ids=[vshu::/w/feat-a,vshu::/w/feat-b,vshu::/w/feat-c,lab::/w/gitlab-mr,vshu-ssh::/w/remote-x,shared::/w/same]
+HEADER key=pr:done label="Done" count=1 tone="text-workspace-status-done" icon=ConductorDoneIcon hostCounts={local:1} hostIds={local:[vshu::/w/feat-b]} ids=[vshu::/w/feat-b]
+ITEM rowKey=pr:done:|vshu::/w/feat-b depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+HEADER key=pr:in-review label="In review" count=2 tone="text-workspace-status-review" icon=ConductorReviewIcon hostCounts={runtime:env-1:1 local:1} hostIds={runtime:env-1:[api::/w/api-y] local:[vshu::/w/feat-a]} ids=[api::/w/api-y,vshu::/w/feat-a]
+HEADER key=pr:in-progress label="In progress" count=13 tone="text-workspace-status-progress" icon=ConductorProgressIcon hostCounts={local:8 runtime:env-1:1 ssh:gpu-vm:4} hostIds={local:[vshu::/w/feat-c,lab::/w/gitlab-mr,ext::/ext,lab::/lab,vshu::/vshu,shared::/w/same] runtime:env-1:[api::/api] ssh:gpu-vm:[vshu-ssh::/vshu-ssh,vshu-ssh::/w/remote-x,shared::/w/same]} ids=[vshu::/w/feat-c,lab::/w/gitlab-mr,api::/api,ext::/ext,lab::/lab,vshu-ssh::/vshu-ssh,vshu::/vshu,vshu-ssh::/w/remote-x,shared::/w/same,shared::/w/same]
+ITEM rowKey=pr:in-progress:|vshu::/w/feat-c depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:|lab::/w/gitlab-mr depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:lab
+ITEM rowKey=pr:in-progress:runtime:env-1|api::/api depth=0 groupDepth=0 children=0 hostLabel="env-1" placement=natural owning=project:repo:api
+ITEM rowKey=pr:in-progress:|ext::/ext depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:ext
+ITEM rowKey=pr:in-progress:|lab::/lab depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:lab
+ITEM rowKey=pr:in-progress:|vshu-ssh::/vshu-ssh depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:|vshu::/vshu depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:ssh:gpu-vm|vshu-ssh::/w/remote-x depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:local|shared::/w/same depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:shared
+ITEM rowKey=pr:in-progress:ssh:gpu-vm|shared::/w/same depth=0 groupDepth=0 lastChild=true children=0 hostLabel="GPU VM" placement=natural owning=project:repo:shared
+FOLDER key=folder-workspace:local|folder:fw-review projectGroup=pg-folders depth=0 groupDepth=0
+FOLDER key=folder-workspace:local|folder:fw-notes projectGroup=pg-folders depth=0 groupDepth=0
+FOLDER key=folder-workspace:ssh:gpu-vm|folder:fw-remote projectGroup=pg-remote-folders depth=0 groupDepth=0
+HEADER key=pr:closed label="Closed" count=1 tone="text-zinc-600 dark:text-zinc-300" icon=CircleX hostCounts={local:1} hostIds={local:[vshu::/w/Zeta]} ids=[vshu::/w/Zeta]
+SECTION pinned: pinned:|vshu::/w/feat-a pinned:|vshu::/w/feat-b pinned:|vshu::/w/feat-c pinned:|lab::/w/gitlab-mr pinned:ssh:gpu-vm|vshu-ssh::/w/remote-x pinned:ssh:gpu-vm|shared::/w/same
+SECTION pr:in-review: pr:in-review:runtime:env-1|api::/w/api-y pr:in-review:|vshu::/w/feat-a
+SECTION pr:closed: pr:closed:|vshu::/w/Zeta
+PREFERRED |vshu::/w/feat-a -> pr:in-review:|vshu::/w/feat-a
+PREFERRED |vshu::/w/feat-b -> pr:done:|vshu::/w/feat-b
+PREFERRED |vshu::/w/feat-c -> pr:in-progress:|vshu::/w/feat-c
+PREFERRED |lab::/w/gitlab-mr -> pr:in-progress:|lab::/w/gitlab-mr
+PREFERRED ssh:gpu-vm|vshu-ssh::/w/remote-x -> pr:in-progress:ssh:gpu-vm|vshu-ssh::/w/remote-x
+PREFERRED ssh:gpu-vm|shared::/w/same -> pr:in-progress:ssh:gpu-vm|shared::/w/same
+renderedKeys: 23
+placeholders: -
+selectionOrder: |vshu::/w/feat-b |vshu::/w/feat-c |lab::/w/gitlab-mr runtime:env-1|api::/api |ext::/ext |lab::/lab |vshu-ssh::/vshu-ssh |vshu::/vshu ssh:gpu-vm|vshu-ssh::/w/remote-x local|shared::/w/same ssh:gpu-vm|shared::/w/same local|folder:fw-review local|folder:fw-notes ssh:gpu-vm|folder:fw-remote
+cmd1-9 mounted: 1=vshu::/w/feat-b 2=vshu::/w/feat-c 3=lab::/w/gitlab-mr 4=api::/api@runtime:env-1 5=ext::/ext 6=lab::/lab 7=vshu-ssh::/vshu-ssh 8=vshu::/vshu 9=vshu-ssh::/w/remote-x@ssh:gpu-vm
+cmd1-9 unmounted: 1=vshu::/w/feat-b 2=vshu::/w/feat-c 3=lab::/w/gitlab-mr 4=api::/api@runtime:env-1 5=ext::/ext 6=lab::/lab 7=vshu-ssh::/vshu-ssh 8=vshu::/vshu 9=vshu-ssh::/w/remote-x@ssh:gpu-vm
+cmd ids unmounted: vshu::/w/feat-b vshu::/w/feat-c lab::/w/gitlab-mr api::/api ext::/ext lab::/lab vshu-ssh::/vshu-ssh vshu::/vshu vshu-ssh::/w/remote-x shared::/w/same folder:fw-review folder:fw-notes folder:fw-remote
+=== sort=name projectOrder=recent pinnedInGroups=false === same as sort=name projectOrder=manual pinnedInGroups=false
+=== sort=name projectOrder=recent pinnedInGroups=true === same as sort=name projectOrder=manual pinnedInGroups=true
+=== sort=recent projectOrder=manual pinnedInGroups=false ===
+visible: vshu::/w/feat-a api::/w/api-y vshu::/w/feat-b vshu::/vshu vshu::/w/feat-c lab::/w/gitlab-mr api::/api ext::/ext lab::/lab vshu-ssh::/vshu-ssh vshu-ssh::/w/remote-x shared::/w/same shared::/w/same vshu::/w/Zeta
+PENDING key=pending:creation-1 creation=creation-1 repo=api
+HEADER key=pinned label="Pinned" count=6 tone="text-foreground" icon=Pin hostCounts={local:4 ssh:gpu-vm:2} hostIds={local:[vshu::/w/feat-a,vshu::/w/feat-b,vshu::/w/feat-c,lab::/w/gitlab-mr] ssh:gpu-vm:[vshu-ssh::/w/remote-x,shared::/w/same]} ids=[vshu::/w/feat-a,vshu::/w/feat-b,vshu::/w/feat-c,lab::/w/gitlab-mr,vshu-ssh::/w/remote-x,shared::/w/same]
+ITEM rowKey=pinned:|vshu::/w/feat-a depth=0 groupDepth=0 children=2 lineageKey=lineage:vshu::/w/feat-a hostLabel="Local Linux" placement=pinned owning=project:p-vshu
+ITEM rowKey=pinned:|vshu::/w/feat-b depth=1 groupDepth=0 children=1 lineageKey=lineage:vshu::/w/feat-b hostLabel="Local Linux" placement=pinned owning=project:p-vshu parent=pinned:|vshu::/w/feat-a
+ITEM rowKey=pinned:|vshu::/w/feat-c depth=2 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=pinned owning=project:p-vshu parent=pinned:|vshu::/w/feat-b
+ITEM rowKey=pinned:|lab::/w/gitlab-mr depth=1 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" showProject=true placement=pinned owning=project:repo:lab parent=pinned:|vshu::/w/feat-a
+ITEM rowKey=pinned:ssh:gpu-vm|vshu-ssh::/w/remote-x depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=pinned owning=project:p-vshu
+ITEM rowKey=pinned:ssh:gpu-vm|shared::/w/same depth=0 groupDepth=0 lastChild=true children=0 hostLabel="GPU VM" placement=pinned owning=project:repo:shared
+HEADER key=pr:in-review label="In review" count=1 tone="text-workspace-status-review" icon=ConductorReviewIcon hostCounts={runtime:env-1:1} hostIds={runtime:env-1:[api::/w/api-y]} ids=[api::/w/api-y]
+ITEM rowKey=pr:in-review:runtime:env-1|api::/w/api-y depth=0 groupDepth=0 lastChild=true children=0 hostLabel="env-1" placement=natural owning=project:repo:api
+HEADER key=pr:in-progress label="In progress" count=9 tone="text-workspace-status-progress" icon=ConductorProgressIcon hostCounts={local:6 runtime:env-1:1 ssh:gpu-vm:2} hostIds={local:[vshu::/vshu,ext::/ext,lab::/lab,shared::/w/same] runtime:env-1:[api::/api] ssh:gpu-vm:[vshu-ssh::/vshu-ssh]} ids=[vshu::/vshu,api::/api,ext::/ext,lab::/lab,vshu-ssh::/vshu-ssh,shared::/w/same]
+ITEM rowKey=pr:in-progress:|vshu::/vshu depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:runtime:env-1|api::/api depth=0 groupDepth=0 children=0 hostLabel="env-1" placement=natural owning=project:repo:api
+ITEM rowKey=pr:in-progress:|ext::/ext depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:ext
+ITEM rowKey=pr:in-progress:|lab::/lab depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:lab
+ITEM rowKey=pr:in-progress:|vshu-ssh::/vshu-ssh depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:local|shared::/w/same depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:repo:shared
+FOLDER key=folder-workspace:local|folder:fw-review projectGroup=pg-folders depth=0 groupDepth=0
+FOLDER key=folder-workspace:local|folder:fw-notes projectGroup=pg-folders depth=0 groupDepth=0
+FOLDER key=folder-workspace:ssh:gpu-vm|folder:fw-remote projectGroup=pg-remote-folders depth=0 groupDepth=0
+HEADER key=pr:closed label="Closed" count=1 tone="text-zinc-600 dark:text-zinc-300" icon=CircleX hostCounts={local:1} hostIds={local:[vshu::/w/Zeta]} ids=[vshu::/w/Zeta]
+ITEM rowKey=pr:closed:|vshu::/w/Zeta depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+renderedKeys: 25
+placeholders: -
+selectionOrder: |vshu::/w/feat-a |vshu::/w/feat-b |vshu::/w/feat-c |lab::/w/gitlab-mr ssh:gpu-vm|vshu-ssh::/w/remote-x ssh:gpu-vm|shared::/w/same runtime:env-1|api::/w/api-y |vshu::/vshu runtime:env-1|api::/api |ext::/ext |lab::/lab |vshu-ssh::/vshu-ssh local|shared::/w/same local|folder:fw-review local|folder:fw-notes ssh:gpu-vm|folder:fw-remote |vshu::/w/Zeta
+cmd1-9 mounted: 1=vshu::/w/feat-a#lineage:vshu::/w/feat-a 2=vshu::/w/feat-b#lineage:vshu::/w/feat-b 3=vshu::/w/feat-c 4=lab::/w/gitlab-mr 5=vshu-ssh::/w/remote-x@ssh:gpu-vm 6=shared::/w/same@ssh:gpu-vm 7=api::/w/api-y@runtime:env-1 8=vshu::/vshu 9=api::/api@runtime:env-1
+cmd1-9 unmounted: 1=vshu::/w/feat-a 2=vshu::/w/feat-b 3=vshu::/w/feat-c 4=lab::/w/gitlab-mr 5=vshu-ssh::/w/remote-x@ssh:gpu-vm 6=shared::/w/same@ssh:gpu-vm 7=api::/w/api-y@runtime:env-1 8=vshu::/vshu 9=api::/api@runtime:env-1
+cmd ids unmounted: vshu::/w/feat-a vshu::/w/feat-b vshu::/w/feat-c lab::/w/gitlab-mr vshu-ssh::/w/remote-x shared::/w/same api::/w/api-y vshu::/vshu api::/api ext::/ext lab::/lab vshu-ssh::/vshu-ssh folder:fw-review folder:fw-notes folder:fw-remote vshu::/w/Zeta
+-- collapsed: pinned pr:in-progress lineage:vshu::/w/feat-a --
+visible: vshu::/w/feat-a api::/w/api-y vshu::/w/feat-b vshu::/vshu vshu::/w/feat-c lab::/w/gitlab-mr api::/api ext::/ext lab::/lab vshu-ssh::/vshu-ssh vshu-ssh::/w/remote-x shared::/w/same shared::/w/same vshu::/w/Zeta
+PENDING key=pending:creation-1 creation=creation-1 repo=api
+HEADER key=pinned label="Pinned" count=6 tone="text-foreground" icon=Pin hostCounts={local:4 ssh:gpu-vm:2} hostIds={local:[vshu::/w/feat-a,vshu::/w/feat-b,vshu::/w/feat-c,lab::/w/gitlab-mr] ssh:gpu-vm:[vshu-ssh::/w/remote-x,shared::/w/same]} ids=[vshu::/w/feat-a,vshu::/w/feat-b,vshu::/w/feat-c,lab::/w/gitlab-mr,vshu-ssh::/w/remote-x,shared::/w/same]
+HEADER key=pr:in-review label="In review" count=1 tone="text-workspace-status-review" icon=ConductorReviewIcon hostCounts={runtime:env-1:1} hostIds={runtime:env-1:[api::/w/api-y]} ids=[api::/w/api-y]
+ITEM rowKey=pr:in-review:runtime:env-1|api::/w/api-y depth=0 groupDepth=0 lastChild=true children=0 hostLabel="env-1" placement=natural owning=project:repo:api
+HEADER key=pr:in-progress label="In progress" count=9 tone="text-workspace-status-progress" icon=ConductorProgressIcon hostCounts={local:6 runtime:env-1:1 ssh:gpu-vm:2} hostIds={local:[vshu::/vshu,ext::/ext,lab::/lab,shared::/w/same] runtime:env-1:[api::/api] ssh:gpu-vm:[vshu-ssh::/vshu-ssh]} ids=[vshu::/vshu,api::/api,ext::/ext,lab::/lab,vshu-ssh::/vshu-ssh,shared::/w/same]
+HEADER key=pr:closed label="Closed" count=1 tone="text-zinc-600 dark:text-zinc-300" icon=CircleX hostCounts={local:1} hostIds={local:[vshu::/w/Zeta]} ids=[vshu::/w/Zeta]
+ITEM rowKey=pr:closed:|vshu::/w/Zeta depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+SECTION pinned: pinned:|vshu::/w/feat-a pinned:|vshu::/w/feat-b pinned:|vshu::/w/feat-c pinned:|lab::/w/gitlab-mr pinned:ssh:gpu-vm|vshu-ssh::/w/remote-x pinned:ssh:gpu-vm|shared::/w/same
+SECTION pr:in-progress: pr:in-progress:|vshu::/vshu pr:in-progress:runtime:env-1|api::/api pr:in-progress:|ext::/ext pr:in-progress:|lab::/lab pr:in-progress:|vshu-ssh::/vshu-ssh pr:in-progress:local|shared::/w/same
+renderedKeys: 7
+placeholders: -
+selectionOrder: runtime:env-1|api::/w/api-y |vshu::/w/Zeta
+cmd1-9 mounted: 1=api::/w/api-y@runtime:env-1 2=vshu::/w/Zeta
+cmd1-9 unmounted: 1=api::/w/api-y@runtime:env-1 2=vshu::/w/Zeta
+cmd ids unmounted: api::/w/api-y vshu::/w/Zeta
+=== sort=recent projectOrder=manual pinnedInGroups=true ===
+visible: vshu::/w/feat-a api::/w/api-y vshu::/w/feat-b vshu::/vshu vshu::/w/feat-c lab::/w/gitlab-mr api::/api ext::/ext lab::/lab vshu-ssh::/vshu-ssh vshu-ssh::/w/remote-x shared::/w/same shared::/w/same vshu::/w/Zeta
+PENDING key=pending:creation-1 creation=creation-1 repo=api
+HEADER key=pinned label="Pinned" count=6 tone="text-foreground" icon=Pin hostCounts={local:4 ssh:gpu-vm:2} hostIds={local:[vshu::/w/feat-a,vshu::/w/feat-b,vshu::/w/feat-c,lab::/w/gitlab-mr] ssh:gpu-vm:[vshu-ssh::/w/remote-x,shared::/w/same]} ids=[vshu::/w/feat-a,vshu::/w/feat-b,vshu::/w/feat-c,lab::/w/gitlab-mr,vshu-ssh::/w/remote-x,shared::/w/same]
+ITEM rowKey=pinned:|vshu::/w/feat-a depth=0 groupDepth=0 children=2 lineageKey=lineage:vshu::/w/feat-a hostLabel="Local Linux" placement=pinned owning=project:p-vshu
+ITEM rowKey=pinned:|vshu::/w/feat-b depth=1 groupDepth=0 children=1 lineageKey=lineage:vshu::/w/feat-b hostLabel="Local Linux" placement=pinned owning=project:p-vshu parent=pinned:|vshu::/w/feat-a
+ITEM rowKey=pinned:|vshu::/w/feat-c depth=2 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=pinned owning=project:p-vshu parent=pinned:|vshu::/w/feat-b
+ITEM rowKey=pinned:|lab::/w/gitlab-mr depth=1 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" showProject=true placement=pinned owning=project:repo:lab parent=pinned:|vshu::/w/feat-a
+ITEM rowKey=pinned:ssh:gpu-vm|vshu-ssh::/w/remote-x depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=pinned owning=project:p-vshu
+ITEM rowKey=pinned:ssh:gpu-vm|shared::/w/same depth=0 groupDepth=0 lastChild=true children=0 hostLabel="GPU VM" placement=pinned owning=project:repo:shared
+HEADER key=pr:done label="Done" count=1 tone="text-workspace-status-done" icon=ConductorDoneIcon hostCounts={local:1} hostIds={local:[vshu::/w/feat-b]} ids=[vshu::/w/feat-b]
+ITEM rowKey=pr:done:|vshu::/w/feat-b depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+HEADER key=pr:in-review label="In review" count=2 tone="text-workspace-status-review" icon=ConductorReviewIcon hostCounts={local:1 runtime:env-1:1} hostIds={local:[vshu::/w/feat-a] runtime:env-1:[api::/w/api-y]} ids=[vshu::/w/feat-a,api::/w/api-y]
+ITEM rowKey=pr:in-review:|vshu::/w/feat-a depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-review:runtime:env-1|api::/w/api-y depth=0 groupDepth=0 lastChild=true children=0 hostLabel="env-1" placement=natural owning=project:repo:api
+HEADER key=pr:in-progress label="In progress" count=13 tone="text-workspace-status-progress" icon=ConductorProgressIcon hostCounts={local:8 runtime:env-1:1 ssh:gpu-vm:4} hostIds={local:[vshu::/vshu,vshu::/w/feat-c,lab::/w/gitlab-mr,ext::/ext,lab::/lab,shared::/w/same] runtime:env-1:[api::/api] ssh:gpu-vm:[vshu-ssh::/vshu-ssh,vshu-ssh::/w/remote-x,shared::/w/same]} ids=[vshu::/vshu,vshu::/w/feat-c,lab::/w/gitlab-mr,api::/api,ext::/ext,lab::/lab,vshu-ssh::/vshu-ssh,vshu-ssh::/w/remote-x,shared::/w/same,shared::/w/same]
+ITEM rowKey=pr:in-progress:|vshu::/vshu depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:|vshu::/w/feat-c depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:|lab::/w/gitlab-mr depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:lab
+ITEM rowKey=pr:in-progress:runtime:env-1|api::/api depth=0 groupDepth=0 children=0 hostLabel="env-1" placement=natural owning=project:repo:api
+ITEM rowKey=pr:in-progress:|ext::/ext depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:ext
+ITEM rowKey=pr:in-progress:|lab::/lab depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:lab
+ITEM rowKey=pr:in-progress:|vshu-ssh::/vshu-ssh depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:ssh:gpu-vm|vshu-ssh::/w/remote-x depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:local|shared::/w/same depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:shared
+ITEM rowKey=pr:in-progress:ssh:gpu-vm|shared::/w/same depth=0 groupDepth=0 lastChild=true children=0 hostLabel="GPU VM" placement=natural owning=project:repo:shared
+FOLDER key=folder-workspace:local|folder:fw-review projectGroup=pg-folders depth=0 groupDepth=0
+FOLDER key=folder-workspace:local|folder:fw-notes projectGroup=pg-folders depth=0 groupDepth=0
+FOLDER key=folder-workspace:ssh:gpu-vm|folder:fw-remote projectGroup=pg-remote-folders depth=0 groupDepth=0
+HEADER key=pr:closed label="Closed" count=1 tone="text-zinc-600 dark:text-zinc-300" icon=CircleX hostCounts={local:1} hostIds={local:[vshu::/w/Zeta]} ids=[vshu::/w/Zeta]
+ITEM rowKey=pr:closed:|vshu::/w/Zeta depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+PREFERRED |vshu::/w/feat-a -> pr:in-review:|vshu::/w/feat-a
+PREFERRED |vshu::/w/feat-b -> pr:done:|vshu::/w/feat-b
+PREFERRED |vshu::/w/feat-c -> pr:in-progress:|vshu::/w/feat-c
+PREFERRED |lab::/w/gitlab-mr -> pr:in-progress:|lab::/w/gitlab-mr
+PREFERRED ssh:gpu-vm|vshu-ssh::/w/remote-x -> pr:in-progress:ssh:gpu-vm|vshu-ssh::/w/remote-x
+PREFERRED ssh:gpu-vm|shared::/w/same -> pr:in-progress:ssh:gpu-vm|shared::/w/same
+renderedKeys: 32
+placeholders: -
+selectionOrder: |vshu::/w/feat-b |vshu::/w/feat-a runtime:env-1|api::/w/api-y |vshu::/vshu |vshu::/w/feat-c |lab::/w/gitlab-mr runtime:env-1|api::/api |ext::/ext |lab::/lab |vshu-ssh::/vshu-ssh ssh:gpu-vm|vshu-ssh::/w/remote-x local|shared::/w/same ssh:gpu-vm|shared::/w/same local|folder:fw-review local|folder:fw-notes ssh:gpu-vm|folder:fw-remote |vshu::/w/Zeta
+cmd1-9 mounted: 1=vshu::/w/feat-b#lineage:vshu::/w/feat-b 2=vshu::/w/feat-a#lineage:vshu::/w/feat-a 3=api::/w/api-y@runtime:env-1 4=vshu::/vshu 5=vshu::/w/feat-c 6=lab::/w/gitlab-mr 7=api::/api@runtime:env-1 8=ext::/ext 9=lab::/lab
+cmd1-9 unmounted: 1=vshu::/w/feat-b 2=vshu::/w/feat-a 3=api::/w/api-y@runtime:env-1 4=vshu::/vshu 5=vshu::/w/feat-c 6=lab::/w/gitlab-mr 7=api::/api@runtime:env-1 8=ext::/ext 9=lab::/lab
+cmd ids unmounted: vshu::/w/feat-b vshu::/w/feat-a api::/w/api-y vshu::/vshu vshu::/w/feat-c lab::/w/gitlab-mr api::/api ext::/ext lab::/lab vshu-ssh::/vshu-ssh vshu-ssh::/w/remote-x shared::/w/same folder:fw-review folder:fw-notes folder:fw-remote vshu::/w/Zeta
+-- collapsed: pinned pr:in-review pr:closed lineage:vshu::/w/feat-a --
+visible: vshu::/w/feat-a api::/w/api-y vshu::/w/feat-b vshu::/vshu vshu::/w/feat-c lab::/w/gitlab-mr api::/api ext::/ext lab::/lab vshu-ssh::/vshu-ssh vshu-ssh::/w/remote-x shared::/w/same shared::/w/same vshu::/w/Zeta
+PENDING key=pending:creation-1 creation=creation-1 repo=api
+HEADER key=pinned label="Pinned" count=6 tone="text-foreground" icon=Pin hostCounts={local:4 ssh:gpu-vm:2} hostIds={local:[vshu::/w/feat-a,vshu::/w/feat-b,vshu::/w/feat-c,lab::/w/gitlab-mr] ssh:gpu-vm:[vshu-ssh::/w/remote-x,shared::/w/same]} ids=[vshu::/w/feat-a,vshu::/w/feat-b,vshu::/w/feat-c,lab::/w/gitlab-mr,vshu-ssh::/w/remote-x,shared::/w/same]
+HEADER key=pr:done label="Done" count=1 tone="text-workspace-status-done" icon=ConductorDoneIcon hostCounts={local:1} hostIds={local:[vshu::/w/feat-b]} ids=[vshu::/w/feat-b]
+ITEM rowKey=pr:done:|vshu::/w/feat-b depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+HEADER key=pr:in-review label="In review" count=2 tone="text-workspace-status-review" icon=ConductorReviewIcon hostCounts={local:1 runtime:env-1:1} hostIds={local:[vshu::/w/feat-a] runtime:env-1:[api::/w/api-y]} ids=[vshu::/w/feat-a,api::/w/api-y]
+HEADER key=pr:in-progress label="In progress" count=13 tone="text-workspace-status-progress" icon=ConductorProgressIcon hostCounts={local:8 runtime:env-1:1 ssh:gpu-vm:4} hostIds={local:[vshu::/vshu,vshu::/w/feat-c,lab::/w/gitlab-mr,ext::/ext,lab::/lab,shared::/w/same] runtime:env-1:[api::/api] ssh:gpu-vm:[vshu-ssh::/vshu-ssh,vshu-ssh::/w/remote-x,shared::/w/same]} ids=[vshu::/vshu,vshu::/w/feat-c,lab::/w/gitlab-mr,api::/api,ext::/ext,lab::/lab,vshu-ssh::/vshu-ssh,vshu-ssh::/w/remote-x,shared::/w/same,shared::/w/same]
+ITEM rowKey=pr:in-progress:|vshu::/vshu depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:|vshu::/w/feat-c depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:|lab::/w/gitlab-mr depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:lab
+ITEM rowKey=pr:in-progress:runtime:env-1|api::/api depth=0 groupDepth=0 children=0 hostLabel="env-1" placement=natural owning=project:repo:api
+ITEM rowKey=pr:in-progress:|ext::/ext depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:ext
+ITEM rowKey=pr:in-progress:|lab::/lab depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:lab
+ITEM rowKey=pr:in-progress:|vshu-ssh::/vshu-ssh depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:ssh:gpu-vm|vshu-ssh::/w/remote-x depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:local|shared::/w/same depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:shared
+ITEM rowKey=pr:in-progress:ssh:gpu-vm|shared::/w/same depth=0 groupDepth=0 lastChild=true children=0 hostLabel="GPU VM" placement=natural owning=project:repo:shared
+FOLDER key=folder-workspace:local|folder:fw-review projectGroup=pg-folders depth=0 groupDepth=0
+FOLDER key=folder-workspace:local|folder:fw-notes projectGroup=pg-folders depth=0 groupDepth=0
+FOLDER key=folder-workspace:ssh:gpu-vm|folder:fw-remote projectGroup=pg-remote-folders depth=0 groupDepth=0
+HEADER key=pr:closed label="Closed" count=1 tone="text-zinc-600 dark:text-zinc-300" icon=CircleX hostCounts={local:1} hostIds={local:[vshu::/w/Zeta]} ids=[vshu::/w/Zeta]
+SECTION pinned: pinned:|vshu::/w/feat-a pinned:|vshu::/w/feat-b pinned:|vshu::/w/feat-c pinned:|lab::/w/gitlab-mr pinned:ssh:gpu-vm|vshu-ssh::/w/remote-x pinned:ssh:gpu-vm|shared::/w/same
+SECTION pr:in-review: pr:in-review:|vshu::/w/feat-a pr:in-review:runtime:env-1|api::/w/api-y
+SECTION pr:closed: pr:closed:|vshu::/w/Zeta
+PREFERRED |vshu::/w/feat-a -> pr:in-review:|vshu::/w/feat-a
+PREFERRED |vshu::/w/feat-b -> pr:done:|vshu::/w/feat-b
+PREFERRED |vshu::/w/feat-c -> pr:in-progress:|vshu::/w/feat-c
+PREFERRED |lab::/w/gitlab-mr -> pr:in-progress:|lab::/w/gitlab-mr
+PREFERRED ssh:gpu-vm|vshu-ssh::/w/remote-x -> pr:in-progress:ssh:gpu-vm|vshu-ssh::/w/remote-x
+PREFERRED ssh:gpu-vm|shared::/w/same -> pr:in-progress:ssh:gpu-vm|shared::/w/same
+renderedKeys: 23
+placeholders: -
+selectionOrder: |vshu::/w/feat-b |vshu::/vshu |vshu::/w/feat-c |lab::/w/gitlab-mr runtime:env-1|api::/api |ext::/ext |lab::/lab |vshu-ssh::/vshu-ssh ssh:gpu-vm|vshu-ssh::/w/remote-x local|shared::/w/same ssh:gpu-vm|shared::/w/same local|folder:fw-review local|folder:fw-notes ssh:gpu-vm|folder:fw-remote
+cmd1-9 mounted: 1=vshu::/w/feat-b 2=vshu::/vshu 3=vshu::/w/feat-c 4=lab::/w/gitlab-mr 5=api::/api@runtime:env-1 6=ext::/ext 7=lab::/lab 8=vshu-ssh::/vshu-ssh 9=vshu-ssh::/w/remote-x@ssh:gpu-vm
+cmd1-9 unmounted: 1=vshu::/w/feat-b 2=vshu::/vshu 3=vshu::/w/feat-c 4=lab::/w/gitlab-mr 5=api::/api@runtime:env-1 6=ext::/ext 7=lab::/lab 8=vshu-ssh::/vshu-ssh 9=vshu-ssh::/w/remote-x@ssh:gpu-vm
+cmd ids unmounted: vshu::/w/feat-b vshu::/vshu vshu::/w/feat-c lab::/w/gitlab-mr api::/api ext::/ext lab::/lab vshu-ssh::/vshu-ssh vshu-ssh::/w/remote-x shared::/w/same folder:fw-review folder:fw-notes folder:fw-remote
+=== sort=recent projectOrder=recent pinnedInGroups=false === same as sort=recent projectOrder=manual pinnedInGroups=false
+=== sort=recent projectOrder=recent pinnedInGroups=true === same as sort=recent projectOrder=manual pinnedInGroups=true
+=== sort=smart projectOrder=manual pinnedInGroups=false === same as sort=recent projectOrder=manual pinnedInGroups=false
+=== sort=smart projectOrder=manual pinnedInGroups=true === same as sort=recent projectOrder=manual pinnedInGroups=true
+=== sort=smart projectOrder=recent pinnedInGroups=false === same as sort=recent projectOrder=manual pinnedInGroups=false
+=== sort=smart projectOrder=recent pinnedInGroups=true === same as sort=recent projectOrder=manual pinnedInGroups=true
+=== sort=repo projectOrder=manual pinnedInGroups=false ===
+visible: api::/w/api-y api::/api ext::/ext vshu::/w/feat-a lab::/w/gitlab-mr lab::/lab vshu::/w/feat-b vshu::/w/feat-c vshu-ssh::/vshu-ssh vshu::/vshu vshu-ssh::/w/remote-x vshu::/w/Zeta shared::/w/same shared::/w/same
+PENDING key=pending:creation-1 creation=creation-1 repo=api
+HEADER key=pinned label="Pinned" count=6 tone="text-foreground" icon=Pin hostCounts={local:4 ssh:gpu-vm:2} hostIds={local:[vshu::/w/feat-a,lab::/w/gitlab-mr,vshu::/w/feat-b,vshu::/w/feat-c] ssh:gpu-vm:[vshu-ssh::/w/remote-x,shared::/w/same]} ids=[vshu::/w/feat-a,lab::/w/gitlab-mr,vshu::/w/feat-b,vshu::/w/feat-c,vshu-ssh::/w/remote-x,shared::/w/same]
+ITEM rowKey=pinned:|vshu::/w/feat-a depth=0 groupDepth=0 children=2 lineageKey=lineage:vshu::/w/feat-a hostLabel="Local Linux" placement=pinned owning=project:p-vshu
+ITEM rowKey=pinned:|lab::/w/gitlab-mr depth=1 groupDepth=0 children=0 hostLabel="Local Linux" showProject=true placement=pinned owning=project:repo:lab parent=pinned:|vshu::/w/feat-a
+ITEM rowKey=pinned:|vshu::/w/feat-b depth=1 groupDepth=0 lastChild=true children=1 lineageKey=lineage:vshu::/w/feat-b hostLabel="Local Linux" placement=pinned owning=project:p-vshu parent=pinned:|vshu::/w/feat-a
+ITEM rowKey=pinned:|vshu::/w/feat-c depth=2 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=pinned owning=project:p-vshu parent=pinned:|vshu::/w/feat-b
+ITEM rowKey=pinned:ssh:gpu-vm|vshu-ssh::/w/remote-x depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=pinned owning=project:p-vshu
+ITEM rowKey=pinned:ssh:gpu-vm|shared::/w/same depth=0 groupDepth=0 lastChild=true children=0 hostLabel="GPU VM" placement=pinned owning=project:repo:shared
+HEADER key=pr:in-review label="In review" count=1 tone="text-workspace-status-review" icon=ConductorReviewIcon hostCounts={runtime:env-1:1} hostIds={runtime:env-1:[api::/w/api-y]} ids=[api::/w/api-y]
+ITEM rowKey=pr:in-review:runtime:env-1|api::/w/api-y depth=0 groupDepth=0 lastChild=true children=0 hostLabel="env-1" placement=natural owning=project:repo:api
+HEADER key=pr:in-progress label="In progress" count=9 tone="text-workspace-status-progress" icon=ConductorProgressIcon hostCounts={runtime:env-1:1 local:6 ssh:gpu-vm:2} hostIds={runtime:env-1:[api::/api] local:[ext::/ext,lab::/lab,vshu::/vshu,shared::/w/same] ssh:gpu-vm:[vshu-ssh::/vshu-ssh]} ids=[api::/api,ext::/ext,lab::/lab,vshu-ssh::/vshu-ssh,vshu::/vshu,shared::/w/same]
+ITEM rowKey=pr:in-progress:runtime:env-1|api::/api depth=0 groupDepth=0 children=0 hostLabel="env-1" placement=natural owning=project:repo:api
+ITEM rowKey=pr:in-progress:|ext::/ext depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:ext
+ITEM rowKey=pr:in-progress:|lab::/lab depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:lab
+ITEM rowKey=pr:in-progress:|vshu-ssh::/vshu-ssh depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:|vshu::/vshu depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:local|shared::/w/same depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:repo:shared
+FOLDER key=folder-workspace:local|folder:fw-review projectGroup=pg-folders depth=0 groupDepth=0
+FOLDER key=folder-workspace:local|folder:fw-notes projectGroup=pg-folders depth=0 groupDepth=0
+FOLDER key=folder-workspace:ssh:gpu-vm|folder:fw-remote projectGroup=pg-remote-folders depth=0 groupDepth=0
+HEADER key=pr:closed label="Closed" count=1 tone="text-zinc-600 dark:text-zinc-300" icon=CircleX hostCounts={local:1} hostIds={local:[vshu::/w/Zeta]} ids=[vshu::/w/Zeta]
+ITEM rowKey=pr:closed:|vshu::/w/Zeta depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+renderedKeys: 25
+placeholders: -
+selectionOrder: |vshu::/w/feat-a |lab::/w/gitlab-mr |vshu::/w/feat-b |vshu::/w/feat-c ssh:gpu-vm|vshu-ssh::/w/remote-x ssh:gpu-vm|shared::/w/same runtime:env-1|api::/w/api-y runtime:env-1|api::/api |ext::/ext |lab::/lab |vshu-ssh::/vshu-ssh |vshu::/vshu local|shared::/w/same local|folder:fw-review local|folder:fw-notes ssh:gpu-vm|folder:fw-remote |vshu::/w/Zeta
+cmd1-9 mounted: 1=vshu::/w/feat-a#lineage:vshu::/w/feat-a 2=lab::/w/gitlab-mr 3=vshu::/w/feat-b#lineage:vshu::/w/feat-b 4=vshu::/w/feat-c 5=vshu-ssh::/w/remote-x@ssh:gpu-vm 6=shared::/w/same@ssh:gpu-vm 7=api::/w/api-y@runtime:env-1 8=api::/api@runtime:env-1 9=ext::/ext
+cmd1-9 unmounted: 1=vshu::/w/feat-a 2=lab::/w/gitlab-mr 3=vshu::/w/feat-b 4=vshu::/w/feat-c 5=vshu-ssh::/w/remote-x@ssh:gpu-vm 6=shared::/w/same@ssh:gpu-vm 7=api::/w/api-y@runtime:env-1 8=api::/api@runtime:env-1 9=ext::/ext
+cmd ids unmounted: vshu::/w/feat-a lab::/w/gitlab-mr vshu::/w/feat-b vshu::/w/feat-c vshu-ssh::/w/remote-x shared::/w/same api::/w/api-y api::/api ext::/ext lab::/lab vshu-ssh::/vshu-ssh vshu::/vshu folder:fw-review folder:fw-notes folder:fw-remote vshu::/w/Zeta
+-- collapsed: pinned pr:in-progress lineage:vshu::/w/feat-a --
+visible: api::/w/api-y api::/api ext::/ext vshu::/w/feat-a lab::/w/gitlab-mr lab::/lab vshu::/w/feat-b vshu::/w/feat-c vshu-ssh::/vshu-ssh vshu::/vshu vshu-ssh::/w/remote-x vshu::/w/Zeta shared::/w/same shared::/w/same
+PENDING key=pending:creation-1 creation=creation-1 repo=api
+HEADER key=pinned label="Pinned" count=6 tone="text-foreground" icon=Pin hostCounts={local:4 ssh:gpu-vm:2} hostIds={local:[vshu::/w/feat-a,lab::/w/gitlab-mr,vshu::/w/feat-b,vshu::/w/feat-c] ssh:gpu-vm:[vshu-ssh::/w/remote-x,shared::/w/same]} ids=[vshu::/w/feat-a,lab::/w/gitlab-mr,vshu::/w/feat-b,vshu::/w/feat-c,vshu-ssh::/w/remote-x,shared::/w/same]
+HEADER key=pr:in-review label="In review" count=1 tone="text-workspace-status-review" icon=ConductorReviewIcon hostCounts={runtime:env-1:1} hostIds={runtime:env-1:[api::/w/api-y]} ids=[api::/w/api-y]
+ITEM rowKey=pr:in-review:runtime:env-1|api::/w/api-y depth=0 groupDepth=0 lastChild=true children=0 hostLabel="env-1" placement=natural owning=project:repo:api
+HEADER key=pr:in-progress label="In progress" count=9 tone="text-workspace-status-progress" icon=ConductorProgressIcon hostCounts={runtime:env-1:1 local:6 ssh:gpu-vm:2} hostIds={runtime:env-1:[api::/api] local:[ext::/ext,lab::/lab,vshu::/vshu,shared::/w/same] ssh:gpu-vm:[vshu-ssh::/vshu-ssh]} ids=[api::/api,ext::/ext,lab::/lab,vshu-ssh::/vshu-ssh,vshu::/vshu,shared::/w/same]
+HEADER key=pr:closed label="Closed" count=1 tone="text-zinc-600 dark:text-zinc-300" icon=CircleX hostCounts={local:1} hostIds={local:[vshu::/w/Zeta]} ids=[vshu::/w/Zeta]
+ITEM rowKey=pr:closed:|vshu::/w/Zeta depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+SECTION pinned: pinned:|vshu::/w/feat-a pinned:|lab::/w/gitlab-mr pinned:|vshu::/w/feat-b pinned:|vshu::/w/feat-c pinned:ssh:gpu-vm|vshu-ssh::/w/remote-x pinned:ssh:gpu-vm|shared::/w/same
+SECTION pr:in-progress: pr:in-progress:runtime:env-1|api::/api pr:in-progress:|ext::/ext pr:in-progress:|lab::/lab pr:in-progress:|vshu-ssh::/vshu-ssh pr:in-progress:|vshu::/vshu pr:in-progress:local|shared::/w/same
+renderedKeys: 7
+placeholders: -
+selectionOrder: runtime:env-1|api::/w/api-y |vshu::/w/Zeta
+cmd1-9 mounted: 1=api::/w/api-y@runtime:env-1 2=vshu::/w/Zeta
+cmd1-9 unmounted: 1=api::/w/api-y@runtime:env-1 2=vshu::/w/Zeta
+cmd ids unmounted: api::/w/api-y vshu::/w/Zeta
+=== sort=repo projectOrder=manual pinnedInGroups=true ===
+visible: api::/w/api-y api::/api ext::/ext vshu::/w/feat-a lab::/w/gitlab-mr lab::/lab vshu::/w/feat-b vshu::/w/feat-c vshu-ssh::/vshu-ssh vshu::/vshu vshu-ssh::/w/remote-x vshu::/w/Zeta shared::/w/same shared::/w/same
+PENDING key=pending:creation-1 creation=creation-1 repo=api
+HEADER key=pinned label="Pinned" count=6 tone="text-foreground" icon=Pin hostCounts={local:4 ssh:gpu-vm:2} hostIds={local:[vshu::/w/feat-a,lab::/w/gitlab-mr,vshu::/w/feat-b,vshu::/w/feat-c] ssh:gpu-vm:[vshu-ssh::/w/remote-x,shared::/w/same]} ids=[vshu::/w/feat-a,lab::/w/gitlab-mr,vshu::/w/feat-b,vshu::/w/feat-c,vshu-ssh::/w/remote-x,shared::/w/same]
+ITEM rowKey=pinned:|vshu::/w/feat-a depth=0 groupDepth=0 children=2 lineageKey=lineage:vshu::/w/feat-a hostLabel="Local Linux" placement=pinned owning=project:p-vshu
+ITEM rowKey=pinned:|lab::/w/gitlab-mr depth=1 groupDepth=0 children=0 hostLabel="Local Linux" showProject=true placement=pinned owning=project:repo:lab parent=pinned:|vshu::/w/feat-a
+ITEM rowKey=pinned:|vshu::/w/feat-b depth=1 groupDepth=0 lastChild=true children=1 lineageKey=lineage:vshu::/w/feat-b hostLabel="Local Linux" placement=pinned owning=project:p-vshu parent=pinned:|vshu::/w/feat-a
+ITEM rowKey=pinned:|vshu::/w/feat-c depth=2 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=pinned owning=project:p-vshu parent=pinned:|vshu::/w/feat-b
+ITEM rowKey=pinned:ssh:gpu-vm|vshu-ssh::/w/remote-x depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=pinned owning=project:p-vshu
+ITEM rowKey=pinned:ssh:gpu-vm|shared::/w/same depth=0 groupDepth=0 lastChild=true children=0 hostLabel="GPU VM" placement=pinned owning=project:repo:shared
+HEADER key=pr:done label="Done" count=1 tone="text-workspace-status-done" icon=ConductorDoneIcon hostCounts={local:1} hostIds={local:[vshu::/w/feat-b]} ids=[vshu::/w/feat-b]
+ITEM rowKey=pr:done:|vshu::/w/feat-b depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+HEADER key=pr:in-review label="In review" count=2 tone="text-workspace-status-review" icon=ConductorReviewIcon hostCounts={runtime:env-1:1 local:1} hostIds={runtime:env-1:[api::/w/api-y] local:[vshu::/w/feat-a]} ids=[api::/w/api-y,vshu::/w/feat-a]
+ITEM rowKey=pr:in-review:runtime:env-1|api::/w/api-y depth=0 groupDepth=0 children=0 hostLabel="env-1" placement=natural owning=project:repo:api
+ITEM rowKey=pr:in-review:|vshu::/w/feat-a depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+HEADER key=pr:in-progress label="In progress" count=13 tone="text-workspace-status-progress" icon=ConductorProgressIcon hostCounts={runtime:env-1:1 local:8 ssh:gpu-vm:4} hostIds={runtime:env-1:[api::/api] local:[ext::/ext,lab::/w/gitlab-mr,lab::/lab,vshu::/w/feat-c,vshu::/vshu,shared::/w/same] ssh:gpu-vm:[vshu-ssh::/vshu-ssh,vshu-ssh::/w/remote-x,shared::/w/same]} ids=[api::/api,ext::/ext,lab::/w/gitlab-mr,lab::/lab,vshu::/w/feat-c,vshu-ssh::/vshu-ssh,vshu::/vshu,vshu-ssh::/w/remote-x,shared::/w/same,shared::/w/same]
+ITEM rowKey=pr:in-progress:runtime:env-1|api::/api depth=0 groupDepth=0 children=0 hostLabel="env-1" placement=natural owning=project:repo:api
+ITEM rowKey=pr:in-progress:|ext::/ext depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:ext
+ITEM rowKey=pr:in-progress:|lab::/w/gitlab-mr depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:lab
+ITEM rowKey=pr:in-progress:|lab::/lab depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:lab
+ITEM rowKey=pr:in-progress:|vshu::/w/feat-c depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:|vshu-ssh::/vshu-ssh depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:|vshu::/vshu depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:ssh:gpu-vm|vshu-ssh::/w/remote-x depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:local|shared::/w/same depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:shared
+ITEM rowKey=pr:in-progress:ssh:gpu-vm|shared::/w/same depth=0 groupDepth=0 lastChild=true children=0 hostLabel="GPU VM" placement=natural owning=project:repo:shared
+FOLDER key=folder-workspace:local|folder:fw-review projectGroup=pg-folders depth=0 groupDepth=0
+FOLDER key=folder-workspace:local|folder:fw-notes projectGroup=pg-folders depth=0 groupDepth=0
+FOLDER key=folder-workspace:ssh:gpu-vm|folder:fw-remote projectGroup=pg-remote-folders depth=0 groupDepth=0
+HEADER key=pr:closed label="Closed" count=1 tone="text-zinc-600 dark:text-zinc-300" icon=CircleX hostCounts={local:1} hostIds={local:[vshu::/w/Zeta]} ids=[vshu::/w/Zeta]
+ITEM rowKey=pr:closed:|vshu::/w/Zeta depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+PREFERRED |vshu::/w/feat-a -> pr:in-review:|vshu::/w/feat-a
+PREFERRED |lab::/w/gitlab-mr -> pr:in-progress:|lab::/w/gitlab-mr
+PREFERRED |vshu::/w/feat-b -> pr:done:|vshu::/w/feat-b
+PREFERRED |vshu::/w/feat-c -> pr:in-progress:|vshu::/w/feat-c
+PREFERRED ssh:gpu-vm|vshu-ssh::/w/remote-x -> pr:in-progress:ssh:gpu-vm|vshu-ssh::/w/remote-x
+PREFERRED ssh:gpu-vm|shared::/w/same -> pr:in-progress:ssh:gpu-vm|shared::/w/same
+renderedKeys: 32
+placeholders: -
+selectionOrder: |vshu::/w/feat-b runtime:env-1|api::/w/api-y |vshu::/w/feat-a runtime:env-1|api::/api |ext::/ext |lab::/w/gitlab-mr |lab::/lab |vshu::/w/feat-c |vshu-ssh::/vshu-ssh |vshu::/vshu ssh:gpu-vm|vshu-ssh::/w/remote-x local|shared::/w/same ssh:gpu-vm|shared::/w/same local|folder:fw-review local|folder:fw-notes ssh:gpu-vm|folder:fw-remote |vshu::/w/Zeta
+cmd1-9 mounted: 1=vshu::/w/feat-b#lineage:vshu::/w/feat-b 2=api::/w/api-y@runtime:env-1 3=vshu::/w/feat-a#lineage:vshu::/w/feat-a 4=api::/api@runtime:env-1 5=ext::/ext 6=lab::/w/gitlab-mr 7=lab::/lab 8=vshu::/w/feat-c 9=vshu-ssh::/vshu-ssh
+cmd1-9 unmounted: 1=vshu::/w/feat-b 2=api::/w/api-y@runtime:env-1 3=vshu::/w/feat-a 4=api::/api@runtime:env-1 5=ext::/ext 6=lab::/w/gitlab-mr 7=lab::/lab 8=vshu::/w/feat-c 9=vshu-ssh::/vshu-ssh
+cmd ids unmounted: vshu::/w/feat-b api::/w/api-y vshu::/w/feat-a api::/api ext::/ext lab::/w/gitlab-mr lab::/lab vshu::/w/feat-c vshu-ssh::/vshu-ssh vshu::/vshu vshu-ssh::/w/remote-x shared::/w/same folder:fw-review folder:fw-notes folder:fw-remote vshu::/w/Zeta
+-- collapsed: pinned pr:in-review pr:closed lineage:vshu::/w/feat-a --
+visible: api::/w/api-y api::/api ext::/ext vshu::/w/feat-a lab::/w/gitlab-mr lab::/lab vshu::/w/feat-b vshu::/w/feat-c vshu-ssh::/vshu-ssh vshu::/vshu vshu-ssh::/w/remote-x vshu::/w/Zeta shared::/w/same shared::/w/same
+PENDING key=pending:creation-1 creation=creation-1 repo=api
+HEADER key=pinned label="Pinned" count=6 tone="text-foreground" icon=Pin hostCounts={local:4 ssh:gpu-vm:2} hostIds={local:[vshu::/w/feat-a,lab::/w/gitlab-mr,vshu::/w/feat-b,vshu::/w/feat-c] ssh:gpu-vm:[vshu-ssh::/w/remote-x,shared::/w/same]} ids=[vshu::/w/feat-a,lab::/w/gitlab-mr,vshu::/w/feat-b,vshu::/w/feat-c,vshu-ssh::/w/remote-x,shared::/w/same]
+HEADER key=pr:done label="Done" count=1 tone="text-workspace-status-done" icon=ConductorDoneIcon hostCounts={local:1} hostIds={local:[vshu::/w/feat-b]} ids=[vshu::/w/feat-b]
+ITEM rowKey=pr:done:|vshu::/w/feat-b depth=0 groupDepth=0 lastChild=true children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+HEADER key=pr:in-review label="In review" count=2 tone="text-workspace-status-review" icon=ConductorReviewIcon hostCounts={runtime:env-1:1 local:1} hostIds={runtime:env-1:[api::/w/api-y] local:[vshu::/w/feat-a]} ids=[api::/w/api-y,vshu::/w/feat-a]
+HEADER key=pr:in-progress label="In progress" count=13 tone="text-workspace-status-progress" icon=ConductorProgressIcon hostCounts={runtime:env-1:1 local:8 ssh:gpu-vm:4} hostIds={runtime:env-1:[api::/api] local:[ext::/ext,lab::/w/gitlab-mr,lab::/lab,vshu::/w/feat-c,vshu::/vshu,shared::/w/same] ssh:gpu-vm:[vshu-ssh::/vshu-ssh,vshu-ssh::/w/remote-x,shared::/w/same]} ids=[api::/api,ext::/ext,lab::/w/gitlab-mr,lab::/lab,vshu::/w/feat-c,vshu-ssh::/vshu-ssh,vshu::/vshu,vshu-ssh::/w/remote-x,shared::/w/same,shared::/w/same]
+ITEM rowKey=pr:in-progress:runtime:env-1|api::/api depth=0 groupDepth=0 children=0 hostLabel="env-1" placement=natural owning=project:repo:api
+ITEM rowKey=pr:in-progress:|ext::/ext depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:ext
+ITEM rowKey=pr:in-progress:|lab::/w/gitlab-mr depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:lab
+ITEM rowKey=pr:in-progress:|lab::/lab depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:lab
+ITEM rowKey=pr:in-progress:|vshu::/w/feat-c depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:|vshu-ssh::/vshu-ssh depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:|vshu::/vshu depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:ssh:gpu-vm|vshu-ssh::/w/remote-x depth=0 groupDepth=0 children=0 hostLabel="GPU VM" placement=natural owning=project:p-vshu
+ITEM rowKey=pr:in-progress:local|shared::/w/same depth=0 groupDepth=0 children=0 hostLabel="Local Linux" placement=natural owning=project:repo:shared
+ITEM rowKey=pr:in-progress:ssh:gpu-vm|shared::/w/same depth=0 groupDepth=0 lastChild=true children=0 hostLabel="GPU VM" placement=natural owning=project:repo:shared
+FOLDER key=folder-workspace:local|folder:fw-review projectGroup=pg-folders depth=0 groupDepth=0
+FOLDER key=folder-workspace:local|folder:fw-notes projectGroup=pg-folders depth=0 groupDepth=0
+FOLDER key=folder-workspace:ssh:gpu-vm|folder:fw-remote projectGroup=pg-remote-folders depth=0 groupDepth=0
+HEADER key=pr:closed label="Closed" count=1 tone="text-zinc-600 dark:text-zinc-300" icon=CircleX hostCounts={local:1} hostIds={local:[vshu::/w/Zeta]} ids=[vshu::/w/Zeta]
+SECTION pinned: pinned:|vshu::/w/feat-a pinned:|lab::/w/gitlab-mr pinned:|vshu::/w/feat-b pinned:|vshu::/w/feat-c pinned:ssh:gpu-vm|vshu-ssh::/w/remote-x pinned:ssh:gpu-vm|shared::/w/same
+SECTION pr:in-review: pr:in-review:runtime:env-1|api::/w/api-y pr:in-review:|vshu::/w/feat-a
+SECTION pr:closed: pr:closed:|vshu::/w/Zeta
+PREFERRED |vshu::/w/feat-a -> pr:in-review:|vshu::/w/feat-a
+PREFERRED |lab::/w/gitlab-mr -> pr:in-progress:|lab::/w/gitlab-mr
+PREFERRED |vshu::/w/feat-b -> pr:done:|vshu::/w/feat-b
+PREFERRED |vshu::/w/feat-c -> pr:in-progress:|vshu::/w/feat-c
+PREFERRED ssh:gpu-vm|vshu-ssh::/w/remote-x -> pr:in-progress:ssh:gpu-vm|vshu-ssh::/w/remote-x
+PREFERRED ssh:gpu-vm|shared::/w/same -> pr:in-progress:ssh:gpu-vm|shared::/w/same
+renderedKeys: 23
+placeholders: -
+selectionOrder: |vshu::/w/feat-b runtime:env-1|api::/api |ext::/ext |lab::/w/gitlab-mr |lab::/lab |vshu::/w/feat-c |vshu-ssh::/vshu-ssh |vshu::/vshu ssh:gpu-vm|vshu-ssh::/w/remote-x local|shared::/w/same ssh:gpu-vm|shared::/w/same local|folder:fw-review local|folder:fw-notes ssh:gpu-vm|folder:fw-remote
+cmd1-9 mounted: 1=vshu::/w/feat-b 2=api::/api@runtime:env-1 3=ext::/ext 4=lab::/w/gitlab-mr 5=lab::/lab 6=vshu::/w/feat-c 7=vshu-ssh::/vshu-ssh 8=vshu::/vshu 9=vshu-ssh::/w/remote-x@ssh:gpu-vm
+cmd1-9 unmounted: 1=vshu::/w/feat-b 2=api::/api@runtime:env-1 3=ext::/ext 4=lab::/w/gitlab-mr 5=lab::/lab 6=vshu::/w/feat-c 7=vshu-ssh::/vshu-ssh 8=vshu::/vshu 9=vshu-ssh::/w/remote-x@ssh:gpu-vm
+cmd ids unmounted: vshu::/w/feat-b api::/api ext::/ext lab::/w/gitlab-mr lab::/lab vshu::/w/feat-c vshu-ssh::/vshu-ssh vshu::/vshu vshu-ssh::/w/remote-x shared::/w/same folder:fw-review folder:fw-notes folder:fw-remote
+=== sort=repo projectOrder=recent pinnedInGroups=false === same as sort=repo projectOrder=manual pinnedInGroups=false
+=== sort=repo projectOrder=recent pinnedInGroups=true === same as sort=repo projectOrder=manual pinnedInGroups=true

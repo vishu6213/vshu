@@ -1,0 +1,9 @@
+{
+  "ios": {
+    "NSCameraUsageDescription": "Разрешите Vshu использовать камеру для сканирования QR-кодов.",
+    "NSLocalNetworkUsageDescription": "Vshu подключается к настольному приложению в вашей локальной сети.",
+    "NSMicrophoneUsageDescription": "Разрешите Vshu использовать микрофон для голосовой диктовки. Речь распознаётся на этом телефоне или на связанном компьютере.",
+    "NSPhotoLibraryAddUsageDescription": "Разрешите Vshu сохранять изображения из ваших сессий в Фото.",
+    "NSPhotoLibraryUsageDescription": "Разрешите Vshu прикреплять фотографии из медиатеки к сессии терминала на связанном компьютере."
+  }
+}
