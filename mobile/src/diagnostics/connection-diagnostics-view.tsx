@@ -136,7 +136,7 @@ export function ConnectionDiagnosticsView({
                                 )
                               : t(
                                   'diagnostics.connectionDiagnosticsView.sendDiagnostics',
-                                  'Send diagnostics to Vshu'
+                                  'Send diagnostics'
                                 )}
                       </Text>
                     </Pressable>

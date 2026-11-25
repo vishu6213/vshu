@@ -9,7 +9,7 @@ import {
   WslVshudConnectionSupersededError,
   WslVshudLaunchDeferredError
 } from './wsl-vshud-connection-errors'
-import type { WslHostConnectIntent } from '../../../shared/remote-runtime/wsl-hosts/wsl-host-types'
+import type { WslHostUpdateIntent } from '../../../shared/remote-runtime/wsl-hosts/wsl-host-types'
 import { errorMessage } from '../../../shared/errors/error-message'
 import { parsePairingCode } from '../../../shared/remote-runtime/pairing/pairing'
 import type { PairingOffer } from '../../../shared/remote-runtime/pairing/mobile-relay-pairing-offer'
@@ -17,12 +17,12 @@ import type { VshudHostTransport } from '../../managed-server/install/vshud-host
 import type { StartedPortForward } from '../../ssh/port-forwarding/ssh-port-forward-provider'
 import {
   wslConnectFailedStatus,
-  wslConnectingStatus,
+  wslAddProgressReporter,
   type WslVshudConnectionStatus
 } from './wsl-vshud-connection-status'
 import { wslDistroHolderKey } from '../discovery/wsl-distro-holder-record'
 import { defaultWslVshudEnvironmentId, deployAndLaunchWslVshud } from './wsl-vshud-deploy'
-import type { WslVshudLaunch } from './wsl-vshud-launch-contract'
+import type { WslVshudDeployOptions, WslVshudLaunch } from './wsl-vshud-launch-contract'
 import type { WslVshudHostTarget } from './wsl-vshud-host-target'
 import { createWslVshudHostTransport } from './wsl-vshud-host-transport'
 import { resolveWslVshudPairing } from './wsl-vshud-pairing-identity'
@@ -30,12 +30,12 @@ import { trackWslVshudHostEnvironment } from './wsl-vshud-host-environments'
 import { listenWslVshudStdioBridgeOnPreferredPort } from './wsl-vshud-stdio-bridge'
 import { wslConnectDeploySpawns } from './wsl-vshud-connect-stop-fence'
 
-export type WslVshudConnectOptions = {
+export type WslVshudConnectOptions = Pick<WslVshudDeployOptions, 'pastUncountedTerminals'> & {
   environmentId?: string
   label?: string
   /** Rebinds a port a persisted pairing offer already names; 0 or absent picks a free one. */
   localPort?: number
-  intent?: WslHostConnectIntent
+  intent?: WslHostUpdateIntent
   signal?: AbortSignal
   /** What `onChange` reports while this connect runs and once it is ready (liveness recovery). */
   status?: WslVshudConnectStatus
@@ -200,14 +200,15 @@ export class WslVshudConnectionManager {
       environmentId,
       label,
       intent: options.intent,
+      pastUncountedTerminals: options.pastUncountedTerminals,
       pairedOffer: await this.enrolledOffer(key, environmentId),
       signal: options.signal,
-      // Only a connect that showed "Connecting" says what it waits for; null (lock taken) clears it.
-      onInstallLockWait: (wait) => {
+      // Only a connect that showed "Connecting" says what it waits for and which step it is on.
+      ...wslAddProgressReporter((pending) => {
         if (!options.status && !options.requireRunning && !this.active.has(key) && stillCurrent()) {
-          this.dependencies.onChange?.(distro, null, wslConnectingStatus(wait))
+          this.dependencies.onChange?.(distro, null, pending)
         }
-      },
+      }),
       ...spawns.options
     }).finally(spawns.dispose)
     if (launch.outcome === 'deferred') {

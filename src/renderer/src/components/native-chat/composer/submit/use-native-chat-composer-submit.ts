@@ -24,6 +24,7 @@ import {
 } from '../../../../../../shared/agent-session/view/structured-agent-session-goal-mode'
 import { agentSessionInteractionCommand } from '../../../../../../shared/agent-session/options/permissions/agent-session-interaction-mode'
 import { promptHasInteractionModeSkill } from '../editor/native-chat-prompt-document'
+import type { NativeChatResumeCommand } from '../pickers/use-native-chat-resume-command'
 import { runSessionOptionSurfaceCall } from '../../session/options/controls/native-chat-session-option-surface-call'
 import {
   writeNativeChatComposerText,
@@ -61,9 +62,8 @@ export function useNativeChatComposerSubmit(args: {
   submitEmpty?: () => void
   sendPty: () => void
   sendStructured: NativeChatStructuredComposerSend
-  /** Runs a command Vshu owns, like `/resume`; true means the draft never reaches the agent. */
-  consumeVshuCommand?: (draft: string) => boolean
-  matchesVshuCommand?: (draft: string) => boolean
+  /** Commands Vshu owns, like `/resume`; `consume` true means the draft never reaches the agent. */
+  vshuCommands?: Pick<NativeChatResumeCommand, 'consume' | 'matchesDraft'>
   setDraft: (value: string) => void
   setCaret: (caret: number) => void
 }): {
@@ -73,15 +73,8 @@ export function useNativeChatComposerSubmit(args: {
 } {
   const { caret, disabled, draft, draftScopeKey, imageAttachments, sendPty, sendStructured } = args
   const held = args.held === true
-  const {
-    agent,
-    consumeVshuCommand,
-    setCaret,
-    setDraft,
-    structuredTransport,
-    submitEmpty,
-    textareaRef
-  } = args
+  const { agent, vshuCommands, setCaret, setDraft, structuredTransport, submitEmpty, textareaRef } =
+    args
   const threadGoal = structuredTransport?.threadGoal
   const [entered, setEntered] = useState(false)
   const active = entered && structuredTransport !== undefined
@@ -201,7 +194,7 @@ export function useNativeChatComposerSubmit(args: {
   const send = useCallback(
     (intent?: NativeChatComposerSendIntent) => {
       // Before goal mode too: a navigation command must never become an objective.
-      if (consumeVshuCommand?.(draft)) {
+      if (vshuCommands?.consume(draft)) {
         return
       }
       if (held) {
@@ -240,7 +233,7 @@ export function useNativeChatComposerSubmit(args: {
     [
       active,
       submitEmpty,
-      consumeVshuCommand,
+      vshuCommands,
       disabled,
       draft,
       draftScopeKey,
@@ -263,7 +256,7 @@ export function useNativeChatComposerSubmit(args: {
     : draft
   const messageDelivery =
     !(active && threadGoal !== undefined) &&
-    !args.matchesVshuCommand?.(draft) &&
+    !vshuCommands?.matchesDraft(draft) &&
     !(
       structuredTransport &&
       !promptHasInteractionModeSkill(

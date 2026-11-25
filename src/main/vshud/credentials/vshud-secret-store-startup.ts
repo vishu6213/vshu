@@ -8,7 +8,7 @@ export async function prepareVshudSecretStoreAndMigrate(userDataPath: string): P
     await import('./vshud-plaintext-credential-migration')
   // Keep sealing keys outside disposable VSHU_USER_DATA roots.
   if (await prepareVshudSecretStore(vshudCredentialRoot(), userDataPath)) {
-    migratePlaintextCredentials(getSecretStore())
+    await migratePlaintextCredentials(getSecretStore())
   }
   reportSecretProtectionGap({ dataFile: join(userDataPath, 'vshu-data.json') })
 }

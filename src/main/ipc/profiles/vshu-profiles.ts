@@ -40,10 +40,15 @@ import {
 import { normalizeExecutionHostId } from '../../../shared/execution-host/execution-host'
 import type { VshuAccountService } from '../../vshu-profiles/vshu-account-service'
 import { registerVshuProfileOrgMemberHandlers } from './vshu-profile-org-members-handlers'
+import {
+  isVshuCloudConsoleSection,
+  type VshuCloudConsoleOpenResult
+} from '../../../shared/vshu-cloud-console'
 import { onVshuCloudSessionInvalidated } from '../../vshu-profiles/cloud-session/profile-cloud-session-invalidation'
 import {
   broadcastVshuProfileAuthStatusChanged,
-  broadcastVshuProfileSignInProgressChanged
+  broadcastVshuProfileSignInProgressChanged,
+  broadcastTeamPolicyChanges
 } from './vshu-profile-auth-status-broadcast'
 import {
   cancelVshuCloudSignIn,
@@ -154,6 +159,7 @@ export function registerVshuProfileHandlers(
 
   // Push background invalidation; re-entering onAuthMutation would loop into the relay coordinator that just failed.
   onVshuCloudSessionInvalidated(broadcastVshuProfileAuthStatusChanged)
+  broadcastTeamPolicyChanges()
   onVshuCloudSignInProgressChanged(broadcastVshuProfileSignInProgressChanged)
 
   ipcMain.handle(
@@ -274,6 +280,20 @@ export function registerVshuProfileHandlers(
     'vshuProfiles:selectOrg',
     async (_event, rawArgs: SelectVshuProfileOrgArgs): Promise<SelectVshuProfileOrgResult> =>
       vshuAccount.selectOrg(orgIdFromUnknown(rawArgs))
+  )
+
+  ipcMain.handle(
+    'vshuProfiles:openCloudConsole',
+    async (_event, rawArgs: unknown): Promise<VshuCloudConsoleOpenResult> => {
+      const section =
+        typeof rawArgs === 'object' && rawArgs !== null && 'section' in rawArgs
+          ? rawArgs.section
+          : undefined
+      if (!isVshuCloudConsoleSection(section)) {
+        return { status: 'failed', error: 'invalid_vshu_cloud_console_section' }
+      }
+      return vshuAccount.openConsole(section)
+    }
   )
 
   registerVshuProfileOrgMemberHandlers()

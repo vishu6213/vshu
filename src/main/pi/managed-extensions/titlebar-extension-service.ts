@@ -19,7 +19,7 @@ import { removeLegacyBrandManagedFiles } from '../../agent-hooks/installation/le
 import type { PiAgentKind } from '../../../shared/agent-launch/catalog/pi-agent-kind'
 
 const PI_AGENT_SUBDIR = 'agent'
-const VSHU_MANAGED_EXTENSION_MARKER = '@vshu-managed-pi-extension'
+export const VSHU_MANAGED_EXTENSION_MARKER = '@vshu-managed-pi-extension'
 const OMP_MANAGED_STATUS_EXTENSION_DIR = 'omp-managed-status-extension'
 
 type ManagedExtensionWriteResult = 'written' | 'skipped-user-owned' | 'failed'
@@ -45,7 +45,7 @@ const AGENT_HOME_DIR_NAME: Record<PiAgentKind, string> = {
   'prime-agent': '.prime'
 }
 
-function getDefaultPiAgentDir(kind: PiAgentKind, configDirName: string | undefined): string {
+export function getDefaultPiAgentDir(kind: PiAgentKind, configDirName: string | undefined): string {
   const root = kind === 'omp' ? configDirName || AGENT_HOME_DIR_NAME.omp : AGENT_HOME_DIR_NAME[kind]
   return join(homedir(), root, PI_AGENT_SUBDIR)
 }
@@ -54,7 +54,7 @@ function toSafeOverlayDirName(ptyId: string): string {
   return createHash('sha256').update(ptyId).digest('hex').slice(0, 32)
 }
 
-function withVshuManagedExtensionMarker(source: string): string {
+export function withVshuManagedExtensionMarker(source: string): string {
   return source.includes(VSHU_MANAGED_EXTENSION_MARKER)
     ? source
     : `// ${VSHU_MANAGED_EXTENSION_MARKER}\n${source}`

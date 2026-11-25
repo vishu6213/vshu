@@ -59,8 +59,8 @@ export function bundledSkillSetupAttentionMessage(plan: BundledSkillPlan): strin
       )
     case 'edited':
       return translate(
-        'auto.components.settings.bundledSkillSetupCopy.attentionEdited',
-        'Needs attention · You edited this copy'
+        'auto.components.settings.bundledSkillSetupCopy.attentionDiffersFromVshu',
+        "Needs attention · This copy differs from Vshu's"
       )
     case 'other':
       return translate(

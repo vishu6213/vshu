@@ -1,5 +1,6 @@
 import { runProcess } from '@vshu/process-host'
 import type { ProcessResult, ProcessSpec } from '@vshu/process-host/process-spec'
+import { windowsSystem32Binary } from '@vshu/process-host/windows-system-binary'
 import { resolveWslInteropSpawnCwd } from './wsl-interop-spawn-directory'
 
 export const WSL_PROBE_TIMEOUT_MS = 5000
@@ -18,7 +19,13 @@ export function wslExeProcessSpec(
   env?: NodeJS.ProcessEnv
 ): ProcessSpec {
   // Deleted inherited worktree cwd also produces ENOENT, which must not mean WSL is absent.
-  return { program: 'wsl.exe', args, env, timeoutMs, cwd: resolveWslInteropSpawnCwd() }
+  return {
+    program: windowsSystem32Binary('wsl.exe'),
+    args,
+    env,
+    timeoutMs,
+    cwd: resolveWslInteropSpawnCwd()
+  }
 }
 
 export function wslExeFailure(result: ProcessResult): string | null {

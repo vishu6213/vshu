@@ -1,7 +1,7 @@
 import type { WslRunningDistrosRead } from '../discovery/wsl-background-distro-gate'
 import { wslDistroHolderKey } from '../discovery/wsl-distro-holder-record'
 import type { WslGuestIdentity } from '../execution/wsl-guest-process-identity'
-import type { Trigger } from './wsl-vshud-liveness-state'
+import type { Trigger, WslVshudLivenessDependencies } from './wsl-vshud-liveness-state'
 import { nextWslLivenessProbe, type WslLivenessEvidence } from './wsl-vshud-liveness-verdict'
 import type { WslVshudWatch } from './wsl-vshud-watch'
 
@@ -35,4 +35,13 @@ export async function gatherWslLivenessEvidence(
     }
   }
   return evidence
+}
+
+/** Visible work relaunches an exited vshud, unless it said it stopped idle: then it stays down
+ *  until the user needs it, or the open desktop would undo every idle stop (#46567). */
+export async function revives(
+  deps: Pick<WslVshudLivenessDependencies, 'wasIdleStopped' | 'hasUserVisibleWork'>,
+  distro: string
+): Promise<boolean> {
+  return !deps.wasIdleStopped?.(distro) && (await deps.hasUserVisibleWork(distro))
 }

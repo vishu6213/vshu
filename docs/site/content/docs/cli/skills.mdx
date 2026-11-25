@@ -19,8 +19,8 @@ Vshu ships **skills** that agents install into their skill directories. Public i
 
 Use `npx skills add` with the public Vshu repo and the skill name. Default agent setup usually installs `vshu-cli`, `vshu-computer-use`, and `orchestration`.
 
-| Skill                                               | Install                                                                                    | Use it for                                                    |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------- |
+| Skill                                               | Install                                                                                   | Use it for                                                    |
+| --------------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
 | [`vshu-cli`](#vshu-cli)                             | `npx skills add https://github.com/vishu6213/vshu --skill vshu-cli --global`               | Worktrees, terminals, files, automations, embedded browser.   |
 | [`orchestration`](#orchestration)                   | `npx skills add https://github.com/vishu6213/vshu --skill orchestration --global`          | Multi-agent Runs, tasks, supervised workers, messages, gates. |
 | [`vshu-computer-use`](#vshu-computer-use)           | `npx skills add https://github.com/vishu6213/vshu --skill vshu-computer-use --global`      | Desktop apps via accessibility trees and safe UI actions.     |
@@ -166,7 +166,7 @@ Use when setting up or debugging per-workspace environment recipes in `vshu.yaml
 npx skills add https://github.com/vishu6213/vshu --skill vshu-plugin-authoring --global
 ```
 
-Use when an agent should make, debug, test or publish a Vshu plugin: themes, syntaxes, custom editors, TSX components panels and worker commands. Load it with `vshu skills get vshu-plugin-authoring`; its references (components, host API, events, manifest fields, CLI) are generated from the running Vshu.
+Use when an agent should make, debug, test or publish an Vshu plugin: themes, syntaxes, custom editors, TSX components panels and worker commands. Load it with `vshu skills get vshu-plugin-authoring`; its references (components, host API, events, manifest fields, CLI) are generated from the running Vshu.
 
 ## Discovery sources
 

@@ -9,7 +9,8 @@ import { VshuRuntimeWithPreparePtyExecutionContext } from '../launch/terminal-ex
 import { advertisedUrlWatcher } from '../../../ports/advertised-url-watcher'
 import { appendNormalizedToTailBuffer } from './tail/terminal-tail-buffer'
 import { normalizeTerminalChunk } from './terminal-ansi-normalization'
-import { observeTerminalCommandPaint } from '../input/terminal-command-paint'
+import { observeTerminalCommandPaint } from '../input/terminal-command-paint-record'
+import type { CommandPaintMarks } from '../input/terminal-command-paint'
 import {
   appendCompletedTerminalTranscript,
   buildPreview,
@@ -32,6 +33,7 @@ export abstract class VshuRuntimeWithOnPtyData extends VshuRuntimeWithPreparePty
     data: string
   ): ProcessedAgentStatusChunk
   protected abstract recordRecentPtyOutput(ptyId: string, data: string): void
+  protected abstract noteCommandPaintMarks(ptyId: string, marks: CommandPaintMarks): void
   protected abstract shouldAnswerQueriesForLiveChunk(ptyId: string): boolean
   abstract maybeHydrateHeadlessFromRenderer(ptyId: string): Promise<boolean> | null
   protected abstract trackHeadlessTerminalData(
@@ -84,12 +86,10 @@ export abstract class VshuRuntimeWithOnPtyData extends VshuRuntimeWithPreparePty
     entry: RuntimePtyTitleTrackerEntry
   ): void
 
-  /** Arrival-order mode scan: the settled tracker plus any in-flight snapshot capture's. */
+  /** Scan on arrival for the settled tracker and the shared in-flight capture tracker. */
   protected scanProviderModeTrackers(ptyId: string, data: string): void {
     this.providerModeTrackersByPtyId.get(ptyId)?.scan(data)
-    for (const tracker of this.providerModeSnapshotScansByPtyId.get(ptyId) ?? []) {
-      tracker.scan(data)
-    }
+    this.providerModeSnapshotScansByPtyId.get(ptyId)?.tracker.scan(data)
   }
 
   onPtyData(
@@ -137,7 +137,7 @@ export abstract class VshuRuntimeWithOnPtyData extends VshuRuntimeWithPreparePty
       const normalized = normalizeTerminalChunk(data, pty.tailPendingAnsi)
       ptyNormalized = normalized
       pty.tailPendingAnsi = normalized.pendingAnsi
-      observeTerminalCommandPaint(pty, data, normalized.text, at)
+      this.noteCommandPaintMarks(ptyId, observeTerminalCommandPaint(pty, data, normalized.text, at))
       const nextTail = appendNormalizedToTailBuffer(
         pty.tailBuffer,
         pty.tailPartialLine,

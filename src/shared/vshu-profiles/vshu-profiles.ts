@@ -1,6 +1,7 @@
 import './constants'
 import { VSHU_BROWSER_PARTITION } from '../browser/browser-session-partition'
 import type { ExecutionHostId } from '../execution-host/execution-host'
+import type { VshuCloudCapabilities } from './vshu-cloud-capabilities'
 
 export const VSHU_PROFILE_INDEX_SCHEMA_VERSION = 1
 export const DEFAULT_LOCAL_VSHU_PROFILE_ID = 'local-default'
@@ -34,12 +35,7 @@ export type VshuCloudOrgSummary = {
   role?: string
 }
 
-export type VshuCloudCapabilityFlags = Record<string, boolean>
-
-export type VshuCloudCapabilities = {
-  flags: VshuCloudCapabilityFlags
-  refreshedAt: number
-}
+export type { VshuCloudCapabilities, VshuCloudCapabilityFlags } from './vshu-cloud-capabilities'
 
 export type VshuCloudSessionPersistence = 'none' | 'encrypted' | 'memory-only' | 'dev-plaintext'
 

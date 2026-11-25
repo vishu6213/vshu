@@ -9,10 +9,14 @@ import type { Automation } from '../../shared/automations/automation-definition'
 import type { Bot } from '../../shared/bot-types'
 import { WEBHOOKS_NOT_CONNECTED } from './webhook-hooks'
 import type { AutomationWebhooks } from './webhook-host-service'
+import type { VshuSignInServer } from '../../shared/bots/host-vshu-sign-in'
 
 export class AutomationWebhookSaves {
   // Only a desktop signed in to Vshu Cloud hosts the connector, so only it makes webhooks.
   private webhooks: AutomationWebhooks | null = null
+
+  /** This host's name when it is a headless server, whose signed-out refusal names it; set with the runtime. */
+  signInServer: () => VshuSignInServer = () => null
 
   set(webhooks: AutomationWebhooks | null): void {
     this.webhooks = webhooks
@@ -20,11 +24,16 @@ export class AutomationWebhookSaves {
 
   /** The bot, with whether its host's Vshu Cloud takes webhooks and whether the host is signed out
    *  of it, for the event rule check. */
-  hearing(bot: Bot): Bot & { webhooks: boolean; cloudSignedOut: boolean } {
+  hearing(
+    bot: Bot
+  ): Bot & { webhooks: boolean; cloudSignedOut: boolean; signInServer?: string | null } {
+    const signedOut = this.webhooks?.signedOut() ?? false
+    const server = signedOut ? this.signInServer() : undefined
     return {
       ...bot,
       webhooks: this.webhooks?.advertised() ?? false,
-      cloudSignedOut: this.webhooks?.signedOut() ?? false
+      cloudSignedOut: signedOut,
+      ...(server !== undefined ? { signInServer: server } : {})
     }
   }
 

@@ -26,9 +26,15 @@ if %ERRORLEVEL% NEQ 0 goto :failed
 call pnpm run build:electron-vite
 if %ERRORLEVEL% NEQ 0 goto :failed
 
+node config\scripts\native-build\windows\upstream-release-windows-addons.mjs >nul 2>&1
 call pnpm run ensure:electron-runtime
-if %ERRORLEVEL% NEQ 0 goto :failed
+if %ERRORLEVEL% NEQ 0 (
+  echo.
+  echo [WARN] Native addon rebuild skipped ^(Visual Studio C++ Build Tools not installed^).
+  echo        Continuing with prebuilt native addons...
+)
 
+taskkill /F /IM Vshu.exe /T >nul 2>&1
 node scripts\package-vshu-app.mjs --installer
 if %ERRORLEVEL% NEQ 0 goto :failed
 

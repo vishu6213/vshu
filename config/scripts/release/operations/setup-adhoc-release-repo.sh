@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Provision vshu-ide/vshu-adhoc for adhoc-mac-build.yml. Keep unlanded branch builds out of main’s hourly feed.
+# Provision vishu6213/vshu-adhoc for adhoc-mac-build.yml. Keep unlanded branch builds out of main’s hourly feed.
 # Reuse hourly’s App credentials; this only widens its installation.
 # Run once after setup-hourly-release-token.sh: bash config/scripts/release/operations/setup-adhoc-release-repo.sh
 set -euo pipefail

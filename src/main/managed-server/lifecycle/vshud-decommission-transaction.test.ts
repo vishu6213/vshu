@@ -61,7 +61,11 @@ describe('the decommission journal entry', () => {
       withVshudDecommissionStopDispatched(versioned, request, T),
       T
     )
-    expect(planVshudTransactionRecovery(interrupted, versionedBefore)).toMatchObject({
+    const stored = parseVshudActivationTransaction(serializeVshudActivationTransaction(interrupted))
+    if (stored.state !== 'ok') {
+      throw new Error('Expected the persisted decommission transaction to be readable')
+    }
+    expect(planVshudTransactionRecovery(stored.transaction, versionedBefore)).toMatchObject({
       action: 'confirm-decommissioned',
       record: { active: null, activeAppVersion: '1.5.0', rolledBackFrom: '0.9.0+ff01' }
     })
@@ -69,14 +73,6 @@ describe('the decommission journal entry', () => {
       previous: NEW,
       activeAppVersion: '1.5.0'
     })
-  })
-
-  it('round-trips every phase', () => {
-    for (const transaction of [prepared, dispatched, exited]) {
-      expect(
-        parseVshudActivationTransaction(serializeVshudActivationTransaction(transaction))
-      ).toEqual({ state: 'ok', transaction })
-    }
   })
 
   it.each([

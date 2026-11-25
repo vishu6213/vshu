@@ -1,7 +1,10 @@
 import type { RefreshCurrentVshuProfileAuthResult } from '../../../shared/vshu-profiles/vshu-profiles'
 import { getVshuCloudAuthConfig, isVshuCloudDevAuthEnabled } from './profile-cloud-auth-config'
 import { getVshuProfileAuthStatusFromProfile } from './profile-cloud-auth-status'
-import { refreshVshuCloudCapabilities } from './profile-cloud-client'
+import {
+  refreshVshuCloudCapabilities,
+  uploadDesktopReportAfterCapabilityRefresh
+} from './profile-cloud-client'
 import { ensureActiveVshuProfile } from '../profile-index-store'
 import { refreshDevVshuCloudProfile } from './profile-cloud-dev-service'
 import {
@@ -42,16 +45,16 @@ export async function refreshCurrentVshuProfileAuth(
       configState.config,
       active,
       userDataPath,
-      (session) => {
+      async (session) => {
         // Take the ticket after refresh because refreshing may relink the session.
         ticket = takeCloudSessionTicket(active.profile.id, userDataPath)
-        return refreshVshuCloudCapabilities(configState.config, session)
+        return { session, refresh: await refreshVshuCloudCapabilities(configState.config, session) }
       }
     )
     if (operation.status !== 'ok' || !ticket) {
       return { status: 'reconnect-required', auth: auth() }
     }
-    const refresh = operation.value
+    const { refresh, session } = operation.value
     if (
       refresh.cloud &&
       (refresh.cloud.userId !== cloud.userId ||
@@ -62,6 +65,14 @@ export async function refreshCurrentVshuProfileAuth(
     const list = commitCloudSessionCapabilities(active.profile.id, userDataPath, ticket, refresh)
     if (!list) {
       return { status: 'reconnect-required', auth: auth() }
+    }
+    if (list.activeProfileId === active.profile.id) {
+      // Reporting is separate so inventory outages do not affect sign-in or policy refresh.
+      void uploadDesktopReportAfterCapabilityRefresh(
+        configState.config,
+        session,
+        refresh.capabilities
+      ).catch(() => undefined)
     }
     return {
       status: 'refreshed',

@@ -150,9 +150,7 @@ const folded = (
   <div className="space-y-2">
     {row({ run: waitRun })}
     {row({ run: quoteRun })}
-    {row({
-      run: { ...quoteRun, runId: 'run-2', event: github('comment', 'vishu6213/vshu#41760') }
-    })}
+    {row({ run: { ...quoteRun, runId: 'run-2', event: github('comment', 'vishu6213/vshu#41760') } })}
     {row({ run: deadlineRun })}
     {row({ run: scheduledRun })}
     {row({ run: hookRun })}
@@ -197,6 +195,28 @@ export const couldNotStart = defineFixture({
       {row({ run: scheduledRun, state: 'not-started', error: ERROR })}
     </div>
   ),
+  interact: openAll
+})
+/** A run whose agent is too old for chats: the card words the saved refusal, not the host's sentence. */
+export const couldNotStartAgentTooOld = defineFixture({
+  width: 640,
+  render: () =>
+    row({
+      run: scheduledRun,
+      state: 'not-started',
+      error: 'Your Hermes CLI on this computer is 0.20.5. Chats need 0.23.0 or newer.',
+      refusal: {
+        code: 'structured_agent_session_unsupported',
+        details: {
+          reason: 'hostUnsupported',
+          agentInstallation: {
+            agent: 'hermes',
+            installedVersion: '0.20.5',
+            minimumVersion: '0.23.0'
+          }
+        }
+      }
+    }),
   interact: openAll
 })
 export const find = defineFixture({

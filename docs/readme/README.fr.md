@@ -3,9 +3,9 @@
 </h1>
 
 <p align="center">
-  <a href="https://github.com/vshu-ide/vshu"><img src="https://badgen.net/github/stars/vshu-ide/vshu?label=%E2%98%85" alt="Étoiles GitHub" /></a>
-  <a href="https://github.com/vshu-ide/vshu/releases"><img src="../assets/readme-downloads.svg" alt="Téléchargements totaux sur toutes les versions" /></a>
-  <img src="https://badgen.net/github/license/vshu-ide/vshu" alt="Licence" />
+  <a href="https://github.com/vishu6213/vshu"><img src="https://badgen.net/github/stars/vishu6213/vshu?label=%E2%98%85" alt="Étoiles GitHub" /></a>
+  <a href="https://github.com/vishu6213/vshu/releases"><img src="../assets/readme-downloads.svg" alt="Téléchargements totaux sur toutes les versions" /></a>
+  <img src="https://badgen.net/github/license/vishu6213/vshu" alt="Licence" />
   <a href="https://discord.gg/fzjDKHxv8Q"><img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white" alt="Rejoindre le Discord Vshu" /></a>
   <a href="https://x.com/vshu_build"><img src="https://img.shields.io/badge/X-000000?logo=x&logoColor=white" alt="Suivre Vshu sur X" /></a>
   <img src="https://img.shields.io/badge/macOS%20%7C%20Windows%20%7C%20Linux-4493F8?style=flat-square" alt="Plateformes prises en charge : macOS, Windows et Linux" />
@@ -164,7 +164,7 @@ Les agents pilotent aussi Vshu — scriptez n'importe quel workflow avec `vshu w
 - **[Aperçus riches du repo](https://vshu.dev/docs/editing/markdown)** — Prévisualisez Markdown, images, PDF et docs du repo dans le workspace.
 - **[Computer Use](https://vshu.dev/docs/cli/computer-use)** — Laissez les agents piloter des apps desktop et l'UI visible quand un workflow demande une vraie interaction.
 - **[Notifications et non-lus](https://vshu.dev/docs/notifications)** — Sachez quand un agent termine ou a besoin d'attention, puis marquez des fils comme non lus pour y revenir plus tard.
-- **Et bien plus encore** — on ship tous les jours, donc cette liste est toujours en retard. Le [changelog](https://github.com/vshu-ide/vshu/releases) est la vraie liste des features.
+- **Et bien plus encore** — on ship tous les jours, donc cette liste est toujours en retard. Le [changelog](https://github.com/vishu6213/vshu/releases) est la vraie liste des features.
 
 ---
 
@@ -216,16 +216,16 @@ Fonctionne avec **n'importe quel agent CLI** — s'il tourne dans un terminal, i
 ### Desktop — macOS, Windows, Linux
 
 - **[Télécharger depuis vshu.dev](https://vshu.dev/download)**
-- Ou récupérez un build directement : [macOS Apple Silicon](https://github.com/vshu-ide/vshu/releases/latest/download/vshu-macos-arm64.dmg) · [macOS Intel](https://github.com/vshu-ide/vshu/releases/latest/download/vshu-macos-x64.dmg) · [Windows (.exe)](https://github.com/vshu-ide/vshu/releases/latest/download/vshu-windows-setup.exe) · [Linux AppImage](https://github.com/vshu-ide/vshu/releases/latest/download/vshu-linux.AppImage) · [Tous les builds](https://github.com/vshu-ide/vshu/releases/latest)
+- Ou récupérez un build directement : [macOS Apple Silicon](https://github.com/vishu6213/vshu/releases/latest/download/vshu-macos-arm64.dmg) · [macOS Intel](https://github.com/vishu6213/vshu/releases/latest/download/vshu-macos-x64.dmg) · [Windows (.exe)](https://github.com/vishu6213/vshu/releases/latest/download/vshu-windows-setup.exe) · [Linux AppImage](https://github.com/vishu6213/vshu/releases/latest/download/vshu-linux.AppImage) · [Tous les builds](https://github.com/vishu6213/vshu/releases/latest)
 
 _Ou via un gestionnaire de paquets :_
 
 ```bash
 # macOS (Homebrew)
 # Utilisez toujours le nom complet ; `vshu` seul est un cask Plotly sans rapport.
-brew install --cask vshu-ide/vshu/vshu
+brew install --cask vishu6213/vshu/vshu
 # Mettre à jour une installation existante
-brew upgrade --cask vshu-ide/vshu/vshu
+brew upgrade --cask vishu6213/vshu/vshu
 
 # Arch Linux (AUR) — ou stably-vshu-git pour compiler depuis les sources
 yay -S stably-vshu-bin
@@ -248,9 +248,9 @@ Associez-la à l'app de bureau pour surveiller et piloter vos agents depuis votr
 
   <img src="../assets/wechat-qr.jpg" alt="QR code du groupe WeChat de la communauté Vshu" width="160" />
 
-- **Feedback &amp; idées :** On ship vite. Il manque quelque chose ? [Demandez une feature](https://github.com/vshu-ide/vshu/issues).
+- **Feedback &amp; idées :** On ship vite. Il manque quelque chose ? [Demandez une feature](https://github.com/vishu6213/vshu/issues).
 - **Confidentialité :** Voir la [doc confidentialité &amp; télémétrie](https://vshu.dev/docs/telemetry) pour ce qu'Vshu collecte en anonyme et comment désactiver la télémétrie.
-- **Soutenez-nous :** [Mettez une star](https://github.com/vshu-ide/vshu) sur ce repo pour suivre nos ships quotidiens.
+- **Soutenez-nous :** [Mettez une star](https://github.com/vishu6213/vshu) sur ce repo pour suivre nos ships quotidiens.
 
 ---
 
@@ -258,12 +258,12 @@ Associez-la à l'app de bureau pour surveiller et piloter vos agents depuis votr
 
 Envie de contribuer ou de lancer le projet en local ? Consultez notre guide [CONTRIBUTING.md](../../.github/CONTRIBUTING.md).
 
-<a href="https://github.com/vshu-ide/vshu/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=vshu-ide/vshu" alt="Contributeurs Vshu" />
+<a href="https://github.com/vishu6213/vshu/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=vishu6213/vshu" alt="Contributeurs Vshu" />
 </a>
 
 <p align="center">
-  <img src="../assets/star-history.png" alt="Graphique d'historique des étoiles GitHub pour vshu-ide/vshu" width="880" />
+  <img src="../assets/star-history.png" alt="Graphique d'historique des étoiles GitHub pour vishu6213/vshu" width="880" />
 </p>
 
 ## Builds signés

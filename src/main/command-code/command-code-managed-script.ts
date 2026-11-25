@@ -1,5 +1,6 @@
 import { posixCurlCommand } from '../agent-hooks/installation/scripts/hook-post-command'
 import { VSHU_AGENT_HOOKS_DISABLED_ENV } from '../../shared/agent-hook-listener/transport/agent-hook-suppression-env'
+import { buildPosixScrubSafeEnvRestoreLines } from '../../shared/agent-hook-listener/transport/agent-hook-scrub-safe-env'
 import { buildWindowsAgentHookPostCommand } from '../agent-hooks/installation/commands/windows-agent-hook-post-command'
 import {
   buildPosixHookPayloadCapture,
@@ -43,6 +44,8 @@ export function buildCommandCodeManagedScript(
 
   return [
     '#!/bin/sh',
+    // Command Code strips TOKEN-named variables from hook env; pane identity survives.
+    ...buildPosixScrubSafeEnvRestoreLines(),
     ...buildPosixHookPayloadCapture(),
     `if [ "\${${VSHU_AGENT_HOOKS_DISABLED_ENV}:-}" = 1 ]; then exit 0; fi`,
     ...buildPosixHookSpoolLines('command-code'),
@@ -68,22 +71,9 @@ export function buildCommandCodeManagedScript(
     '  done',
     '  return 1',
     '}',
-    '__vshu_fill_from_ancestor() {',
-    '  __vshu_name="$1"',
-    '  case "$__vshu_name" in',
-    '    VSHU_AGENT_HOOK_ENDPOINT) [ -z "${VSHU_AGENT_HOOK_ENDPOINT:-}" ] || return 0 ;;',
-    '    VSHU_AGENT_HOOK_PORT) [ -z "${VSHU_AGENT_HOOK_PORT:-}" ] || return 0 ;;',
-    '    VSHU_AGENT_HOOK_TOKEN) [ -z "${VSHU_AGENT_HOOK_TOKEN:-}" ] || return 0 ;;',
-    '    VSHU_AGENT_HOOK_ENV) [ -z "${VSHU_AGENT_HOOK_ENV:-}" ] || return 0 ;;',
-    '    VSHU_AGENT_HOOK_VERSION) [ -z "${VSHU_AGENT_HOOK_VERSION:-}" ] || return 0 ;;',
-    '    VSHU_PANE_KEY) [ -z "${VSHU_PANE_KEY:-}" ] || return 0 ;;',
-    '    VSHU_TAB_ID) [ -z "${VSHU_TAB_ID:-}" ] || return 0 ;;',
-    '    VSHU_WORKTREE_ID) [ -z "${VSHU_WORKTREE_ID:-}" ] || return 0 ;;',
-    '    VSHU_AGENT_LAUNCH_TOKEN) [ -z "${VSHU_AGENT_LAUNCH_TOKEN:-}" ] || return 0 ;;',
-    '    *) return 0 ;;',
-    '  esac',
-    '  __vshu_value=$(__vshu_read_ancestor_var "$__vshu_name") || return 0',
-    '  [ -n "$__vshu_value" ] && export "$__vshu_name=$__vshu_value"',
+    '__vshu_fill_token_from_ancestor() {',
+    '  __vshu_value=$(__vshu_read_ancestor_var VSHU_AGENT_HOOK_TOKEN) || return 0',
+    '  [ -n "$__vshu_value" ] && export "VSHU_AGENT_HOOK_TOKEN=$__vshu_value"',
     '}',
     '__vshu_endpoint_value() {',
     '  __vshu_endpoint_name="$1"',
@@ -104,10 +94,6 @@ export function buildCommandCodeManagedScript(
     '    [ -n "$__vshu_endpoint_value" ] && export "$__vshu_endpoint_name=$__vshu_endpoint_value"',
     '  done',
     '}',
-    '# Recover pane/hook metadata from the parent TUI after Command Code sanitizes hook env.',
-    'for __vshu_name in VSHU_AGENT_HOOK_ENDPOINT VSHU_AGENT_HOOK_PORT VSHU_AGENT_HOOK_TOKEN VSHU_AGENT_HOOK_ENV VSHU_AGENT_HOOK_VERSION VSHU_PANE_KEY VSHU_TAB_ID VSHU_WORKTREE_ID VSHU_AGENT_LAUNCH_TOKEN; do',
-    '  __vshu_fill_from_ancestor "$__vshu_name"',
-    'done',
     'if [ -n "$VSHU_AGENT_HOOK_ENDPOINT" ] && [ -r "$VSHU_AGENT_HOOK_ENDPOINT" ]; then',
     '  __vshu_fill_from_endpoint_file "$VSHU_AGENT_HOOK_ENDPOINT"',
     'fi',
@@ -129,6 +115,10 @@ export function buildCommandCodeManagedScript(
     '      break',
     '    fi',
     '  done',
+    'fi',
+    // Last resort for hosts without an endpoint file: read only the token from the parent TUI.
+    'if [ -z "$VSHU_AGENT_HOOK_TOKEN" ] && [ -n "$VSHU_PANE_KEY" ] && [ -n "$VSHU_AGENT_HOOK_PORT" ]; then',
+    '  __vshu_fill_token_from_ancestor',
     'fi',
     'if [ -z "$VSHU_AGENT_HOOK_PORT" ] || [ -z "$VSHU_AGENT_HOOK_TOKEN" ] || [ -z "$VSHU_PANE_KEY" ]; then',
     '  spool_hook_event',

@@ -196,7 +196,7 @@ async function deployOwnVshud(
       code: deployResult.code,
       reason: deployResult.reason,
       forceable:
-        isForceableVshudDeferral(deployResult.code) ||
+        isForceableVshudDeferral(deployResult) ||
         deployResult.code === VSHUD_ACTIVATION_POLICY_REFUSED_CODE
     }
   }

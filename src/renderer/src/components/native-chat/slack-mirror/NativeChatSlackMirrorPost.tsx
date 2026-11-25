@@ -1,4 +1,4 @@
-// A Vshu-typed message's post to its chat's Slack thread: the "You · Slack" tag once posted (just
+// An Vshu-typed message's post to its chat's Slack thread: the "You · Slack" tag once posted (just
 // "Slack" beside another person's sender tag), a muted line while posting, Retry or Dismiss on failure.
 import { AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'

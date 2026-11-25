@@ -22,7 +22,7 @@ runs:
         VSHU_PINNED_VERSION: ${{ inputs.version }}
         VSHU_PINNED_SHA512: ${{ inputs.sha512 }}
       run: |
-        gh release download "v$VSHU_PINNED_VERSION" --repo vshu-ide/vshu --pattern "vshu-ide_${VSHU_PINNED_VERSION}_amd64.deb" --dir "$RUNNER_TEMP/old-vshu"
+        gh release download "v$VSHU_PINNED_VERSION" --repo vishu6213/vshu --pattern "vshu-ide_${VSHU_PINNED_VERSION}_amd64.deb" --dir "$RUNNER_TEMP/old-vshu"
         python3 - <<'PYVERIFY'
         import base64,hashlib,os,pathlib,subprocess
         version=os.environ['VSHU_PINNED_VERSION']

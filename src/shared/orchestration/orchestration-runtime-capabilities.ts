@@ -37,6 +37,9 @@ export const ORCHESTRATION_ASK_RETURNS_AT_ONCE_RUNTIME_CAPABILITY =
 /** Paired windows and phones read a chat's worker approvals and answer them as the person. */
 export const ORCHESTRATION_PAIRED_WORKER_APPROVALS_RUNTIME_CAPABILITY =
   'orchestration.paired-worker-approvals.v1' as const
+/** A person on a paired window may Clear and Stop a chat's workers in its dock, as on this computer. */
+export const ORCHESTRATION_PAIRED_WORKER_DOCK_OWNER_RUNTIME_CAPABILITY =
+  'orchestration.paired-worker-dock-owner.v1' as const
 /** Sent by a paired window or phone, never by the vshu CLI: its approvals are the person's. */
 export const ORCHESTRATION_PERSON_APPROVALS_CLIENT_CAPABILITY =
   'orchestration.person-approvals.v1' as const
@@ -52,11 +55,22 @@ export const ORCHESTRATION_PEER_MAIL_TYPES_RUNTIME_CAPABILITY =
 /** Peer mail also reaches its bots (`bot:`, `--chat`, questions), admitted as its own bot mail is. */
 export const ORCHESTRATION_PEER_BOT_MAIL_RUNTIME_CAPABILITY =
   'orchestration.peer-bot-mail.v1' as const
+/** Peer mail about a bot's item also carries files uploaded here for that item's chat. */
+export const ORCHESTRATION_PEER_MAIL_FILES_RUNTIME_CAPABILITY =
+  'orchestration.peer-mail-files.v1' as const
 /** Runs the workers a paired Vshu places here as its own, coordinated from that Vshu (wire v1). */
 export const ORCHESTRATION_REMOTE_OWNED_WORKERS_RUNTIME_CAPABILITY =
   'orchestration.remote-owned-workers.v1' as const
+/** A paired Vshu's chat-lineage start (`chatLineage`) starts here as a chat, and so do the workers it starts. */
+export const ORCHESTRATION_CHAT_LINEAGE_RUNTIME_CAPABILITY =
+  'orchestration.chat-lineage.v1' as const
+/** Its agents can message agents on a paired computer that pulls with `clientAsks`
+ *  (`send --on-client`); replies come back by `peerMailReturn`. */
+export const ORCHESTRATION_CLIENT_AGENT_ASKS_RUNTIME_CAPABILITY =
+  'orchestration.client-agent-asks.v1' as const
 
 export const ORCHESTRATION_RUNTIME_CAPABILITIES = [
+  ORCHESTRATION_CLIENT_AGENT_ASKS_RUNTIME_CAPABILITY,
   ORCHESTRATION_FEDERATION_RUNTIME_CAPABILITY,
   ORCHESTRATION_FEDERATION_CONTROL_MAIL_RUNTIME_CAPABILITY,
   ORCHESTRATION_FEDERATION_LIFECYCLE_SETTLEMENT_RUNTIME_CAPABILITY,
@@ -73,9 +87,12 @@ export const ORCHESTRATION_RUNTIME_CAPABILITIES = [
   ORCHESTRATION_WORKER_TURN_STOP_REPORTS_RUNTIME_CAPABILITY,
   ORCHESTRATION_ASK_RETURNS_AT_ONCE_RUNTIME_CAPABILITY,
   ORCHESTRATION_PAIRED_WORKER_APPROVALS_RUNTIME_CAPABILITY,
+  ORCHESTRATION_PAIRED_WORKER_DOCK_OWNER_RUNTIME_CAPABILITY,
   ORCHESTRATION_CONTRACT_RUNTIME_CAPABILITY,
   ORCHESTRATION_PEER_MAIL_RUNTIME_CAPABILITY,
   ORCHESTRATION_PEER_MAIL_TYPES_RUNTIME_CAPABILITY,
   ORCHESTRATION_PEER_BOT_MAIL_RUNTIME_CAPABILITY,
-  ORCHESTRATION_REMOTE_OWNED_WORKERS_RUNTIME_CAPABILITY
+  ORCHESTRATION_PEER_MAIL_FILES_RUNTIME_CAPABILITY,
+  ORCHESTRATION_REMOTE_OWNED_WORKERS_RUNTIME_CAPABILITY,
+  ORCHESTRATION_CHAT_LINEAGE_RUNTIME_CAPABILITY
 ] as const

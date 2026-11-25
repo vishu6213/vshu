@@ -1,6 +1,7 @@
 import { createProfileStateStoreForStartup } from '../../persistence/profile-state/startup/profile-state-startup-authority'
 import type { ProfileStateStoreFactoryResult } from '../../persistence/profile-state/startup/profile-state-store-factory'
 import { ensureActiveVshuProfile } from '../../vshu-profiles/profile-index-store'
+import { initializeTeamCapabilities } from '../../vshu-profiles/cloud-auth/initialize-team-capabilities'
 import { initVshuProfilePaths } from '../../vshu-profiles/profile-storage-paths'
 import { initSshHostKeyStoreFile } from '../../ssh/host-keys/ssh-host-key-store'
 import { initVshudHeldFenceTokenFile } from '../../managed-server/activation/vshud-held-fence-tokens'
@@ -34,6 +35,7 @@ export async function createVshudProfileStateStartup(
 ): Promise<VshudProfileStateStartup> {
   initVshuProfilePaths()
   const profile = ensureActiveVshuProfile(userDataPath)
+  await initializeTeamCapabilities(userDataPath, profile.profile)
   // Real persistence avoids falsely empty RPCs; headless authority keeps automations owned by this host.
   const result = await createProfileStateStoreForStartup({
     userDataPath,

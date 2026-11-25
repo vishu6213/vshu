@@ -118,7 +118,7 @@ export abstract class VshuRuntimeWithActivateManagedWorktree extends VshuRuntime
         sleepingAgentWake = phoneWakeReport(
           records?.sleepingAgentSessionsByPaneKey,
           worktreeId,
-          Boolean(this.getAvailableAuthoritativeWindow())
+          Boolean(this.hasAuthoritativeWindow())
         )
       }
     }

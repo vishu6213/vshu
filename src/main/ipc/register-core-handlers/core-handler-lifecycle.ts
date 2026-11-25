@@ -4,6 +4,7 @@ import type {
   AiVaultPrepareSessionResumeResult
 } from '../../../shared/ai-vault/resume/ai-vault-resume-preparation'
 import type { VshuRuntimeService } from '../../runtime/vshu-runtime'
+import type { RendererShutdownCheckpointService } from '../../core-desktop/renderer-shutdown-checkpoint-service'
 import { settleWithinMs } from '../../startup/quit/quit-teardown-deadline'
 
 const RELAUNCH_DISMISSAL_CLOSE_TIMEOUT_MS = 2_000
@@ -24,7 +25,9 @@ export type CoreHandlerLifecycleOptions = {
   deferHostInitialization?: boolean
   hostInitialization?: Promise<void>
   onBeforeRelaunch?: () => void | Promise<void>
+  onQuit?: () => void
   vshuAccount?: VshuAccountService
+  rendererCheckpoint?: RendererShutdownCheckpointService
   getAdditionalAiVaultCodexHomePaths?: () => readonly string[]
   prepareAiVaultSessionResume?: (
     args: AiVaultPrepareSessionResumeArgs

@@ -2,6 +2,10 @@
 import { RuntimeRpcMobilePairing } from './runtime-rpc-mobile-pairing'
 import { publishHostDescriptor } from '../../hosts/platform-probe/host-descriptor'
 import type { VshuRuntimeRpcServerOptions } from './runtime-rpc-pairing-types'
+import {
+  VSHUD_IDLE_STOP_CLOSE_CODE,
+  VSHUD_IDLE_STOP_CLOSE_REASON
+} from '../../../../shared/remote-runtime/vshud-lifecycle/vshud-idle-stop-signal'
 
 export type RuntimeRpcClientActivity = {
   openConnections: number
@@ -22,10 +26,21 @@ export class VshuRuntimeRpcServer extends RuntimeRpcMobilePairing {
   /** What a host's idle exit reads to know whether any client is still using this server. */
   readClientActivity(): RuntimeRpcClientActivity {
     return {
-      openConnections: this.mobileSocketWiring?.connectionCount ?? 0,
+      // Passive watchers (keep-awake on a WSL host) must not hold the server and its distro up.
+      openConnections: this.mobileSocketWiring?.idleBlockingConnectionCount ?? 0,
       requestsInFlight: this.clientRequestsInFlight,
       lastRequestAt: this.lastClientRequestAt
     }
+  }
+
+  /** Refuses every later message undispatched; 4410 promises nothing unanswered ran, else 1012. */
+  fenceForIdleStop(): void {
+    this.idleStopFenced = true
+    const clean = this.clientRequestsInFlight === 0
+    this.mobileSocketWiring?.closeAllConnections(
+      clean ? VSHUD_IDLE_STOP_CLOSE_CODE : 1012,
+      clean ? VSHUD_IDLE_STOP_CLOSE_REASON : 'vshud stopping'
+    )
   }
 
   async stop(): Promise<void> {

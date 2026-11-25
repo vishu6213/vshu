@@ -95,12 +95,9 @@ and filesystem metadata, so they are not the total footprint. The cold seed cost
 one timing sample on a busy machine does not establish a speed guarantee. Deleting the seed
 left the other import directory readable. No existing worktrees were cleaned up.
 
-Tests cover concurrent publication, lock heartbeats and eviction, independent branch stand-ins,
-corrupt seeds, fallback, the opt-out, and preserved read-only files. Run them with:
-
-```sh
-VSHU_BACKGROUND_LAUNCH=1 pnpm test tests/e2e/cross-version-wire/release-source-cache.unit.test.ts tests/e2e/cross-version-wire/release-checkouts/release-source-retention.unit.test.ts tests/e2e/cross-version-wire/release-checkouts/release-checkout.unit.test.ts tests/e2e/cross-version-wire/release-checkouts/release-checkout-tree.unit.test.ts tests/e2e/cross-version-wire/release-checkouts/release-missing-packages.unit.test.ts config/scripts/artifact-storage/reflink-copy/space-sharing-copy.test.ts
-```
+The focused unit tests for concurrent publication, lock heartbeats and eviction, independent
+branch stand-ins, corrupt seeds, fallback, the opt-out, and preserved read-only files were
+removed in the test-suite reduction; no automated coverage of this cache remains.
 
 ## P3 remains an experiment
 
@@ -108,4 +105,4 @@ P3 shares the tracked source of new Vshu worktrees. It requires independent writ
 Git indexes, and matching checkout settings, and has more compatibility risk than P2's
 immutable test source. The APFS experiment demonstrated substantial storage savings but
 variable creation time and stays out of this change. Its code, measurements, and design notes
-are preserved on `nwparker/tracked-source-sharing-experiment`; [the draft PR is closed](https://github.com/vshu-ide/vshu/pull/27618).
+are preserved on `nwparker/tracked-source-sharing-experiment`; [the draft PR is closed](https://github.com/vishu6213/vshu/pull/27618).

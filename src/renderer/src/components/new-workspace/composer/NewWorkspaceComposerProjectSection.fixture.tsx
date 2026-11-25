@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { defineFixture } from '../../../component-fixtures/component-fixture'
+import type { Repo } from '../../../../../shared/repository/repo-types'
 import type { NewWorkspaceProjectOption } from '@/lib/workspace/creation/new-workspace-project-options'
 import {
   getProjectHostSetupSelectionKey,
@@ -7,29 +8,65 @@ import {
 } from '@/lib/workspace/creation/project-host-setup-options'
 import { NewWorkspaceComposerProjectSection } from './NewWorkspaceComposerProjectSection'
 
+const vshuRepo: Repo = {
+  id: 'vshu-local',
+  path: '/Users/alice/Projects/vshu',
+  displayName: 'vshu',
+  badgeColor: '#8b5cf6',
+  repoIcon: {
+    type: 'image',
+    source: 'upload',
+    src: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="12" fill="%2309090b"/><circle cx="12" cy="12" r="9" fill="none" stroke="%23ffffff" stroke-width="1.5"/><circle cx="12" cy="12" r="5" fill="%23ffffff"/><circle cx="9.5" cy="9.5" r="2" fill="%2309090b"/></svg>'
+  },
+  addedAt: 1
+}
+
+const personalVshuRepo: Repo = {
+  id: 'personal-vshu-local',
+  path: '/Users/alice/Projects/personal-vshu',
+  displayName: 'vshu-cloud',
+  badgeColor: '#14b8a6',
+  repoIcon: null,
+  addedAt: 2
+}
+
+const apiRepo: Repo = {
+  id: 'api-local',
+  path: '/Users/alice/Projects/platform-api',
+  displayName: 'platform-api',
+  badgeColor: '#ef4444',
+  repoIcon: null,
+  addedAt: 3
+}
+
+const fixtureRepos = [vshuRepo, personalVshuRepo, apiRepo]
+
 const projects: NewWorkspaceProjectOption[] = [
   {
     kind: 'project',
     id: 'vshu',
     projectId: 'vshu',
     displayName: 'vshu',
-    badgeColor: 'var(--muted-foreground)',
+    badgeColor: vshuRepo.badgeColor,
+    repo: vshuRepo,
     detail: 'vishu6213/vshu'
   },
   {
     kind: 'project',
     id: 'personal-vshu',
     projectId: 'personal-vshu',
-    displayName: 'vshu',
-    badgeColor: 'var(--muted-foreground)',
-    detail: 'personal/vshu'
+    displayName: 'vshu-cloud',
+    badgeColor: personalVshuRepo.badgeColor,
+    repo: personalVshuRepo,
+    detail: 'vishu6213/vshu-cloud'
   },
   {
     kind: 'project',
     id: 'api',
     projectId: 'api',
     displayName: 'platform-api',
-    badgeColor: 'var(--muted-foreground)',
+    badgeColor: apiRepo.badgeColor,
+    repo: apiRepo,
     detail: 'stablyai/platform-api'
   },
   {
@@ -125,10 +162,19 @@ function ProjectAndHostPreview({
   )
 }
 
-export const closed = defineFixture({ width: 560, render: () => <ProjectAndHostPreview /> })
-export const narrow = defineFixture({ width: 360, render: () => <ProjectAndHostPreview /> })
+export const closed = defineFixture({
+  width: 560,
+  store: { repos: fixtureRepos },
+  render: () => <ProjectAndHostPreview />
+})
+export const narrow = defineFixture({
+  width: 360,
+  store: { repos: fixtureRepos },
+  render: () => <ProjectAndHostPreview />
+})
 export const folderOnly = defineFixture({
   width: 560,
+  store: { repos: fixtureRepos },
   render: () => <ProjectAndHostPreview folderOnly />
 })
 export const projectMenu = defineFixture({

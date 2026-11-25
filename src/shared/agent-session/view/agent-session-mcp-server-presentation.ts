@@ -9,7 +9,10 @@ export type AgentSessionMcpServerGroup = {
   servers: AgentSessionMcpServer[]
 }
 
-/** Groups keep the order the agent listed their first server in. */
+/** Servers Vshu added from the host's list (`withVshuMcpSource` on the host). */
+export const VSHU_MCP_SOURCE = 'vshu'
+
+/** Vshu's group comes first; the others keep the order the agent listed their first server in. */
 export function groupAgentSessionMcpServers(
   servers: readonly AgentSessionMcpServer[]
 ): AgentSessionMcpServerGroup[] {
@@ -22,7 +25,10 @@ export function groupAgentSessionMcpServers(
       groups.set(server.source, { source: server.source, servers: [server] })
     }
   }
-  return [...groups.values()]
+  const vshu = groups.get(VSHU_MCP_SOURCE)
+  return vshu
+    ? [vshu, ...[...groups.values()].filter((group) => group !== vshu)]
+    : [...groups.values()]
 }
 
 const CLAUDE_AI_PREFIX = 'claude.ai '

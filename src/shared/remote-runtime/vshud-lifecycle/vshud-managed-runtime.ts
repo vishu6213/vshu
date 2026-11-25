@@ -30,8 +30,23 @@ export type VshudManagedDeferral = {
 /** The one deferral Update anyway may pass: counted terminals the daemon carries across. */
 export const VSHUD_UPDATE_TERMINALS_RUNNING_CODE = 'vshud_update_terminals_running'
 
+/** Deferrals over a census no daemon answered; force passes them only once the candidate proves no daemon is running. */
+const VSHUD_UPDATE_UNCOUNTED_TERMINALS_CODES: ReadonlySet<string> = new Set([
+  'vshud_update_terminal_census_unavailable',
+  'vshud_update_daemon_protocol_unverifiable'
+])
+
+/** Forcing these may end terminals the server runs itself, so the user confirms that first. */
+export function isVshudUncountedTerminalsDeferral(code: string): boolean {
+  return VSHUD_UPDATE_UNCOUNTED_TERMINALS_CODES.has(code)
+}
+
 /** Update anyway passes counted live-terminal deferrals, preserves version admission, and requires the confirmed incumbent build. */
-export type VshudManagedPastLiveTerminals = { incumbentVersion: string | null }
+export type VshudManagedPastLiveTerminals = {
+  incumbentVersion: string | null
+  /** The terminal count was unknown; the user accepted that terminals the server runs itself end. */
+  uncounted?: true
+}
 
 export type VshudManagedDeployResult =
   | {

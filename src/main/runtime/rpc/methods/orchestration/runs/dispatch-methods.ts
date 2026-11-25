@@ -12,6 +12,7 @@ import {
   DispatchParams,
   DispatchShowParams
 } from '../../../../../../shared/rpc-contract/orchestration/orchestration-params'
+import { formatVshuSessionAddress } from '../../../../../../shared/agent-session/identity/vshu-session-address'
 import {
   vshuSessionIdOrHandle,
   resolveDispatchAssigneeParty
@@ -226,13 +227,17 @@ export const ORCHESTRATION_DISPATCH_METHODS = [
           throw new Error(`Task not found: ${params.task}`)
         }
         const workerHandle = ctx?.assignee_handle ?? 'worker'
+        // Only a pre-dispatch preview may use the inspecting caller as a stand-in.
+        const coordinatorHandle = ctx?.creator_vshu_session_id
+          ? formatVshuSessionAddress(ctx.creator_vshu_session_id)
+          : vshuSessionIdOrHandle((ctx ? ctx.creator_handle : params.from) ?? 'coordinator', db)
         const preamble = buildDispatchPreamble({
           taskId: task.id,
           // Use the real Dispatch id for matching previews; use a placeholder before dispatch.
           dispatchId: ctx?.id ?? 'ctx_preview',
           canDispatchSubWorkers: (ctx?.depth ?? 1) < runtime.getNestedWorkerMaxDepth(),
           taskSpec: task.spec,
-          coordinatorHandle: vshuSessionIdOrHandle(params.from ?? 'coordinator', db),
+          coordinatorHandle,
           workerHandle: vshuSessionIdOrHandle(workerHandle, db),
           devMode: params.devMode,
           ...(ctx ? { cliCommand: runtime.getTerminalOrchestrationCliCommand(workerHandle) } : {})

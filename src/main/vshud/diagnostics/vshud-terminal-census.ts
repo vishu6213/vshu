@@ -1,5 +1,5 @@
 import {
-  countInProcessFallbackTerminals,
+  countInProcessTerminals,
   listLiveDaemonSessionsWithProtocol
 } from '../../daemon/providers/lifecycle/daemon-provider-state'
 import type { DaemonSessionInfo } from '../../daemon/protocol/daemon-session-info'
@@ -15,7 +15,7 @@ const UNVERIFIABLE: VshudTerminalCensus = {
 export async function collectVshudTerminalCensus(
   activatedAt: number,
   listSessions: () => Promise<DaemonSessionInfo[] | null> = listLiveDaemonSessionsWithProtocol,
-  countInProcess: () => Promise<number> = countInProcessFallbackTerminals
+  countInProcess: () => Promise<number> = countInProcessTerminals
 ): Promise<VshudTerminalCensus> {
   // Count in-process fallback terminals: daemon failure does not make restart safe.
   let inventory: [DaemonSessionInfo[] | null, number]
@@ -26,7 +26,8 @@ export async function collectVshudTerminalCensus(
   }
   const [sessions, inProcess] = inventory
   if (!sessions) {
-    return UNVERIFIABLE
+    // A daemon that never started leaves terminals in-process; a forced update must still count them.
+    return { ...UNVERIFIABLE, inProcessSessions: inProcess }
   }
   const timestampsKnown = sessions.every(
     (session) => Number.isFinite(session.createdAt) && session.createdAt > 0

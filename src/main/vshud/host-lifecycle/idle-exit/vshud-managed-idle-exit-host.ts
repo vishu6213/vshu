@@ -33,7 +33,7 @@ export function bindVshudIdleShutdown(request: VshudShutdownTrigger): void {
 }
 
 type VshudIdleExitRuntimePorts = {
-  rpc: { readClientActivity(): RuntimeRpcClientActivity }
+  rpc: { readClientActivity(): RuntimeRpcClientActivity; fenceForIdleStop(): void }
   agentStates: () => readonly { state: string }[]
   hasStagedMigration: () => boolean
   automationsBusy: () => boolean
@@ -77,7 +77,7 @@ async function startVshudManagedIdleExit(
     await import('../../daemon/vshud-daemon-retirement')
   const idleRecord = createIdleStopRecordOwnership(input.userDataPath)
   const hasChatProviders = (): boolean =>
-    getStructuredAgentSessionHost()?.hasLoadedProviders() ?? false
+    (getStructuredAgentSessionHost()?.chatSessionCount() ?? 0) > 0
   const ports: VshudManagedIdleExitPorts = {
     readClientActivity: () => input.rpc.readClientActivity(),
     listTerminals: () => getLocalPtyProvider().listProcesses(),
@@ -137,7 +137,7 @@ async function startVshudManagedIdleExit(
         if (daemon === 'serving' || (await hasNonTerminalWork())) {
           return false
         }
-        idleRecord.requestShutdown(requestIdleShutdown)
+        commitIdleStop(input.rpc, idleRecord)
         return true
       }
       if (idleStopMayReleaseWslHolder(process.env, outcome)) {
@@ -147,7 +147,8 @@ async function startVshudManagedIdleExit(
           console.error('[vshud] could not release the WSL distro holder:', error)
         }
       }
-      idleRecord.requestShutdown(requestIdleShutdown)
+      // Same turn as the check above: no request can slip in between and be lost to the exit.
+      commitIdleStop(input.rpc, idleRecord)
       return true
     }
   })
@@ -157,9 +158,20 @@ async function startVshudManagedIdleExit(
   })
 }
 
+/** Stop, then fence admission in the same turn (cleanup starts a microtask later), only when
+ *  this idle stop owns the stop: a SIGTERM stop already under way is no idle stop. */
+function commitIdleStop(
+  rpc: VshudIdleExitRuntimePorts['rpc'],
+  idleRecord: ReturnType<typeof createIdleStopRecordOwnership>
+): void {
+  if (idleRecord.requestShutdown(requestIdleShutdown)) {
+    rpc.fenceForIdleStop()
+  }
+}
+
 /** Discard failed, overdue and externally superseded idle stops, including cleanup before request completion. */
 export function createIdleStopRecordOwnership(userDataPath: string): {
-  requestShutdown(request: VshudShutdownTrigger | null): void
+  requestShutdown(request: VshudShutdownTrigger | null): boolean
   onShutdown(): void
 } {
   let idleOwnsStop = false
@@ -176,6 +188,7 @@ export function createIdleStopRecordOwnership(userDataPath: string): {
         idleOwnsStop = false
         discard()
       }
+      return idleOwnsStop
     },
     onShutdown: () => {
       if (!idleOwnsStop) {

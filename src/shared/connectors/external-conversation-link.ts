@@ -93,5 +93,11 @@ export type ExternalConversationLink = {
   /** When the owner first opened a bot thread's chat; null until then. Absent on links an older Vshu
    *  wrote and on non-bot links, which count as seen. */
   seenAt?: number | null
+  /** Slack bot threads: the bot left the thread when someone asked, so replies that don't mention
+   *  it never reach it. Main-process data: clients ignore it. */
+  muted?: true
+  /** The turn (as its conversation numbers it) whose "I've left this thread" line Vshu still owes
+   *  the thread, saved with the mute so a restart still posts it. Main-process data. */
+  leaveLine?: number
   createdAt: number
 }

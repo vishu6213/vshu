@@ -10,7 +10,11 @@ import {
   type WslVshudAccountEnvDependencies
 } from './wsl-vshud-account-env'
 import type { WslVshudHostCapabilityVerdict } from './wsl-vshud-host-environments'
-import { runKeyedSerializedOperation } from '../../../shared/concurrency/keyed-serialized-operations'
+import {
+  createWslVshudHostPushQueue,
+  pushToWslVshudHostWithRetry,
+  WSL_HOST_PUSH_RETRY_DELAYS_MS
+} from './wsl-vshud-host-push-retry'
 
 export type WslVshudHostAccountPush = {
   environmentId: string
@@ -66,47 +70,25 @@ async function pushOnce(
   }
 }
 
-const pending = new Map<string, Promise<void>>()
-const generations = new Map<string, number>()
-/** A failed push is retried, since the host otherwise keeps the old account until it reconnects. */
-const RETRY_DELAYS_MS = [5_000, 30_000, 120_000] as const
+const queue = createWslVshudHostPushQueue()
 
 /** Serialized per host, so an older selection can never land after a newer one. */
 export function pushWslVshudHostAccountEnv(
   push: WslVshudHostAccountPush,
   dependencies: WslVshudAccountEnvDependencies | null = getWslVshudAccountEnvDependencies(),
-  retryDelaysMs: readonly number[] = RETRY_DELAYS_MS
+  retryDelaysMs: readonly number[] = WSL_HOST_PUSH_RETRY_DELAYS_MS
 ): Promise<void> {
   if (!dependencies) {
     return Promise.resolve()
   }
-  const generation = (generations.get(push.environmentId) ?? 0) + 1
-  generations.set(push.environmentId, generation)
-  return enqueue(push, dependencies, retryDelaysMs, generation, 0)
-}
-
-function enqueue(
-  push: WslVshudHostAccountPush,
-  dependencies: WslVshudAccountEnvDependencies,
-  retryDelaysMs: readonly number[],
-  generation: number,
-  attempt: number
-): Promise<void> {
-  return runKeyedSerializedOperation(pending, push.environmentId, () =>
-    pushOnce(push, dependencies)
-  ).catch((error: unknown) => {
-    // Retain the last host account on failure; clearing it would launch under another account.
-    console.warn(`[wsl-hosts] Could not give ${push.distro} its selected accounts:`, error)
-    const delay = retryDelaysMs[attempt]
-    if (delay === undefined) {
-      return
-    }
-    const timer = setTimeout(() => {
-      // A newer push already carries the current selection.
-      if (generations.get(push.environmentId) === generation) {
-        void enqueue(push, dependencies, retryDelaysMs, generation, attempt + 1)
-      }
-    }, delay)
-    timer.unref?.()
-  })
+  return pushToWslVshudHostWithRetry(
+    queue,
+    push.environmentId,
+    () => pushOnce(push, dependencies),
+    (error) => {
+      // Retain the last host account on failure; clearing it would launch under another account.
+      console.warn(`[wsl-hosts] Could not give ${push.distro} its selected accounts:`, error)
+    },
+    retryDelaysMs
+  )
 }

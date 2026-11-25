@@ -7,6 +7,8 @@ import { GeneralPane } from '../general/GeneralPane'
 import { IntegrationsPane } from '../integrations/IntegrationsPane'
 import { MobileSettingsPane } from '../mobile/MobileSettingsPane'
 import { VshuAccountSettingsPane } from '../accounts/vshu/VshuAccountSettingsPane'
+import { ServerVshuAccountPane } from '../accounts/vshu/ServerVshuAccountPane'
+import { SettingsHostScopeUnavailableNotice } from '../host-scope/SettingsHostScopePicker'
 import { SettingsSetupGuidePane } from '../setup-guide/SettingsSetupGuidePane'
 import { ShareSkillsSettingsPane } from '../skills/sharing/ShareSkillsSettingsPane'
 import { SettingsSection } from '../section-layout/SettingsSection'
@@ -22,21 +24,41 @@ export function renderVshuAccountSettingsSection(
   t: Translate = translate
 ): React.JSX.Element | null {
   const { model, navigation, view } = context
+  const { target } = model.settingsHostScope
+  const serverName =
+    target.kind === 'environment'
+      ? (model.runtimeEnvironments.find((entry) => entry.id === target.environmentId)?.name ??
+        t('components.settings.notifications.server.fallbackHost', 'this server'))
+      : null
   return model.showDesktopOnlySettings ? (
     <SettingsSection
       id="vshu-account"
       title={t('auto.components.settings.vshuAccount.title', 'Vshu Account')}
-      description={t(
-        'auto.components.settings.vshuAccount.description',
-        'Share work instantly and reach your desktop from Vshu Mobile wherever you are.'
-      )}
+      description={
+        serverName === null
+          ? t(
+              'auto.components.settings.vshuAccount.description',
+              'Share work instantly and reach your desktop from Vshu Mobile wherever you are.'
+            )
+          : t(
+              'components.settings.vshuAccount.server.sectionDescription',
+              'The Vshu account {{host}} runs as, for its bots’ Slack, GitHub, Linear and webhooks.',
+              { host: serverName }
+            )
+      }
       searchEntries={navigation.getSectionSearchEntries('vshu-account')}
     >
-      {view.isSectionMounted('vshu-account') ? (
+      {!view.isSectionMounted('vshu-account') ? null : !model.settingsHostScope.available ? (
+        <SettingsHostScopeUnavailableNotice />
+      ) : (
         <SettingsGroup bodyClassName="py-4">
-          <VshuAccountSettingsPane />
+          {target.kind === 'environment' ? (
+            <ServerVshuAccountPane environmentId={target.environmentId} />
+          ) : (
+            <VshuAccountSettingsPane />
+          )}
         </SettingsGroup>
-      ) : null}
+      )}
     </SettingsSection>
   ) : null
 }
@@ -96,6 +118,7 @@ export function renderGeneralSettingsSection(
           settings={model.settings}
           updateSettings={model.updateSettings}
           updateSettingsOrThrow={model.updateSettingsOrThrow}
+          hostScope={model.settingsHostScope}
           fontSuggestions={model.terminalFontSuggestions}
           onRequestFontSuggestions={interactions.requestFontSuggestions}
           wslSupportedPlatform={terminal.localWslSupportedPlatform}

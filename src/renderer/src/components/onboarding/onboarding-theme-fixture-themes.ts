@@ -21,9 +21,8 @@ const fileId = (path: string): string =>
     .pop()!
     .replace(/\.json$/, '')
 const pluginKey = (path: string): string => path.match(/launch\/([^/]+)\//)![1]
-// Why any brand: the bundled plugins ship upstream's bytes, manifest name included.
 const manifests = import.meta.glob<{ contributes: { themes: { id: string; title: string }[] } }>(
-  '../../../../../resources/plugins/launch/stablyai.orca-{github-vscode-theme,vscode-default-themes}/*-plugin.json',
+  '../../../../../resources/plugins/launch/stablyai.orca-{github-vscode-theme,vscode-default-themes}/vshu-plugin.json',
   { eager: true, import: 'default' }
 )
 const titles = new Map(

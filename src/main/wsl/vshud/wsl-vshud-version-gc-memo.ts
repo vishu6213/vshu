@@ -27,7 +27,3 @@ export async function pruneWslVshudVersionsUntilClean(
     cleanHosts.add(key)
   }
 }
-
-export function resetWslVshudVersionGcMemoForTests(): void {
-  cleanHosts.clear()
-}

@@ -3,26 +3,21 @@ import { vshudRemoteBaseDir } from '../install/vshud-remote-windows-node'
 import { randomUUID } from 'node:crypto'
 import type { VshudDeployOptions, VshudDeployResult } from '../install/vshud-remote-deploy'
 import { isUnconfirmedSshCommandTermination } from '../../ssh/remote-exec/remote-exec-command'
-import {
-  withActivatedVersion,
-  type VshudActivationRecord,
-  type VshudStateSnapshot
-} from './vshud-activation-record'
+import { withActivatedVersion, type VshudStateSnapshot } from './vshud-activation-record'
 import {
   readVshudActivationRecord,
   writeVshudActivationRecord
 } from './vshud-activation-record-store'
 import { launchAndJudgeVshudSlot } from './vshud-candidate-launch-verdict'
-import { planVshudUpdate } from './vshud-update-plan'
+import { recountLostInProcessCount } from './vshud-update-plan'
 import {
-  type VshudTerminalCensus,
-  UNVERIFIABLE_VSHUD_TERMINAL_CENSUS
-} from '../../../shared/remote-runtime/vshud-lifecycle/vshud-terminal-census'
+  asksCandidateForLiveDaemons,
+  censusForLockedRecord,
+  countedLockedRecord,
+  vshudUpdatePlanner,
+  type VshudUpdatePlan
+} from './vshud-activation-census'
 import { runFencedStop } from './vshud-fenced-stop'
-import {
-  censusNeedsHostDaemonProtocols,
-  CURRENT_VSHUD_DAEMON_PROTOCOL
-} from './vshud-daemon-protocol-crossing'
 import { VSHUD_LOG_FILENAME } from '../install/vshud-remote-host-support'
 import { vshudSnapshotFailureReason } from '../host-state/vshud-state-snapshot-space'
 import {
@@ -72,21 +67,6 @@ type Outcome = Extract<VshudDeployResult, { outcome: 'installed-not-activated' }
 
 export const VSHUD_ACTIVATION_POLICY_REFUSED_CODE = 'vshud_activation_policy_refused'
 
-function countedLockedRecord(options: VshudDeployOptions, record: VshudActivationRecord): boolean {
-  const counted = options.censusRecord
-  return (
-    !counted || (counted.active === record.active && counted.activatedAt === record.activatedAt)
-  )
-}
-
-/** A census of another incumbent cannot authorize stopping this one. */
-function censusForLockedRecord(
-  options: VshudDeployOptions,
-  record: VshudActivationRecord
-): VshudTerminalCensus {
-  return countedLockedRecord(options, record) ? options.census : UNVERIFIABLE_VSHUD_TERMINAL_CENSUS
-}
-
 export async function activateInstalledVshud(
   options: VshudDeployOptions & { localVshudDir: string },
   fullVersion: string,
@@ -94,26 +74,15 @@ export async function activateInstalledVshud(
   lock: VshudActivationLockControl
 ): Promise<VshudDeployResult> {
   const now = options.now ?? ((): Date => new Date())
-  const notActivated = (code: string, reason: string, startCheckFailed?: true): Outcome => ({
-    outcome: 'installed-not-activated',
-    fullVersion,
-    code,
-    reason,
-    ...(startCheckFailed ? { startCheckFailed } : {})
-  })
+  const notActivated = (
+    code: string,
+    reason: string,
+    extra: { startCheckFailed?: true; forceable?: true } = {}
+  ): Outcome => ({ outcome: 'installed-not-activated', fullVersion, code, reason, ...extra })
+  const deferred = (defer: Extract<VshudUpdatePlan, { action: 'defer' }>): Outcome =>
+    notActivated(defer.code, defer.reason, defer.forceable ? { forceable: true } : {})
   const record = await readVshudActivationRecord(options)
-  const planFor = (
-    census: VshudTerminalCensus,
-    hostDaemonProtocols?: readonly number[]
-  ): ReturnType<typeof planVshudUpdate> =>
-    planVshudUpdate({
-      record,
-      candidateVersion: fullVersion,
-      census,
-      candidateDaemonProtocol: CURRENT_VSHUD_DAEMON_PROTOCOL,
-      ...(hostDaemonProtocols ? { hostDaemonProtocols } : {}),
-      ...(options.force !== undefined ? { force: options.force } : {})
-    })
+  const planFor = vshudUpdatePlanner(record, fullVersion, options.force)
   const census = censusForLockedRecord(options, record)
   let plan = planFor(census)
   if (plan.action === 'noop') {
@@ -123,25 +92,24 @@ export async function activateInstalledVshud(
   if (refusal) {
     return notActivated(VSHUD_ACTIVATION_POLICY_REFUSED_CODE, refusal)
   }
-  // Hosts predating the census protocol set cannot name mixed generations; the candidate can.
-  const asksCandidate = censusNeedsHostDaemonProtocols(census)
+  const asksCandidate = asksCandidateForLiveDaemons(census, options.force)
   if (
     plan.action === 'defer' &&
     !(asksCandidate && plan.code === 'vshud_update_daemon_protocol_unverifiable')
   ) {
-    return notActivated(plan.code, plan.reason)
+    return deferred(plan)
   }
   const preflight = await preflightVshudCandidate(
     { ...options, remoteInstallDir: remoteDir, fullVersion },
     asksCandidate
   )
   if ('failure' in preflight) {
-    return notActivated('vshud_candidate_preflight_failed', preflight.failure, true)
+    return notActivated(preflight.code, preflight.failure, { startCheckFailed: true })
   }
   const { hostDaemonProtocols } = preflight
   plan = planFor(census, hostDaemonProtocols)
   if (plan.action === 'defer') {
-    return notActivated(plan.code, plan.reason)
+    return deferred(plan)
   }
 
   let incumbent: VshudSlotIdentity | null = null
@@ -205,8 +173,9 @@ export async function activateInstalledVshud(
       releaseIncumbentAdmission: options.releaseIncumbentAdmission,
       now: () => now().getTime(),
       refuse: (recounted) => {
-        const plan = planFor(recounted, hostDaemonProtocols)
-        return plan.action === 'defer' ? notActivated(plan.code, plan.reason) : null
+        const plan =
+          recountLostInProcessCount(census, recounted) ?? planFor(recounted, hostDaemonProtocols)
+        return plan.action === 'defer' ? deferred(plan) : null
       },
       prepare: () => writeVshudActivationTransaction(options, transaction),
       stale: () =>
@@ -304,7 +273,9 @@ export async function activateInstalledVshud(
     const located =
       `${reason} Candidate stderr is at ` +
       `${joinRemotePath(options.host, remoteDir, VSHUD_LOG_FILENAME)}. ${restored}`
-    return notActivated(code, await withVshudLogTail(options, remoteDir, located), true)
+    return notActivated(code, await withVshudLogTail(options, remoteDir, located), {
+      startCheckFailed: true
+    })
   }
 
   const recordAfter = withActivatedVersion(record, fullVersion, snapshot, now(), options.appVersion)

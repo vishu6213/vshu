@@ -1,7 +1,7 @@
-import { VshuRuntimeWithClaudeRunningPaneAccountMove } from '../projection/claude-running-pane-account-move'
+import { VshuRuntimeWithMcpStaleTerminals } from '../projection/mcp-stale-terminal-restart'
 import type { RuntimeMobileSessionTabCloseResult } from '../../../../shared/remote-runtime/session-graph/runtime-session-contracts'
 
-export abstract class VshuRuntimeWithRefuseUnattributedMobileSessionTabClose extends VshuRuntimeWithClaudeRunningPaneAccountMove {
+export abstract class VshuRuntimeWithRefuseUnattributedMobileSessionTabClose extends VshuRuntimeWithMcpStaleTerminals {
   async refuseUnattributedMobileSessionTabClose(
     worktreeSelector: string,
     tabId: string

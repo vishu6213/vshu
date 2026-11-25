@@ -25,6 +25,7 @@ import { requireConfirmedRunning } from './wsl-vshud-connection-errors'
 import { WslVshudLivenessSupervisor } from './wsl-vshud-liveness-supervisor'
 import { createWslVshudHostTransport } from './wsl-vshud-host-transport'
 import { openWslVshudWatch } from './wsl-vshud-watch'
+import { isWslHostIdleStopped } from '../host-lifecycle/wsl-host-idle-stop'
 
 function transportFor(distro: string, environmentId = defaultWslVshudEnvironmentId(distro)) {
   return createWslVshudHostTransport({
@@ -69,6 +70,8 @@ export function createWslVshudLivenessSupervisor(options: {
       ),
     collectCensus: collectWslVshudCensus,
     hasUserVisibleWork: options.hasUserVisibleWork,
+    // Registered hosts use the default id; the idle-stop close lands before the exit's settle ends.
+    wasIdleStopped: (distro) => isWslHostIdleStopped(defaultWslVshudEnvironmentId(distro)),
     deferUntilRunning: deferUntilWslDistroRunning,
     requireRunning: async (distro) =>
       requireConfirmedRunning(await readSettledConfirmedRunningWslDistros(distro), distro),

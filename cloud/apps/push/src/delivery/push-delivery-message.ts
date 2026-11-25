@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto'
 import type { PushNotification } from '@vshu-cloud/push-contract/send-messages'
 
 export type PushVshuData = {
-  kind?: 'alert' | 'dismiss'
+  kind?: 'alert' | 'dismiss' | 'badge'
   hostFingerprint: string
   worktreeId?: string
   paneKey?: string
@@ -17,6 +17,8 @@ export type PushVshuData = {
 export type PushDelivery = {
   expiresAt: number
   sound?: boolean
+  /** The phone's total across hosts, filled in at send time for the badge kind. */
+  badge?: number
   registrationId: string
   hostFingerprint: string
   title: string

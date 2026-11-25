@@ -1,5 +1,8 @@
 import type { VshudActivationRecord } from './vshud-activation-record'
-import type { VshudTerminalCensus } from '../../../shared/remote-runtime/vshud-lifecycle/vshud-terminal-census'
+import {
+  isAnsweredVshudTerminalCensus,
+  type VshudTerminalCensus
+} from '../../../shared/remote-runtime/vshud-lifecycle/vshud-terminal-census'
 import {
   assessVshudLiveDaemonCrossing,
   describeDaemonProtocols
@@ -14,7 +17,30 @@ type VshudUpdateDecision =
       preservesLiveDaemon: boolean
       notes: string[]
     }
-  | { action: 'defer'; code: VshudUpdateDeferCode; reason: string }
+  | {
+      action: 'defer'
+      code: VshudUpdateDeferCode
+      reason: string
+      /** Full force may pass this: an answered, uncounted census, once the candidate proves no daemon. */
+      forceable?: true
+    }
+
+/** A recount that lost the first census's in-process count cannot show no in-process terminal is starting. */
+export function recountLostInProcessCount(
+  first: VshudTerminalCensus,
+  recounted: VshudTerminalCensus
+): VshudUpdateDecision | null {
+  return typeof first.inProcessSessions === 'number' &&
+    typeof recounted.inProcessSessions !== 'number'
+    ? {
+        action: 'defer',
+        code: 'vshud_update_terminal_census_unavailable',
+        reason:
+          'The server could not count the terminals it runs itself right before the stop, so ' +
+          'nothing was stopped. Vshu will try the update again.'
+      }
+    : null
+}
 
 /** `live-terminals` passes only a counted live-terminal deferral, never an uncounted census. */
 export type VshudUpdateForce = boolean | 'live-terminals'
@@ -32,7 +58,7 @@ export function planVshudUpdate(input: {
   candidateVersion: string
   census: VshudTerminalCensus
   candidateDaemonProtocol: VshudDaemonProtocolFacts
-  /** Daemon generations the candidate found alive on the host; consulted only when the census cannot name them. */
+  /** Daemon generations the candidate found alive on the host; consulted when the census cannot name them, or under force when it is uncounted. */
   hostDaemonProtocols?: readonly number[]
   force?: VshudUpdateForce
 }): VshudUpdateDecision {
@@ -42,15 +68,16 @@ export function planVshudUpdate(input: {
       reason: `${input.candidateVersion} is already the active version; nothing to restart.`
     }
   }
+  // An uncounted or pre-field in-process count stays unknown here; only force may pass it, below.
   const inProcess = input.census.inProcessSessions ?? 0
-  // In-process terminals cannot survive restart; force cannot override this even if daemon census is empty.
+  // In-process terminals cannot survive restart; force cannot override a counted one, with or without a daemon.
   if (inProcess > 0) {
     return {
       action: 'defer',
       code: 'vshud_update_ends_in_process_terminals',
       reason:
         `${inProcess} terminal${inProcess === 1 ? ' runs' : 's run'} inside the vshud process ` +
-        'itself because its terminal daemon is degraded. Any restart ends ' +
+        'itself because its terminal daemon is degraded or not running. Any restart ends ' +
         `${inProcess === 1 ? 'it' : 'them'}, and forcing the update cannot keep ` +
         `${inProcess === 1 ? 'it' : 'them'} alive. Close ${inProcess === 1 ? 'it' : 'them'}, ` +
         'then update.'
@@ -73,14 +100,35 @@ export function planVshudUpdate(input: {
     }
   }
   const { liveSessions } = input.census
+  // The census answered and the candidate proved every daemon generation dead: no daemon terminal can be stranded.
+  if (
+    liveSessions === null &&
+    input.force === true &&
+    input.hostDaemonProtocols?.length === 0 &&
+    isAnsweredVshudTerminalCensus(input.census)
+  ) {
+    return {
+      action: 'proceed',
+      preservesLiveDaemon: false,
+      notes: [
+        input.census.inProcessSessions === 0
+          ? 'Forced while no terminal daemon is running and vshud runs no terminals itself.'
+          : 'Forced while no terminal daemon is running. This vshud cannot count the terminals ' +
+            'it runs itself, and they end with the restart.'
+      ]
+    }
+  }
+  // Only an uncounted census the server answered can pass on a later force; a counted one never can.
+  const forceable = liveSessions === null && isAnsweredVshudTerminalCensus(input.census)
   if (input.force && crossing.state === 'unverifiable') {
     return {
       action: 'defer',
       code: 'vshud_update_daemon_protocol_unverifiable',
+      ...(forceable ? { forceable: true } : {}),
       reason:
         'The terminal daemon did not report its protocol, so this update cannot show that ' +
         `vshud ${input.candidateVersion} will reach the terminals it is forced past. Retry ` +
-        'when the daemon answers.'
+        'when the daemon answers or has stopped.'
     }
   }
   if (liveSessions === null) {
@@ -88,10 +136,11 @@ export function planVshudUpdate(input: {
       return {
         action: 'defer',
         code: 'vshud_update_terminal_census_unavailable',
+        ...(forceable ? { forceable: true } : {}),
         reason:
           'The terminal daemon did not answer a session count, so this update cannot tell ' +
-          'whether work is running on the host. Retry, or force the update knowing terminals ' +
-          'may be mid-flight.'
+          'whether work is running on the host. Retry, or force the update: it goes ahead only ' +
+          'if no terminal daemon is running, and terminals vshud runs itself end.'
       }
     }
     return {

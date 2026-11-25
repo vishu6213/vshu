@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useAppStore } from '@/store'
+import { useVshuTeamFeatureBlocked } from '@/lib/vshu-team-policy'
+import { VSHU_CLOUD_TEAM_POLICY_FLAGS } from '../../../../shared/vshu-profiles/vshu-cloud-team-policy'
 import {
   resolveMobilePairingConnectionMode,
   type MobilePairingConnectionMode
@@ -12,6 +14,7 @@ export function useMobilePairingConnectionMode(): [
 ] {
   const savedConnectionMode = useAppStore((s) => s.settings?.mobilePairingConnectionMode)
   const signedIn = useAppStore((s) => s.vshuProfileAuthStatus?.state === 'connected')
+  const relayBlocked = useVshuTeamFeatureBlocked(VSHU_CLOUD_TEAM_POLICY_FLAGS.mobileRelay)
   const [connectionMode, setConnectionMode] = useState<MobilePairingConnectionMode>(() =>
     resolveMobilePairingConnectionMode(savedConnectionMode, { signedIn })
   )
@@ -23,5 +26,5 @@ export function useMobilePairingConnectionMode(): [
     setResolvedFrom({ savedConnectionMode, signedIn })
     setConnectionMode(resolveMobilePairingConnectionMode(savedConnectionMode, { signedIn }))
   }
-  return [connectionMode, setConnectionMode]
+  return [relayBlocked ? 'local-only' : connectionMode, setConnectionMode]
 }

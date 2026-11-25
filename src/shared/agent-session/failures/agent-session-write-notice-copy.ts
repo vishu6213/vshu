@@ -42,6 +42,8 @@ export const AGENT_SESSION_WRITE_NOTICE_COPY = {
   historyUnreadable: "Vshu couldn't read this chat's saved history.",
   historyUnusable: 'Unable to load this chat.',
   historyUnavailable: "Vshu couldn't open this chat's history right now.",
+  diskFull: 'The disk on the computer running this chat is full.',
+  freeDiskSpace: 'Free up space on that disk, then try again.',
   savedInOtherFolder: 'This conversation was saved in another folder.',
   savedByNewerVshu: 'Chats were saved by a newer Vshu.',
   updateVshuToKeepUsing: 'Update Vshu to keep using them.',

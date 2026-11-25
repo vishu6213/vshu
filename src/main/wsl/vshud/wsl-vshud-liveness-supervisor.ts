@@ -5,7 +5,7 @@ import { isNoBootRefusal } from './wsl-vshud-connection-errors'
 import type { WslVshudConnectIntent, WslVshudConnectionStatus } from './wsl-vshud-connection-status'
 import { wslDistroHolderKey } from '../discovery/wsl-distro-holder-record'
 import { recoverWslVshud, type WslVshudRecoveryReason } from './wsl-vshud-liveness-recovery'
-import { confirmsRunning, gatherWslLivenessEvidence } from './wsl-vshud-liveness-evidence'
+import { confirmsRunning, gatherWslLivenessEvidence, revives } from './wsl-vshud-liveness-evidence'
 import {
   attachSupervisedWatch,
   cancellableWait,
@@ -282,7 +282,7 @@ export class WslVshudLivenessSupervisor {
       case 'vshud-exited': {
         disarmSupervised(entry)
         const generation = entry.generation
-        const visible = await this.deps.hasUserVisibleWork(entry.distro)
+        const visible = await revives(this.deps, entry.distro)
         if (entry.generation !== generation) {
           return
         }

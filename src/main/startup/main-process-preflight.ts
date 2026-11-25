@@ -52,6 +52,8 @@ import {
   startMainThreadChurnProbe
 } from '../diagnostics/main-thread-churn-probe'
 import { setSpawnObserver } from '@vshu/process-host/spawn-observer'
+import { setDefaultProcessLauncher } from '@vshu/process-host'
+import { launchPlainProcessSpecOnPosixWorker } from '../git/command-runner/process-capture/process-spec-worker-launch'
 import { settledDiffCache } from '../git/source-control/git-read-cache-invalidation'
 import { reserveServeStdoutForReadiness } from '../server/serve-stdout-boundary'
 import { createServeDesktopActivationGate } from './serve-launch/serve-desktop-activation'
@@ -223,6 +225,10 @@ function initializeMainProcessPreflight(options: MainProcessPreflightOptions): b
   if (isMainThreadDiagnosticsEnabled()) {
     // Include process-host spawns too; Git-only probe sites miss rg/ps/PTY helpers.
     setSpawnObserver(recordSubprocessSpawn)
+  }
+  // posix_spawn blocks its caller; under memory/disk pressure a launch on main froze the window for minutes.
+  if (process.platform !== 'win32' && process.env.VSHU_CHILD_PROCESS_WORKER_DISABLED !== '1') {
+    setDefaultProcessLauncher(launchPlainProcessSpecOnPosixWorker)
   }
   startMainThreadChurnProbe({ extraStats: () => ({ diffCache: settledDiffCache.stats() }) })
   // Lock after userData override so dev/packaged namespaces differ; concurrent dev copies also need separate profiles to avoid store corruption (#1326, #1312).

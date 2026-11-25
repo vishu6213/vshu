@@ -83,7 +83,7 @@ export const ORCHESTRATION_CALLER_METHODS = [
               live: true
             }
           : null,
-      // A Vshu-launched agent's own pane and launch secret prove it is one; no hook needs to have fired.
+      // An Vshu-launched agent's own pane and launch secret prove it is one; no hook needs to have fired.
       terminal:
         !orchestrationCaller &&
         runtime.verifyOrchestrationCompatibilityCaller(orchestrationCompatibilityEvidence, {
@@ -101,7 +101,7 @@ export const ORCHESTRATION_CALLER_METHODS = [
       if (!isVshuSessionId(params.sessionId)) {
         throw new OrchestrationError(
           CODES.unknown,
-          `${params.sessionId} is not a Vshu session ID.`,
+          `${params.sessionId} is not an Vshu session ID.`,
           { effectsApplied: false }
         )
       }

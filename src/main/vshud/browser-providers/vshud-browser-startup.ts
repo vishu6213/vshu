@@ -47,7 +47,9 @@ export function startVshudBrowserProvider(options: VshudBrowserProviderOptions):
       })
     },
     {
-      supportsGoogleCookieClear: () => provider?.supportsGoogleCookieClear?.() === true,
+      supportsEngineCapability: (capability) =>
+        provider?.supportsEngineCapability?.(capability) === true,
+      identity: () => provider?.identity?.() ?? null,
       headless: true,
       clientHostingWithoutEngine: true,
       isAvailable: engineAvailable

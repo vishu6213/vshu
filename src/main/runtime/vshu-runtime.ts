@@ -1,6 +1,10 @@
+import { agentQuestionNotices } from './rpc/methods/orchestration/messaging/agent-question-notices'
+import { announceAgentCliUpdatesFinished } from '../agent-cli-update/agent-cli-update-service'
+import { forgetPairedServerAsksOf } from './orchestration/federation/paired-server-asks/paired-server-ask-removal'
 import type { AgentMessageSource } from '../../shared/agent-session/journal/agent-session-message-source'
 import { chatMailPlace } from '../external-conversations/external-conversation-links'
 import * as botGroups from '../bots/bot-group-runtime'
+import * as botGroupRemote from '../bots/bot-group-remote-answers'
 import { chatReplyFollowUp } from './rpc/methods/orchestration/messaging/reply-follow-up'
 import type { SessionOptionValue } from '../../shared/native-chat/input/native-chat-session-options'
 import { conversationRecordReader } from './orchestration/addressing/session-lineage/structured-session-lineage'
@@ -14,11 +18,8 @@ import {
   publishWorkspaceViewChanges
 } from './client/settings/runtime-workspace-view-change-events'
 import { syncPRAutoRefreshCadence } from '../github/pull-requests/refresh/pr-auto-refresh-cadence-sync'
-import {
-  VshuRuntimeWithSidebarTemporal,
-  sidebarFactsRuntime
-} from './sidebar-inputs/vshu-runtime-sidebar-temporal'
-import { VshuRuntimeWithAgentTransitions } from './construction/vshu-runtime-agent-transitions'
+import { sidebarFactsRuntime } from './sidebar-inputs/vshu-runtime-sidebar-temporal'
+import { VshuRuntimeWithAgentQuestions } from './construction/vshu-runtime-agent-questions'
 import { VSHU_SIDEBAR_INPUTS_IS_MAIN } from '../../shared/sidebar-list/feed/sidebar-inputs-switch'
 import { VSHU_LAYOUT_OWNER_IS_MAIN } from '../../shared/workspace-layout/layout-owner-switch'
 import type { RuntimeCommandSurfaceHost } from './construction/runtime-installed-command-surfaces'
@@ -54,8 +55,8 @@ import {
 } from './agent-session/launch/structured-agent-availability'
 import { PairedServerRowsProducer } from './sidebar-inputs/workspace-rows/paired-server-rows-producer'
 import { RepoIconDataUrls } from './sidebar-inputs/repo-icons/repo-icon-data-urls'
+import { runtimeIconFetch } from './sidebar-inputs/repo-icons/repo-icon-remote-fetch'
 import { WorkspaceRowsProducer } from './sidebar-inputs/workspace-rows/workspace-rows-producer'
-import { getMainHttpClient } from '../network/http-client'
 import { getRuntimeDesktopSurface } from './construction/runtime-desktop-surface'
 import { CollapseWriteOrder } from './client/settings/workspace-view-collapse-writes'
 import { SidebarInputsFeed } from './sidebar-inputs/feed/sidebar-inputs-feed'
@@ -73,12 +74,8 @@ import {
 import { structuredAgentSessionHostTabId } from '../../shared/agent-session/view/structured-agent-session-host-tab-id'
 import { runtimeBotChatTreeIndex } from '../bots/bot-chat-tree-host'
 
-const VshuRuntimeSidebarBase: typeof VshuRuntimeWithAgentTransitions = VSHU_SIDEBAR_INPUTS_IS_MAIN
-  ? VshuRuntimeWithSidebarTemporal
-  : VshuRuntimeWithAgentTransitions
-
 // oxlint-disable-next-line typescript/no-unsafe-declaration-merging -- SAFETY: The existing Linear installer supplies the canonical prototype surface.
-class VshuRuntimeService extends VshuRuntimeSidebarBase {
+class VshuRuntimeService extends VshuRuntimeWithAgentQuestions {
   protected override assertStructuredQueuedMessageAllowed(sessionId: string, messageId: string) {
     botGroups.assertBotGroupQueuedMessageAllowed(this, sessionId, messageId)
   }
@@ -94,7 +91,13 @@ class VshuRuntimeService extends VshuRuntimeSidebarBase {
     return this.store ? chatMailPlace(this.store, sessionId, from) : null
   }
 
+  protected override botGroupRoomMailArrived(groupId: string): void {
+    botGroupRemote.remoteRoomMailArrived(botGroups.runtimeBotGroups(this), groupId)
+  }
+
+  // Runs only when a bot is deleted, before its workspace goes.
   protected override leaveBotGroups(botId: string): Promise<void> {
+    forgetPairedServerAsksOf(this, botId)
     return botGroups.runtimeBotGroups(this).removeBot(botId)
   }
 
@@ -141,19 +144,12 @@ class VshuRuntimeService extends VshuRuntimeSidebarBase {
         hostLabelOverrides: () => getHostDisplayLabelOverrides(this.requireStore().getSettings())
       })
     : null
-  readonly repoIconDataUrls = VSHU_SIDEBAR_INPUTS_IS_MAIN
-    ? new RepoIconDataUrls({
-        repos: () => this.store?.getRepos() ?? [],
-        // The desktop net.fetch wrapper rejects manual redirects.
-        fetch: (url, init) => {
-          const manualRedirectFetch = getRuntimeDesktopSurface().fetchRepoIcon
-          return manualRedirectFetch
-            ? manualRedirectFetch(url, init)
-            : getMainHttpClient().fetch(url, init)
-        },
-        encoder: () => getRuntimeDesktopSurface().encodeRepoIconPng
-      })
-    : null
+  // The phone's page shell loads no https image, so it draws repo icons from these.
+  readonly repoIconDataUrls = new RepoIconDataUrls({
+    repos: () => this.store?.getRepos() ?? [],
+    fetch: runtimeIconFetch,
+    encoder: () => getRuntimeDesktopSurface().encodeRepoIconPng
+  })
   readonly collapseWriteOrder = VSHU_SIDEBAR_INPUTS_IS_MAIN ? new CollapseWriteOrder() : null
   readonly workspaceRows = VSHU_SIDEBAR_INPUTS_IS_MAIN
     ? new WorkspaceRowsProducer({
@@ -174,7 +170,7 @@ class VshuRuntimeService extends VshuRuntimeSidebarBase {
             pairedServerRows: requireSwitchedOn(this.pairedServerRows),
             workspaceLifecycle: requireSwitchedOn(this.workspaceLifecycle),
             workspaceRows: requireSwitchedOn(this.workspaceRows),
-            repoIcons: requireSwitchedOn(this.repoIconDataUrls),
+            repoIcons: this.repoIconDataUrls,
             store: () => this.store,
             onClientEvent: (listener, options) => this.onClientEvent(listener, options)
           }),
@@ -205,7 +201,7 @@ class VshuRuntimeService extends VshuRuntimeSidebarBase {
     return this.references.find(params)
   }
 
-  constructor(...args: ConstructorParameters<typeof VshuRuntimeWithAgentTransitions>) {
+  constructor(...args: ConstructorParameters<typeof VshuRuntimeWithAgentQuestions>) {
     super(...args)
     // Headless hosts must register both invalidators themselves; they never load desktop IPC.
     registerDetectedWorktreeScanInvalidation()
@@ -215,8 +211,10 @@ class VshuRuntimeService extends VshuRuntimeSidebarBase {
     publishBotSidebarViewChanges(this.store, () => this.notifyBotsChanged({ kinds: ['bot'] }))
     publishNativeChatPreferenceChanges(this.store, (event) => this.emitClientEvent(event))
     publishSettingsChanges(this.store, (event) => this.emitClientEvent(event))
+    announceAgentCliUpdatesFinished((event) => this.emitClientEvent(event))
     this.botSessions = botSessionHooks(this)
     this.botChatTreeIndex = runtimeBotChatTreeIndex(this)
+    this.automation.botChat = botGroups.withGroupRoomChats(this, this.automation.botChat)
     syncPRAutoRefreshCadence(this.store)
   }
 
@@ -235,14 +233,14 @@ class VshuRuntimeService extends VshuRuntimeSidebarBase {
 
   /** Whether a layout-owning window can show a tab before process creation. */
   canPublishAgentLaunchTab(): boolean {
-    return Boolean(this.notifier?.publishAgentLaunchTab && this.getAvailableAuthoritativeWindow())
+    return Boolean(this.notifier?.publishAgentLaunchTab && this.hasAuthoritativeWindow())
   }
 
   /** Publish before spawn when a window owns the layout; otherwise return null. */
   publishAgentLaunchTab(
     request: Omit<AgentLaunchTabPublishRequest, 'requestId'>
   ): Promise<AgentLaunchTabPublished> | null {
-    if (!this.notifier?.publishAgentLaunchTab || !this.getAvailableAuthoritativeWindow()) {
+    if (!this.notifier?.publishAgentLaunchTab || !this.hasAuthoritativeWindow()) {
       return null
     }
     return this.notifier.publishAgentLaunchTab(request)
@@ -304,6 +302,9 @@ class VshuRuntimeService extends VshuRuntimeSidebarBase {
   protected continueRestoredWorkerMail(db: OrchestrationDb): void {
     continueRestoredWorkerMailSoon(this, db, () => this._orchestrationDb === db)
     botGroups.startBotGroupsSoon(this, () => this._orchestrationDb === db)
+    this.startQuestionReconciler(db, (taker, ids, chat) =>
+      agentQuestionNotices(this, taker, ids, chat)
+    )
   }
 
   /** Read-only layout stream; layout.subscribe is not advertised yet. */

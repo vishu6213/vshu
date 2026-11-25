@@ -180,12 +180,14 @@ if (!refreshInstalled) {
   console.log('Updating installed app at:', installedDir)
   try {
     execFileSync('taskkill', ['/F', '/IM', 'Vshu.exe', '/T'], { stdio: 'ignore' })
+    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 1000)
   } catch {
     // Not running.
   }
   try {
     fs.mkdirSync(installedDir, { recursive: true })
     fs.rmSync(path.join(installedDir, 'resources', 'app.asar'), { force: true })
+    fs.rmSync(path.join(installedDir, 'resources', 'app'), { recursive: true, force: true })
     fs.cpSync(distRoot, installedDir, { recursive: true, force: true })
     if (fs.existsSync(iconPath)) {
       fs.copyFileSync(iconPath, path.join(installedDir, 'vshu-logo-bw.ico'))

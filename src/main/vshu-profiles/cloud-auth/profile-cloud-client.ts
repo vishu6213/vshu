@@ -1,8 +1,14 @@
+import { cleanCloudServiceOrigin } from '../../../shared/network/cloud-service-url'
+import { collectAuthorizedDesktopReport } from './desktop-client-report'
 import type {
   VshuCloudCapabilities,
   VshuCloudOrgSummary,
   VshuProfileCloudSummary
 } from '../../../shared/vshu-profiles/vshu-profiles'
+import {
+  VSHU_CLOUD_TEAM_SETTINGS,
+  vshuCloudTeamPolicySchema
+} from '../../../shared/vshu-profiles/vshu-cloud-team-policy'
 import type { VshuCloudAuthConfig } from './profile-cloud-auth-config'
 import type { VshuCloudSession } from '../cloud-session/profile-cloud-session-store'
 import type { VshuCloudSessionExchangeResponse } from '../cloud-session/profile-cloud-session-exchange'
@@ -85,12 +91,22 @@ function normalizeCapabilities(value: unknown): VshuCloudCapabilities {
       }
     }
   }
+  const consoleOrigin =
+    typeof record.consoleOrigin === 'string'
+      ? cleanCloudServiceOrigin(record.consoleOrigin, false)
+      : null
+  const teamPolicy =
+    flags[VSHU_CLOUD_TEAM_SETTINGS] === true
+      ? vshuCloudTeamPolicySchema.safeParse(record.teamPolicy)
+      : undefined
   return {
     flags,
     refreshedAt:
       typeof record.refreshedAt === 'number' && Number.isFinite(record.refreshedAt)
         ? record.refreshedAt
-        : Date.now()
+        : Date.now(),
+    ...(consoleOrigin ? { consoleOrigin } : {}),
+    ...(teamPolicy?.success ? { teamPolicy: teamPolicy.data } : {})
   }
 }
 
@@ -163,6 +179,7 @@ const CLOUD_REFRESH_TIMEOUT_MS = 20_000
 type PostJsonOptions = {
   accessToken?: string
   timeoutMs?: number
+  reportHeaders?: Record<string, string>
 }
 
 // Without an explicit rejection, a rotating credential may already be spent.
@@ -191,7 +208,8 @@ async function postJson<T>(url: string, body: unknown, options?: PostJsonOptions
     method: 'POST',
     headers: {
       'content-type': 'application/json',
-      ...(options?.accessToken ? { authorization: `Bearer ${options.accessToken}` } : {})
+      ...(options?.accessToken ? { authorization: `Bearer ${options.accessToken}` } : {}),
+      ...options?.reportHeaders
     },
     body: JSON.stringify(body),
     // Redirects could leak rotating credentials; timeout bounds renderer IPC waits.
@@ -233,6 +251,21 @@ export async function refreshVshuCloudCapabilities(
     cloud: response.cloud === undefined ? undefined : normalizeCloudSummary(response.cloud),
     organizations: normalizeOrganizations(response.organizations),
     capabilities: normalizeCapabilities(response.capabilities)
+  }
+}
+
+export async function uploadDesktopReportAfterCapabilityRefresh(
+  config: VshuCloudAuthConfig,
+  session: VshuCloudSession,
+  capabilities: VshuCloudCapabilities
+): Promise<void> {
+  const reportHeaders = collectAuthorizedDesktopReport(capabilities, session.identity)
+  if (reportHeaders) {
+    await postJson(
+      config.capabilitiesEndpoint,
+      {},
+      { accessToken: session.accessToken, reportHeaders }
+    )
   }
 }
 

@@ -1,4 +1,5 @@
 import { WslVshudBridgeActivity, wslHostBridgeEvents } from '../vshud/wsl-vshud-bridge-activity'
+import { waitForIdleStoppedVshudExit } from './wsl-host-idle-stop'
 import { listenWslVshudStdioBridge } from '../vshud/wsl-vshud-stdio-bridge'
 import { createWslVshudPairingRecovery } from '../vshud/wsl-vshud-pairing-repair'
 import {
@@ -189,11 +190,14 @@ export function createWslHostConnector(options: {
           ? manager.ensure(distro, options)
           : Promise.resolve(manager.get(distro) ?? manager.ensure(distro, options))
       }
-      const connected = liveness.connect(distro, options).finally(() => {
-        if (livenessConnects.get(key)?.promise === connected) {
-          livenessConnects.delete(key)
-        }
-      })
+      // Start, a due automation and a wake all wait out an idle-stopped vshud's exit (#46567).
+      const connected = waitForIdleStoppedVshudExit(defaultWslVshudEnvironmentId(distro))
+        .then(() => liveness.connect(distro, options))
+        .finally(() => {
+          if (livenessConnects.get(key)?.promise === connected) {
+            livenessConnects.delete(key)
+          }
+        })
       livenessConnects.set(key, {
         promise: connected,
         noBoot: Boolean(noBoot),

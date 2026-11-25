@@ -75,8 +75,8 @@ You can still download any build directly from the [GitHub Releases page](https:
 
 <Callout title="Don't like the current update">
   Older versions are always available on the [GitHub Releases
-  page](https://github.com/vishu6213/vshu/releases). Vshu will not force-downgrade your worktree
-  data if you go back.
+  page](https://github.com/vishu6213/vshu/releases). Vshu will not force-downgrade your worktree data
+  if you go back.
 </Callout>
 
 ## Platform notes
@@ -127,12 +127,12 @@ Which package manager appears depends on what your system actually has: `apt`, e
 
 On Linux the [Vshu CLI](/docs/cli/reference) installs as **`vshu-ide`**, not `vshu`. GNOME Orca — the screen reader that ships by default on Ubuntu and other GNOME desktops — already owns `/usr/bin/orca`, and Vshu will not shadow it. The `.deb` and `.rpm` packages are named `vshu-ide` for the same reason.
 
-- The `.deb` and `.rpm` put `vshu-ide` on your `PATH` at install time, as `/usr/bin/vshu-ide`.
+- The `.deb` and `.rpm` put `vshu-ide` on your `PATH` at install time, as `/usr/bin/orca-ide`.
 - With the AppImage, register the CLI from [Settings → General → Vshu CLI](/docs/settings). That installs `~/.local/bin/vshu-ide`.
 - Inside Vshu's own terminals, bare `vshu` works. Vshu puts a shim on the `PATH` of the terminals it manages, so agents and scripts running there use the same command as on macOS and Windows.
 - On a headless host, a packaged `vshu serve` writes a bare `vshu` into `~/.local/bin` as it starts, unless a file it does not own already holds that name. It writes that _during_ startup, so it is never what starts the server — the first launch is always [`vshu-ide serve`](/docs/remote-servers).
 
-Do not verify with `command -v vshu`: outside Vshu's terminals the packages do not put a bare `vshu` on your `PATH`. Use `vshu-ide` in your own shell and `vshu` inside Vshu. If you want the short name everywhere, link it yourself:
+Do not verify with `command -v vshu`: on a GNOME desktop that succeeds and resolves to the screen reader. Use `vshu-ide` in your own shell and `vshu` inside Vshu. If you want the short name everywhere and you do not use the screen reader, link it yourself:
 
 ```
 ln -s "$(command -v vshu-ide)" ~/.local/bin/vshu

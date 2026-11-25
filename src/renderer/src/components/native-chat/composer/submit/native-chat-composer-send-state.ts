@@ -49,7 +49,7 @@ export function nativeChatComposerSendState(
     editSession: { canSave: boolean } | undefined
     isWorking: boolean
     canStop: boolean
-    /** The draft is a Vshu command such as /resume, which runs without the agent. */
+    /** The draft is an Vshu command such as /resume, which runs without the agent. */
     vshuCommand?: boolean
     /** Goal mode submits the draft as an objective, which starts work. */
     goalMode?: boolean

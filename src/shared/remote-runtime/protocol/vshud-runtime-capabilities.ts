@@ -19,11 +19,28 @@ export const VSHUD_MIGRATION_BLOB_CHANNEL_RUNTIME_CAPABILITY = 'vshud.migration-
 // Push desktop-owned host accounts (WSL) only to hosts supporting accounts.setHostLaunchEnv.
 export const HOST_ACCOUNT_LAUNCH_ENV_RUNTIME_CAPABILITY = 'accounts.host-launch-env.v1' as const
 
+// settings.update accepts nativeChatAutoName, so a WSL host's chat naming follows the desktop switch.
+export const HOST_CHAT_AUTO_NAME_SETTING_RUNTIME_CAPABILITY =
+  'settings.native-chat-auto-name.v1' as const
+
 // Older vshuds reject --reclaim-stale-lock; without this capability offer manual instructions.
 export const VSHUD_STALE_LOCK_RECLAIM_RUNTIME_CAPABILITY = 'vshud.stale-lock-reclaim.v1' as const
 
 // A WSL host's Remove asks host.peerDesktops before ending a server other desktops may share.
 export const VSHUD_PEER_DESKTOPS_RUNTIME_CAPABILITY = 'vshud.peer-desktops.v1' as const
+
+// A socket whose handshake carries the passive client capability only watches: idle exit ignores it.
+// Advertised so a client can tell whether its passive socket will be ignored; sending it is always safe.
+export const VSHUD_IDLE_PASSIVE_CLIENTS_RUNTIME_CAPABILITY =
+  'vshud.idle-passive-clients.v1' as const
+export const IDLE_PASSIVE_CLIENT_CAPABILITY = 'client.idle-passive.v1' as const
+
+// A desktop control socket that may stay open while its host idles: the socket alone doesn't hold
+// idle exit, but its ordinary requests still count as use (probes, declarations, streams don't).
+// Not the passive capability: older vshuds would ignore every request on it.
+export const VSHUD_IDLE_PASSIVE_CONTROL_RUNTIME_CAPABILITY =
+  'vshud.idle-passive-control.v1' as const
+export const IDLE_PASSIVE_CONTROL_CLIENT_CAPABILITY = 'client.idle-passive-control.v1' as const
 
 export const VSHUD_RUNTIME_CAPABILITIES = [
   VSHUD_STALE_LOCK_RECLAIM_RUNTIME_CAPABILITY,
@@ -31,5 +48,8 @@ export const VSHUD_RUNTIME_CAPABILITIES = [
   VSHUD_MIGRATION_CATALOG_RUNTIME_CAPABILITY,
   VSHUD_MIGRATION_CATALOG_ABORT_BY_REFERENCE_RUNTIME_CAPABILITY,
   HOST_ACCOUNT_LAUNCH_ENV_RUNTIME_CAPABILITY,
-  VSHUD_PEER_DESKTOPS_RUNTIME_CAPABILITY
+  HOST_CHAT_AUTO_NAME_SETTING_RUNTIME_CAPABILITY,
+  VSHUD_PEER_DESKTOPS_RUNTIME_CAPABILITY,
+  VSHUD_IDLE_PASSIVE_CLIENTS_RUNTIME_CAPABILITY,
+  VSHUD_IDLE_PASSIVE_CONTROL_RUNTIME_CAPABILITY
 ] as const

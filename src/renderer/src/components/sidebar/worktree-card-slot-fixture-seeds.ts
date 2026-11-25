@@ -50,7 +50,7 @@ export function makeWorktree(seed: WorkspaceSeed, now: number): Worktree {
     repoId: 'repo-vshu',
     path: `/repo/vshu/${seed.name}`,
     displayName: seed.name,
-    branch: `jinjing/${seed.name}`,
+    branch: `user/${seed.name}`,
     head: 'abc123',
     isBare: false,
     isMainWorktree: false,

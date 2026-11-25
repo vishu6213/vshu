@@ -14,9 +14,10 @@ export function structuredWorkerTerminalRefusal(
 ): Error {
   if (resolveStructuredWorkerAuthority(handle, db)) {
     return agentSessionRefusal(
-      `${handle} is an agent session, not a terminal, so terminal commands cannot address it. ` +
-        'Read its output with `vshu terminal read` or `vshu orchestration worker-read --source transcript`, ' +
-        'send it work with `vshu orchestration send`, and open it from its chat tab.'
+      `${handle} is a chat worker, not a terminal, so it takes no typed input. ` +
+        `Send it work with \`vshu orchestration send --to ${handle} --subject "<topic>" --body "<message>"\`, ` +
+        'read its recent output with `vshu orchestration worker-read --dispatch <dispatch_id>` (or `vshu terminal read`), ' +
+        'and open it from its chat tab.'
     )
   }
   // A chat address never names a terminal, live or not.

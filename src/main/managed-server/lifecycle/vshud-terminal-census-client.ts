@@ -92,7 +92,7 @@ export async function requestVshudTerminalCensus(
       undefined
     )
     return response.ok
-      ? VshudTerminalCensusSchema.parse(response.result)
+      ? { ...VshudTerminalCensusSchema.parse(response.result), answered: true }
       : UNVERIFIABLE_VSHUD_TERMINAL_CENSUS
   } catch {
     return UNVERIFIABLE_VSHUD_TERMINAL_CENSUS

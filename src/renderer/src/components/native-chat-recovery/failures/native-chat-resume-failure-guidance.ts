@@ -113,7 +113,7 @@ function reasonGuidance(
     return {
       text: t(
         'auto.components.NativeChatResumeFailureGuidance.unsupportedShort',
-        'Vshu can’t resume this chat.'
+        'Vshu can’t resume this agent.'
       ),
       primary: 'open',
       secondary: 'dismiss'

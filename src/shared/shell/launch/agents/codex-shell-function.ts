@@ -114,13 +114,20 @@ export function getPowerShellCodexShellLaunchPreflight(): string {
 if ($vshuCodexCommand -and
     $vshuCodexCommand.CommandType -in @("Application", "ExternalScript")) {
     function Global:codex {
-        $vshuCodexExecutable = Get-Command codex -CommandType Application,ExternalScript -ErrorAction SilentlyContinue | Select-Object -First 1
-        if (-not $vshuCodexExecutable) {
+        $exe = Get-Command codex -CommandType Application,ExternalScript -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty Source
+        if (-not $exe) {
             Write-Error "codex executable not found"
             $global:LASTEXITCODE = 127
             return
         }
-        $vshuCodexFlags = @()
+        $flags = @()
+        # Why: execution policy can block npm's codex.ps1 shim, so run the Node entry point it wraps.
+        $dir = Split-Path $exe
+        $js = "$dir/node_modules/@openai/codex/bin/codex.js"
+        if ($exe -like '*.ps1' -and (Test-Path -LiteralPath $js)) {
+            $exe = if (Test-Path -LiteralPath "$dir/node.exe") { "$dir/node.exe" } else { 'node.exe' }
+            $flags = @($js)
+        }
         # Why try/catch: under the user's $ErrorActionPreference = 'Stop', a failing prep or probe must not abort the launch.
         if ($env:VSHU_CODEX_LAUNCH_PREFLIGHT) {
             try {
@@ -130,32 +137,32 @@ if ($vshuCodexCommand -and
         }
         if ($env:VSHU_CODEX_ISOLATE -ne '0' -and -not (@($args) -cmatch '${CODEX_NO_DAEMON_SKIP_ARG_PATTERN}')) {
             try {
-                if ((& $vshuCodexExecutable.Source --help 2>$null) -match '--no-daemon') {
-                    $vshuCodexFlags = @('--no-daemon')
+                if ((& $exe @flags --help 2>$null) -match '--no-daemon') {
+                    $flags += '--no-daemon'
                 }
             } catch {
             }
         }
-        $vshuCodexRemoteClipboard = $env:${REMOTE_VIEWER_CLIPBOARD_ENV} -eq '1' -and -not (Test-Path Env:SSH_CONNECTION) -and -not (Test-Path Env:SSH_TTY)
-        $vshuCodexIdentity = @()
+        $remoteClip = $env:${REMOTE_VIEWER_CLIPBOARD_ENV} -eq '1' -and -not (Test-Path Env:SSH_CONNECTION) -and -not (Test-Path Env:SSH_TTY)
+        $identity = @()
         if ($env:VSHU_CODEX_ISOLATE -ne '0' -and -not (@($args) -cmatch '${CODEX_SHARED_SERVER_ARG_PATTERN}')) {
-            foreach ($k in ${CODEX_COMMAND_IDENTITY_ENV_KEYS.map((key) => `'${key}'`).join(',')}) { $v = [Environment]::GetEnvironmentVariable($k); if ($v -and -not $v.Contains("'")) { $vshuCodexIdentity += '-c', "${identitySetArg('$k', '$v')}" } }
-            if ($vshuCodexRemoteClipboard -or $env:SSH_CONNECTION -ceq '${CODEX_REMOTE_VIEWER_SSH_CONNECTION}') { $vshuCodexIdentity += '-c', "${CLEAR_SSH_MARKER_ARG}" }
+            foreach ($k in ${CODEX_COMMAND_IDENTITY_ENV_KEYS.map((key) => `'${key}'`).join(',')}) { $v = [Environment]::GetEnvironmentVariable($k); if ($v -and -not $v.Contains("'")) { $identity += '-c', "${identitySetArg('$k', '$v')}" } }
+            if ($remoteClip -or $env:SSH_CONNECTION -ceq '${CODEX_REMOTE_VIEWER_SSH_CONNECTION}') { $identity += '-c', "${CLEAR_SSH_MARKER_ARG}" }
         }
-        $vshuCodexArgs = @(__VshuEscapeNativeArgs $vshuCodexExecutable.Source (@($vshuCodexIdentity) + @($args)))
-        if ($vshuCodexRemoteClipboard) { $env:SSH_CONNECTION = '${CODEX_REMOTE_VIEWER_SSH_CONNECTION}' }
-        $vshuCodexKitty = $env:${VSHU_IMAGE_PROTOCOL_ENV} -ceq '${VSHU_IMAGE_PROTOCOL_VALUE}' -and -not (Test-Path Env:KITTY_WINDOW_ID)
-        if ($vshuCodexKitty) { $env:KITTY_WINDOW_ID = '${CODEX_KITTY_WINDOW_ID}' }
+        $argv = @(__VshuEscapeNativeArgs $exe (@($identity) + @($args)))
+        if ($remoteClip) { $env:SSH_CONNECTION = '${CODEX_REMOTE_VIEWER_SSH_CONNECTION}' }
+        $kitty = $env:${VSHU_IMAGE_PROTOCOL_ENV} -ceq '${VSHU_IMAGE_PROTOCOL_VALUE}' -and -not (Test-Path Env:KITTY_WINDOW_ID)
+        if ($kitty) { $env:KITTY_WINDOW_ID = '${CODEX_KITTY_WINDOW_ID}' }
         # Why: a native command inside a function never sees the function's pipeline input on its own.
         try {
             if ($MyInvocation.ExpectingInput) {
-                $input | & $vshuCodexExecutable.Source @vshuCodexFlags @vshuCodexArgs
+                $input | & $exe @flags @argv
             } else {
-                & $vshuCodexExecutable.Source @vshuCodexFlags @vshuCodexArgs
+                & $exe @flags @argv
             }
         } finally {
-            if ($vshuCodexRemoteClipboard) { Remove-Item Env:SSH_CONNECTION }
-            if ($vshuCodexKitty) { Remove-Item Env:KITTY_WINDOW_ID }
+            if ($remoteClip) { Remove-Item Env:SSH_CONNECTION }
+            if ($kitty) { Remove-Item Env:KITTY_WINDOW_ID }
         }
         $global:LASTEXITCODE = $LASTEXITCODE
     }

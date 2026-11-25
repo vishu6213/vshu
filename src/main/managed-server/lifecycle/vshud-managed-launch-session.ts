@@ -1,10 +1,4 @@
-import { randomUUID } from 'node:crypto'
 import type { VshudManagedRestartResult } from '../../../shared/remote-runtime/vshud-lifecycle/vshud-managed-runtime'
-import {
-  withVshudActivationLock,
-  type VshudActivationLockControl
-} from '../activation/vshud-activation-lock'
-import { readVshudActivationRecord } from '../activation/vshud-activation-record-store'
 import {
   vshudLaunchSshSessionProbeCommand,
   parseVshudLaunchSshSession,
@@ -23,12 +17,11 @@ import { resolveVshudRemoteContext } from '../install/vshud-remote-context'
 
 import { rebuildVshudManagedTunnel } from './vshud-managed-tunnel'
 import { wakeStoppedManagedVshud } from './vshud-managed-wake'
-import { readRemoteVshudManagedStopTarget } from './vshud-managed-remote-stop'
-import { vshudSlotDir, type VshudSlotOptions } from '../activation/vshud-recovery-slot'
-import { stopIncumbentBehindTerminalBarrier } from './vshud-rollback-terminal-barrier'
+import { vshudSlotDir } from '../activation/vshud-recovery-slot'
 import { execVshudRemote } from '../install/vshud-remote-runtime-control'
 import { collectManagedTerminalCensus } from './vshud-terminal-census-client'
-import { runFencedStop, updateTerminalCounts } from '../activation/vshud-fenced-stop'
+import { updateTerminalCounts } from '../activation/vshud-fenced-stop'
+import { stopIdleVshudForRestart } from './vshud-idle-restart-stop'
 
 export async function readManagedVshudLaunchSshSession(
   userDataPath: string,
@@ -93,14 +86,7 @@ export async function restartManagedVshudEnvironment(
         return { outcome: 'terminals-running', liveSessions: census.liveSessions }
       }
       const slot = managedVshudSlot(context, deployment.remotePort)
-      const stopped = await withVshudActivationLock(
-        slot,
-        (lock) => recountThenStop(slot, lock, counts),
-        (): StopOutcome => ({
-          state: 'kept',
-          reason: 'An update, rollback or recovery holds this host; try again when it finishes.'
-        })
-      )
+      const stopped = await stopIdleVshudForRestart(slot, counts)
       if (stopped.state === 'terminals-running') {
         return { outcome: 'terminals-running', liveSessions: stopped.liveSessions }
       }
@@ -144,80 +130,4 @@ export async function restartManagedVshudEnvironment(
       return { outcome: 'restarted', environmentId: environment.id }
     }
   )
-}
-
-type StopOutcome =
-  | { state: 'retired'; version: string }
-  /** The surviving daemon still spawns terminals with old attribution. */
-  | { state: 'daemon-kept'; version: string; reason: string }
-  /** Serving or possibly stopping; do not start another instance. */
-  | { state: 'kept'; reason: string; mayBeStopping?: true }
-  | { state: 'terminals-running'; liveSessions: number | null }
-
-/** Only the host lock holder may close/reopen admission, preserving other runs' fences. */
-async function recountThenStop(
-  slot: VshudSlotOptions,
-  lock: VshudActivationLockControl,
-  counts: ReturnType<typeof updateTerminalCounts>
-): Promise<StopOutcome> {
-  const fenced = await runFencedStop({
-    ...counts,
-    now: Date.now,
-    refuse: (census): StopOutcome | null =>
-      census.liveSessions === 0
-        ? null
-        : { state: 'terminals-running', liveSessions: census.liveSessions },
-    stale: (): StopOutcome => STALE_COUNT,
-    stop: (stillFenced) => stopRetiringIdleDaemon(slot, lock, stillFenced),
-    // Woken servers start with admission open; only unsent stops need reopening.
-    stopMayHaveBeenSent: (outcome) =>
-      outcome.state === 'retired' ||
-      outcome.state === 'daemon-kept' ||
-      (outcome.state === 'kept' && outcome.mayBeStopping === true)
-  })
-  return 'refused' in fenced ? fenced.refused : fenced.stopped
-}
-
-const STALE_COUNT: StopOutcome = {
-  state: 'kept',
-  reason: 'The terminal count went stale before the stop. Restart again.'
-}
-
-async function stopRetiringIdleDaemon(
-  slot: VshudSlotOptions,
-  lock: VshudActivationLockControl,
-  stillFenced: () => boolean
-): Promise<StopOutcome> {
-  // Other clients may change the active slot; reread under the fence.
-  const active = (await readVshudActivationRecord(slot)).active
-  if (!active) {
-    return { state: 'kept', reason: 'This host has no activated Vshu server.' }
-  }
-  const target = await readRemoteVshudManagedStopTarget(slot, active)
-  if (target.state === 'refused') {
-    return { state: 'kept', reason: target.reason }
-  }
-  // Expired census fences may have admitted terminals; do not stop after expiry.
-  if (!stillFenced()) {
-    return STALE_COUNT
-  }
-  const barrier = await stopIncumbentBehindTerminalBarrier(slot, randomUUID(), target.context)
-  switch (barrier.state) {
-    case 'retired':
-      return { state: 'retired', version: active }
-    case 'unproven':
-      return {
-        state: 'daemon-kept',
-        version: active,
-        reason:
-          'This host’s Vshu server restarted, but its terminal daemon kept running because a terminal ' +
-          'was open at the stop, so terminals may still lack local network access.'
-      }
-    case 'unsettled':
-      // Recovery must retain the fence while vshud may still be stopping.
-      lock.retain()
-      return { state: 'kept', reason: barrier.reason, mayBeStopping: true }
-    case 'withdrawn':
-      return { state: 'kept', reason: barrier.reason }
-  }
 }

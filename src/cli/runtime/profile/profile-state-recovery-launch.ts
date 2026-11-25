@@ -9,7 +9,7 @@ import {
 } from '../../../shared/vshu-profiles/profile-state-recovery-command'
 import {
   getExecutableAppArgs,
-  resolveAppRoot,
+  resolveAppChildCwd,
   resolveForegroundVshuExecutable,
   stripElectronRunAsNode
 } from '../vshu-app-executable'
@@ -33,7 +33,7 @@ export async function launchProfileStateRecovery(
       PROFILE_STATE_RECOVERY_FLAG,
       JSON.stringify({ ...request, userDataPath })
     ],
-    cwd: resolveAppRoot(),
+    cwd: resolveAppChildCwd(userDataPath),
     env: {
       ...stripElectronRunAsNode(process.env),
       VSHU_BACKGROUND_LAUNCH: '1',

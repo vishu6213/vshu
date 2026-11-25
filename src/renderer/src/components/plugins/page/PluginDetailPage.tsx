@@ -1,10 +1,16 @@
+import { pluginBlockCopy } from '../presentation/plugin-block-copy'
+import { pluginDisplayText } from '../../../../../shared/plugins/plugin-display-text'
 import { Fragment, useEffect, useMemo, useRef } from 'react'
 import { BadgeCheck, ChevronLeft } from 'lucide-react'
 import { translate } from '@/i18n/i18n'
 import { useIntlLocale, useTranslate, type Translate } from '@/i18n/use-translate'
 import { pluginOfficialLabel } from '../presentation/plugin-official-label'
 import { Button } from '../../ui/button'
-import { needsNewerVshu, type PluginListEntry } from '../list/plugin-list-entries'
+import {
+  needsNewerVshu,
+  pluginEntryManagingTeams,
+  type PluginListEntry
+} from '../list/plugin-list-entries'
 import { PluginDetailAlert as Alert } from './PluginDetailAlert'
 import { usePluginPageAction } from './PluginPageAction'
 import { PluginPageHero, PluginScreenshots } from './PluginPageHero'
@@ -17,7 +23,6 @@ import { PluginAccessSection, PluginLogsSection } from './PluginDetailSections'
 import { PluginSettingsSection } from './PluginSettingsSection'
 import { installedPluginControls, type InstalledRowHandlers } from '../list/PluginManagerRows'
 import { PluginChips } from '../list/PluginChips'
-import { pluginDisplayBranding } from '../../../../../shared/plugins/manifest/plugin-display-branding'
 import type { PluginPagePreview } from '../state/use-plugin-catalog'
 import type { PluginLogsState } from '../state/use-plugin-logs'
 import { pluginPublisherNotice } from '../presentation/plugin-publisher-trust'
@@ -69,8 +74,7 @@ function sourceLabel(entry: PluginListEntry, t: Translate = translate): string |
     return t('auto.components.settings.PluginDetailPage.gitUrl', 'Git URL')
   }
   // Why: the verified-source chip already names a community catalog.
-  const catalog = entry.verifiedSource.kind === 'catalog' ? null : entry.listing?.marketplaceName
-  return catalog ? pluginDisplayBranding(catalog) : null
+  return entry.verifiedSource.kind === 'catalog' ? null : (entry.listing?.marketplaceName ?? null)
 }
 
 /** One plugin's page: what it adds, what it can reach, where it came from, and its logs. */
@@ -99,7 +103,7 @@ export function PluginDetailPage({
   // Why: a fetched manifest names the plugin exactly; older catalogs only give its key.
   const name = entry.nameShowsPublisher
     ? entry.name
-    : pluginDisplayBranding(plugin?.name ?? preview?.manifest.name ?? entry.name)
+    : pluginDisplayText(plugin?.name ?? preview?.manifest.name ?? entry.name, entry.official, t)
   const action = usePluginPageAction({
     entry,
     name,
@@ -110,7 +114,7 @@ export function PluginDetailPage({
     onConsent
   })
   const headingRef = useRef<HTMLHeadingElement>(null)
-  const author = pluginAuthor(entry)
+  const author = pluginAuthor(entry, t)
   const authorPlugins = useMemo(() => pluginsBySamePublisher(entry, entries), [entry, entries])
   const installCount = usePluginInstallCount(entry)
 
@@ -132,11 +136,15 @@ export function PluginDetailPage({
       )
     : null
   const version = plugin?.version ?? preview?.manifest.version ?? entry.version
-  const rawDescription = plugin?.description ?? preview?.manifest.description ?? entry.description
-  const description = rawDescription ? pluginDisplayBranding(rawDescription) : rawDescription
+  const description = pluginDisplayText(
+    plugin?.description ?? preview?.manifest.description ?? entry.description ?? '',
+    entry.official,
+    t
+  )
 
   const publisherNotice = pluginPublisherNotice({
     official: entry.official,
+    managedByTeams: pluginEntryManagingTeams(entry),
     execution: model.execution,
     manifest: model.manifest,
     // Why null without a release or host types: an empty list would read as "no translations".
@@ -149,11 +157,7 @@ export function PluginDetailPage({
       <Alert
         tone="destructive"
         title={t('auto.components.settings.PluginStatus.blocked', 'Blocked')}
-        body={t(
-          'auto.components.settings.PluginSettingsRow.killListMessage',
-          "Vshu's safety list disabled this plugin: {{value0}}",
-          { value0: plugin.blockedByKillList.reason }
-        )}
+        body={pluginBlockCopy(plugin.blockedByKillList, t, true)}
       />
     )
   } else if (controls?.kind === 'error') {
@@ -194,11 +198,7 @@ export function PluginDetailPage({
       <Alert
         tone="destructive"
         title={t('auto.components.settings.PluginStatus.blocked', 'Blocked')}
-        body={t(
-          'auto.components.settings.PluginMarketplaceListingRow.blocked',
-          "Blocked by Vshu's safety list: {{value0}}",
-          { value0: listing.blockedByKillList.reason }
-        )}
+        body={pluginBlockCopy(listing.blockedByKillList, t)}
       />
     )
   } else if (stale) {

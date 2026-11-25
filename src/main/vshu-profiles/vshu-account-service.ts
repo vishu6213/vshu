@@ -16,6 +16,11 @@ import {
   signOutCurrentVshuProfile
 } from './cloud-auth/profile-cloud-service'
 import { refreshCurrentVshuProfileAuth } from './cloud-auth/profile-cloud-capability-refresh'
+import { openVshuCloudConsole } from './cloud-console/cloud-console-link'
+import type {
+  VshuCloudConsoleOpenResult,
+  VshuCloudConsoleSection
+} from '../../shared/vshu-cloud-console'
 import type { VshuCloudAuthConfig } from './cloud-auth/profile-cloud-auth-config'
 import { signInCurrentVshuProfileWithCode } from './cloud-auth/profile-cloud-code-sign-in'
 import type { VshuCloudAuthorizationCode } from './cloud-auth/profile-cloud-pkce'
@@ -28,6 +33,8 @@ import type {
 export type VshuAccountLifecycleHooks = {
   /** After a sign-in, org change or capability refresh succeeds. */
   onAuthMutation?: () => void
+  /** After `onAuthMutation`, for a completed sign-in only (never a refresh), even as the same account. */
+  onSignedIn?: () => void
   /** Before sign-out touches the network, so nothing keeps running as the old account. */
   onBeforeSignOut?: () => void
   onAfterSignOut?: () => void
@@ -104,6 +111,7 @@ export class VshuAccountService {
     )
     if (result.status === 'connected') {
       this.hooks.onAuthMutation?.()
+      this.hooks.onSignedIn?.()
     }
     return result
   }
@@ -123,6 +131,7 @@ export class VshuAccountService {
     })
     if (result.status === 'connected') {
       this.hooks.onAuthMutation?.()
+      this.hooks.onSignedIn?.()
     }
     return result
   }
@@ -140,9 +149,16 @@ export class VshuAccountService {
     return result
   }
 
-  async refreshAuth(): Promise<RefreshCurrentVshuProfileAuthResult> {
+  openConsole(section: VshuCloudConsoleSection): Promise<VshuCloudConsoleOpenResult> {
+    return openVshuCloudConsole(this.userDataPath(), section, this.openBrowser)
+  }
+
+  async refreshAuth(options?: {
+    notifyUnchanged?: boolean
+  }): Promise<RefreshCurrentVshuProfileAuthResult> {
+    const previous = options?.notifyUnchanged === false ? this.getAuthStatus() : undefined
     const result = await refreshCurrentVshuProfileAuth(this.userDataPath())
-    if (result.status === 'refreshed') {
+    if (result.status === 'refreshed' && (!previous || authPolicyChanged(previous, result.auth))) {
       this.hooks.onAuthMutation?.()
     }
     return result
@@ -171,4 +187,14 @@ export class VshuAccountService {
     this.hooks.onBeforeSignOut?.()
     return signOutCurrentVshuProfile(this.userDataPath()).finally(this.hooks.onAfterSignOut)
   }
+}
+
+function authPolicyChanged(previous: VshuProfileAuthStatus, next: VshuProfileAuthStatus): boolean {
+  return (
+    previous.cloud?.activeOrgId !== next.cloud?.activeOrgId ||
+    previous.state !== next.state ||
+    JSON.stringify(previous.capabilities?.flags) !== JSON.stringify(next.capabilities?.flags) ||
+    JSON.stringify(previous.capabilities?.teamPolicy) !==
+      JSON.stringify(next.capabilities?.teamPolicy)
+  )
 }

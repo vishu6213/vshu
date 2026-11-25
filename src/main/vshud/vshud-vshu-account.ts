@@ -10,6 +10,7 @@ import type { VshudRelay } from './vshud-relay'
 import type { BackendServiceCleanup } from '../backend/service-composition'
 import { vshudServedProfileId } from './vshud-served-profile'
 import type * as VshudConnector from './vshud-connector'
+import { scheduleTeamPolicyRefresh } from '../vshu-profiles/cloud-auth/team-policy-refresh'
 
 /** The daemon's relay host and its Vshu account, which signs the relay in and out. */
 export async function installVshudRelayAndAccount(
@@ -37,7 +38,7 @@ export function installVshudVshuAccount(
     serveVshuProfile: (profileId: string) => void
     getConnectorCloud: () => Pick<
       ConnectorCloud,
-      'accountChanged' | 'signOutStarted' | 'signOutFinished'
+      'accountChanged' | 'signOutStarted' | 'signOutFinished' | 'signedIn'
     > | null
   },
   relay: Pick<VshudRelay, 'accountChanged' | 'signOutStarted'>,
@@ -64,6 +65,7 @@ export function installVshudVshuAccount(
         relay.accountChanged()
         runtime.getConnectorCloud()?.accountChanged()
       },
+      onSignedIn: () => runtime.getConnectorCloud()?.signedIn(),
       onBeforeSignOut: () => {
         relay.signOutStarted()
         runtime.getConnectorCloud()?.signOutStarted()
@@ -74,6 +76,7 @@ export function installVshudVshuAccount(
   const server = new VshuServerSignIn({ account })
   installVshuServerSignIn(server)
   server.startDailyRefresh()
+  registerCleanup(scheduleTeamPolicyRefresh(account))
   // A rotation saved only in memory would be replayed after restart and end the session family.
   getAppEnvironment().onWillQuit(flushUnsavedCloudSessions)
   registerCleanup(() => installVshuServerSignIn(null))

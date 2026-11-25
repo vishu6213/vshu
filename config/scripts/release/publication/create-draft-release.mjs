@@ -352,7 +352,7 @@ export async function createDraftRelease({
 async function main() {
   const tag = process.argv[2]
   const token = process.env.GH_TOKEN || process.env.GITHUB_TOKEN
-  const repo = process.env.GITHUB_REPOSITORY || 'vshu-ide/vshu'
+  const repo = process.env.GITHUB_REPOSITORY || 'vishu6213/vshu'
   const targetCommitish = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim()
   const sourceSha = process.env.SOURCE_SHA
   const prepared = await createDraftRelease({ repo, tag, token, targetCommitish, sourceSha })

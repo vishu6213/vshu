@@ -95,7 +95,7 @@ export abstract class VshuRuntimeWithPtyControllerInventoryListing extends VshuR
       return null
     }
     const stale = !isCurrent()
-    if (!stale) {
+    if (!stale && inventoryOptions?.supersedesPendingListings !== false) {
       if (connectionId === undefined) {
         this.ptyControllerAggregateInventoryGeneration = generation
       } else {

@@ -13,8 +13,8 @@ if [[ -o xtrace ]]; then
 fi
 set +x
 
-MAIN_REPO="vshu-ide/vshu"
-HOURLY_REPO="vshu-ide/vshu-hourly"
+MAIN_REPO="vishu6213/vshu"
+HOURLY_REPO="vishu6213/vshu-hourly"
 APP_ID_SECRET="HOURLY_RELEASE_APP_ID"
 APP_KEY_SECRET="HOURLY_RELEASE_APP_PRIVATE_KEY"
 

@@ -1,5 +1,8 @@
 import { resolveEnvironment } from '../../../shared/remote-runtime/host-store/runtime-environment-store'
-import { VSHUD_UPDATE_TERMINALS_RUNNING_CODE } from '../../../shared/remote-runtime/vshud-lifecycle/vshud-managed-runtime'
+import {
+  isVshudUncountedTerminalsDeferral,
+  VSHUD_UPDATE_TERMINALS_RUNNING_CODE
+} from '../../../shared/remote-runtime/vshud-lifecycle/vshud-managed-runtime'
 import {
   getVshudSshDeployment,
   type KnownRuntimeEnvironment,
@@ -11,7 +14,11 @@ import { computeLocalVshudBuildHash } from '../install/vshud-local-build-hash'
 
 import type { VshudHostTarget } from '../install/vshud-host-transport'
 import type { VshudActivationRecord } from '../activation/vshud-activation-record'
-import { admitVshudRecordForIntent, type VshudUpdateIntent } from './vshud-managed-update-decision'
+import {
+  admitConfirmedIncumbent,
+  admitVshudRecordForIntent,
+  type VshudUpdateIntent
+} from './vshud-managed-update-decision'
 import {
   type VshudTerminalCensus,
   UNVERIFIABLE_VSHUD_TERMINAL_CENSUS
@@ -127,7 +134,9 @@ export function probeManagedVshudReadiness(
 export function managedVshudDeployPolicy(
   context: Pick<VshudRemoteContext<VshudHostTarget>, 'activationRecord'>,
   appVersion: string,
-  intent: VshudUpdateIntent
+  intent: VshudUpdateIntent,
+  /** Update anyway's confirmed incumbent: a build activated since then is refused. */
+  confirmed?: { incumbentVersion: string | null }
 ): {
   census: VshudTerminalCensus
   recountCensus: () => Promise<VshudTerminalCensus>
@@ -145,11 +154,19 @@ export function managedVshudDeployPolicy(
     releaseIncumbentAdmission: async () => {},
     censusRecord: context.activationRecord,
     // Only the fenced read can reject newer migrated state or rolled-back builds on this unlinked path.
-    admitRecord: admitVshudRecordForIntent(intent, appVersion)
+    admitRecord: confirmed
+      ? admitConfirmedIncumbent(
+          admitVshudRecordForIntent(intent, appVersion),
+          confirmed.incumbentVersion
+        )
+      : admitVshudRecordForIntent(intent, appVersion)
   }
 }
 
-// Force can override live terminal counts, never unknown census or protocol deferrals.
-export function isForceableVshudDeferral(code: string): boolean {
-  return code === VSHUD_UPDATE_TERMINALS_RUNNING_CODE
+// Force can override live terminal counts, and an answered uncounted census once the planner proves no daemon is running.
+export function isForceableVshudDeferral(deferral: { code: string; forceable?: true }): boolean {
+  return (
+    deferral.code === VSHUD_UPDATE_TERMINALS_RUNNING_CODE ||
+    (deferral.forceable === true && isVshudUncountedTerminalsDeferral(deferral.code))
+  )
 }

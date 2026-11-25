@@ -25,6 +25,10 @@ import type {
   TransferVshuProfileProjectArgs,
   TransferVshuProfileProjectResult
 } from '../../../shared/vshu-profiles/vshu-profiles'
+import type {
+  VshuCloudConsoleOpenArgs,
+  VshuCloudConsoleOpenResult
+} from '../../../shared/vshu-cloud-console'
 
 export type VshuProfileApi = {
   list: () => Promise<VshuProfileListResult>
@@ -64,4 +68,6 @@ export type VshuProfileApi = {
   orgMemberRemove: (
     args: VshuProfileOrgMemberRemoveArgs
   ) => Promise<VshuProfileOrgMemberMutationResult>
+  /** Opens a web console page in the system browser, signed in when auth issues a ticket. */
+  openCloudConsole: (args: VshuCloudConsoleOpenArgs) => Promise<VshuCloudConsoleOpenResult>
 }

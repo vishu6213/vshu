@@ -6,10 +6,10 @@ A Task needs a Run, so create one first. Workers editing the same files at once
 need separate workspaces.
 
 ```text
-VSHU orchestration run-create --objective "<goal>"
-VSHU orchestration task-create --spec "<dependent work>" --deps <json_array>
-VSHU orchestration task-list --ready --brief
-VSHU orchestration worker-start --task <task_id> --worktree current --agent <agent>
+VSHU orchestration run-create --environment local --objective "<goal>"
+VSHU orchestration task-create --environment local --spec "<dependent work>" --deps <json_array>
+VSHU orchestration task-list --environment local --ready --brief
+VSHU orchestration worker-start --environment local --task <task_id> --worktree current --agent <agent>
 ```
 
 On every wake, start the Tasks `task-list --ready` shows.

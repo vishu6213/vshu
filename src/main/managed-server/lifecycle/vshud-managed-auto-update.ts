@@ -127,7 +127,3 @@ export function bundledManagedVshudVersion(target: VshudTarget): Promise<string 
   }
   return version
 }
-
-export function resetBundledVshudVersionsForTests(): void {
-  bundledVersions.clear()
-}

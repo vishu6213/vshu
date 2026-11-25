@@ -15,11 +15,16 @@ export const VshudTerminalCensusSchema = z.object({
   daemonProtocolVersions: z.array(z.number().int().positive()).optional(),
   /** In-process fallback sessions end with vshud, unlike daemon sessions; absent on older hosts. */
   inProcessSessions: CountSchema.optional(),
+  /** Native chats with a live provider, which a stop ends; absent on older hosts, so unknown. */
+  chatSessions: CountSchema.optional(),
   /** Admission-fence expiry, epoch ms; 0 means reopened. Absence never proves older servers fenced admission. */
   admissionClosedUntil: z.number().finite().nonnegative().optional()
 })
 
-export type VshudTerminalCensus = z.infer<typeof VshudTerminalCensusSchema>
+export type VshudTerminalCensus = z.infer<typeof VshudTerminalCensusSchema> & {
+  /** Client-side stamp, never on the wire: the desktop's census client parsed a server reply. */
+  answered?: true
+}
 
 /** A daemon that could not answer: unknown, never zero. */
 export const UNVERIFIABLE_VSHUD_TERMINAL_CENSUS: Readonly<VshudTerminalCensus> = Object.freeze({
@@ -27,6 +32,11 @@ export const UNVERIFIABLE_VSHUD_TERMINAL_CENSUS: Readonly<VshudTerminalCensus> =
   startedSinceActivation: null,
   daemonProtocolVersion: null
 })
+
+/** Whether a server answered this census; anything else, however it was built, reads as unanswered. */
+export function isAnsweredVshudTerminalCensus(census: VshudTerminalCensus): boolean {
+  return census.answered === true
+}
 
 /** The longest a census may close terminal admission; the stop that follows takes seconds. */
 export const VSHUD_TERMINAL_ADMISSION_MAX_FENCE_MS = 5 * 60_000

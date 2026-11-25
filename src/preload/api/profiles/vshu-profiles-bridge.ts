@@ -64,5 +64,6 @@ export const vshuProfilesApi = {
   orgMemberInvite: (args) => ipcRenderer.invoke('vshuProfiles:orgMemberInvite', args),
   orgInviteRevoke: (args) => ipcRenderer.invoke('vshuProfiles:orgInviteRevoke', args),
   orgMemberChangeRole: (args) => ipcRenderer.invoke('vshuProfiles:orgMemberChangeRole', args),
-  orgMemberRemove: (args) => ipcRenderer.invoke('vshuProfiles:orgMemberRemove', args)
+  orgMemberRemove: (args) => ipcRenderer.invoke('vshuProfiles:orgMemberRemove', args),
+  openCloudConsole: (args) => ipcRenderer.invoke('vshuProfiles:openCloudConsole', args)
 } satisfies PreloadApi['vshuProfiles']

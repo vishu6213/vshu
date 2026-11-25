@@ -49,32 +49,30 @@ try {
       timeout: 30_000
     })
 
-  await run(['--help'])
-  const list = JSON.parse((await run(['skills', 'list', '--json'])).stdout)
+  const [
+    ,
+    listResult,
+    vshuCliResult,
+    vshuComputerUseResult,
+    computerUseResult,
+    installResult,
+    updateResult
+  ] = await Promise.all([
+    run(['--help']),
+    run(['skills', 'list', '--json']),
+    run(['skills', 'get', 'vshu-cli']),
+    run(['skills', 'get', 'vshu-computer-use']),
+    run(['skills', 'get', 'computer-use']),
+    run(['skills', 'install', '--skill', 'vshu-cli', '--agent', 'codex', '--dry-run', '--json']),
+    run(['skills', 'update', '--skill', 'vshu-cli', '--dry-run', '--json'])
+  ])
+  const list = JSON.parse(listResult.stdout)
   assert(list.topics.some((topic) => topic.name === 'vshu-cli'))
-  assert.match((await run(['skills', 'get', 'vshu-cli'])).stdout, /name: vshu-cli/)
-  assert.match(
-    (await run(['skills', 'get', 'vshu-computer-use'])).stdout,
-    /name: vshu-computer-use/
-  )
-  assert.match((await run(['skills', 'get', 'computer-use'])).stdout, /name: vshu-computer-use/)
-  const install = JSON.parse(
-    (
-      await run([
-        'skills',
-        'install',
-        '--skill',
-        'vshu-cli',
-        '--agent',
-        'codex',
-        '--dry-run',
-        '--json'
-      ])
-    ).stdout
-  )
-  const update = JSON.parse(
-    (await run(['skills', 'update', '--skill', 'vshu-cli', '--dry-run', '--json'])).stdout
-  )
+  assert.match(vshuCliResult.stdout, /name: vshu-cli/)
+  assert.match(vshuComputerUseResult.stdout, /name: vshu-computer-use/)
+  assert.match(computerUseResult.stdout, /name: vshu-computer-use/)
+  const install = JSON.parse(installResult.stdout)
+  const update = JSON.parse(updateResult.stdout)
   assert.equal(install.executed, false)
   assert.equal(update.executed, false)
   console.log(`[packaged-cli-smoke] help and skills commands passed via ${cliPath}`)

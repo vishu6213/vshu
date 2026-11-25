@@ -34,7 +34,6 @@ import { knownSshHostPlatform } from '../../ssh/remote-host/ssh-host-platform-me
 import { knownVshudTunnelTransport } from '../../managed-server/lifecycle/vshud-tunnel-transport-memo'
 import { getSshTargetRegistryStore } from '../../ssh/targets/ssh-target-registry'
 import { releaseUnreachableVshudSetup } from '../../managed-server/migration/cutover/vshud-unreachable-setup-release'
-import { getCurrentMainWindow } from './ssh-ipc-context'
 import { broadcastSshState } from './ssh-renderer-broadcast'
 import { connectInFlight } from './ssh-connect-attempt-registry'
 import { startLegacyRelayBridge } from '../../ssh/legacy-relay/bridge/legacy-relay-bridge-registry'
@@ -181,7 +180,7 @@ export function hostServerOnConnectDeps(userDataPath: string): HostServerOnConne
         return
       }
       setSshHostServerStatus(target.id, { kind: 'setting-up', phase })
-      broadcastSshState(getCurrentMainWindow, target.id, {
+      broadcastSshState(target.id, {
         targetId: target.id,
         status: 'connecting',
         error: null,

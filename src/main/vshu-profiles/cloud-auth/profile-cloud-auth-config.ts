@@ -28,7 +28,7 @@ const PRODUCTION_RELAY_DIRECTOR_URL = 'https://relay.vshu.dev'
 
 // Packaged main omits NODE_ENV; use packaged status to gate development auth overrides.
 // No installed environment (a bare Node import) reads as unpackaged, as Electron's absent `app` did.
-function isPackagedVshuBuild(): boolean {
+export function isPackagedVshuBuild(): boolean {
   return hasAppEnvironment() && getAppEnvironment().isPackaged()
 }
 

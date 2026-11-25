@@ -106,10 +106,6 @@ export function forgetManagedVshudServingVerdict(environmentId: string): void {
   checks.delete(environmentId)
 }
 
-export function resetManagedVshudServingForTests(): void {
-  checks.clear()
-}
-
 async function checkAndStart(input: VshudManagedServingInput): Promise<VshudManagedServing> {
   if (await input.probe(input.environment, PROBE_TIMEOUT_MS)) {
     getManagedVshudCrashLoopBrake().noteServing(input.environment.id)

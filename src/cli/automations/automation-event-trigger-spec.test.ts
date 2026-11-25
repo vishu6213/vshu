@@ -249,4 +249,29 @@ describe('--on trigger specs', () => {
       'webhook.call'
     )
   })
+
+  it('says which host is not signed in to Vshu Cloud, and on a headless server how it signs in', () => {
+    const desktop = formatAutomationTriggerOptions(undefined, {
+      name: 'Scout',
+      cloudSignedOut: true,
+      signInServer: null
+    })
+    expect(desktop).toContain(
+      "This computer isn't signed in to Vshu Cloud, and Slack, GitHub, Linear and webhook events reach Scout through Vshu Cloud"
+    )
+    expect(desktop).not.toContain('vshu auth login')
+    // An older host doesn't say whether it has a window: its terminal sign-in stays in view.
+    const older = formatAutomationTriggerOptions(undefined, { name: 'Scout', cloudSignedOut: true })
+    expect(older).toContain(
+      "This computer isn't signed in to Vshu Cloud, and Slack, GitHub, Linear and webhook events reach Scout through Vshu Cloud"
+    )
+    expect(older).toContain('On a server with no Vshu window, `vshu auth login` on it signs it in.')
+    const server = formatAutomationTriggerOptions(undefined, {
+      name: 'Scout',
+      cloudSignedOut: true,
+      signInServer: 'box1'
+    })
+    expect(server).toContain("This Vshu server (box1) isn't signed in to Vshu Cloud")
+    expect(server).toContain('`vshu auth login` in a terminal on box1')
+  })
 })

@@ -82,14 +82,14 @@ export function formatCommandHelp(spec: CommandSpec): string {
 export function formatGroupHelp(specs: CommandSpec[], groupPath: string[]): string {
   const group = groupPath.join(' ')
   const lines = [`vshu ${group}`, '', `Usage: vshu ${group} <command> [options]`, '', 'Commands:']
-  for (const spec of specs) {
-    if (
-      spec.hidden === true ||
-      spec.path.length <= groupPath.length ||
-      !matches(spec.path.slice(0, groupPath.length), groupPath)
-    ) {
-      continue
-    }
+  const members = specs.filter(
+    (spec) =>
+      spec.path.length > groupPath.length &&
+      matches(spec.path.slice(0, groupPath.length), groupPath)
+  )
+  const visible = members.filter((spec) => spec.hidden !== true)
+  // A group of only hidden commands was typed by name, so it lists them.
+  for (const spec of visible.length > 0 ? visible : members) {
     lines.push(`  ${spec.path.slice(groupPath.length).join(' ').padEnd(18)} ${spec.summary}`)
   }
   lines.push('', `Run \`vshu ${group} <command> --help\` for command-specific usage.`)

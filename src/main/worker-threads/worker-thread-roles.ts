@@ -7,6 +7,7 @@ export type WorkerThreadRole =
   | 'vshu-claude-rewind-transcript'
   | 'vshu-codex-history-disk-usage'
   | 'vshu-codex-project-trust'
+  | 'vshu-codex-rollout-references'
   | 'vshu-command-path-directory'
   | 'vshu-environment-store'
   | 'vshu-foreign-sqlite-reader'

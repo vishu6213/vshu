@@ -3,8 +3,8 @@
 </h1>
 
 <p align="center">
-  <a href="https://github.com/vshu-ide/vshu"><img src="https://img.shields.io/github/stars/vshu-ide/vshu?style=flat&amp;label=%E2%98%85&amp;color=08C" alt="Звёзды на GitHub" /></a>
-  <a href="https://github.com/vshu-ide/vshu/releases"><img src="../assets/readme-downloads.svg" alt="Общее число скачиваний всех выпусков" /></a>
+  <a href="https://github.com/vishu6213/vshu"><img src="https://img.shields.io/github/stars/vishu6213/vshu?style=flat&amp;label=%E2%98%85&amp;color=08C" alt="Звёзды на GitHub" /></a>
+  <a href="https://github.com/vishu6213/vshu/releases"><img src="../assets/readme-downloads.svg" alt="Общее число скачиваний всех выпусков" /></a>
   <img src="https://img.shields.io/badge/license-MIT-08C?style=flat" alt="Лицензия: MIT" />
   <a href="https://discord.gg/fzjDKHxv8Q"><img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white" alt="Присоединяйтесь к сообществу Vshu в Discord" /></a>
   <a href="https://x.com/vshu_build"><img src="https://img.shields.io/badge/X-000000?logo=x&logoColor=white" alt="Подпишитесь на Vshu в X" /></a>
@@ -164,7 +164,7 @@
 - **[Предпросмотр содержимого репозитория](https://vshu.dev/docs/editing/markdown)** — Просматривайте Markdown, изображения, PDF и документацию репозитория прямо в рабочем пространстве.
 - **[Управление компьютером](https://vshu.dev/docs/cli/computer-use)** — Позвольте агентам управлять настольными приложениями и видимым интерфейсом, когда задача требует непосредственного взаимодействия.
 - **[Уведомления и статус прочтения](https://vshu.dev/docs/notifications)** — Узнавайте, когда агент завершил работу или требует внимания, и отмечайте обсуждения как непрочитанные, чтобы вернуться к ним позже.
-- **И многое, многое другое** — мы выпускаем обновления каждый день, поэтому этот список постоянно отстаёт. Актуальный список возможностей — в [журнале изменений](https://github.com/vshu-ide/vshu/releases).
+- **И многое, многое другое** — мы выпускаем обновления каждый день, поэтому этот список постоянно отстаёт. Актуальный список возможностей — в [журнале изменений](https://github.com/vishu6213/vshu/releases).
 
 ---
 
@@ -217,16 +217,16 @@
 ### Настольное приложение — macOS, Windows, Linux
 
 - **[Скачать с vshu.dev](https://vshu.dev/download)**
-- Или скачайте сборку напрямую: [macOS Apple Silicon](https://github.com/vshu-ide/vshu/releases/latest/download/vshu-macos-arm64.dmg) · [macOS Intel](https://github.com/vshu-ide/vshu/releases/latest/download/vshu-macos-x64.dmg) · [Windows (.exe)](https://github.com/vshu-ide/vshu/releases/latest/download/vshu-windows-setup.exe) · [Linux AppImage](https://github.com/vshu-ide/vshu/releases/latest/download/vshu-linux.AppImage) · [Все сборки](https://github.com/vshu-ide/vshu/releases/latest)
+- Или скачайте сборку напрямую: [macOS Apple Silicon](https://github.com/vishu6213/vshu/releases/latest/download/vshu-macos-arm64.dmg) · [macOS Intel](https://github.com/vishu6213/vshu/releases/latest/download/vshu-macos-x64.dmg) · [Windows (.exe)](https://github.com/vishu6213/vshu/releases/latest/download/vshu-windows-setup.exe) · [Linux AppImage](https://github.com/vishu6213/vshu/releases/latest/download/vshu-linux.AppImage) · [Все сборки](https://github.com/vishu6213/vshu/releases/latest)
 
 _Или через менеджер пакетов:_
 
 ```bash
 # macOS (Homebrew)
 # Always use the full name; bare `vshu` is an unrelated Plotly cask.
-brew install --cask vshu-ide/vshu/vshu
+brew install --cask vishu6213/vshu/vshu
 # Upgrade an existing install
-brew upgrade --cask vshu-ide/vshu/vshu
+brew upgrade --cask vishu6213/vshu/vshu
 
 # Arch Linux (AUR) — or stably-vshu-git to build from source
 yay -S stably-vshu-bin
@@ -249,9 +249,9 @@ yay -S stably-vshu-bin
 
   <img src="../assets/wechat-qr.jpg" alt="QR-код группы сообщества Vshu в WeChat" width="160" />
 
-- **Отзывы и идеи:** Мы быстро выпускаем обновления. Чего-то не хватает? [Предложите новую возможность](https://github.com/vshu-ide/vshu/issues).
+- **Отзывы и идеи:** Мы быстро выпускаем обновления. Чего-то не хватает? [Предложите новую возможность](https://github.com/vishu6213/vshu/issues).
 - **Конфиденциальность:** В [документации о конфиденциальности и телеметрии](https://vshu.dev/docs/telemetry) описано, какие анонимные данные об использовании собирает Vshu и как отказаться от их сбора.
-- **Поддержите проект:** Отметьте этот репозиторий [звездой](https://github.com/vshu-ide/vshu), чтобы следить за нашими ежедневными выпусками.
+- **Поддержите проект:** Отметьте этот репозиторий [звездой](https://github.com/vishu6213/vshu), чтобы следить за нашими ежедневными выпусками.
 
 ---
 
@@ -262,12 +262,12 @@ yay -S stably-vshu-bin
 Сервис-посредник для подключения мобильного приложения к компьютеру тоже находится в этом репозитории —
 в [`cloud/`](../../cloud/README.md), с отдельным рабочим пространством pnpm и руководством по настройке.
 
-<a href="https://github.com/vshu-ide/vshu/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=vshu-ide/vshu" alt="Участники проекта Vshu" />
+<a href="https://github.com/vishu6213/vshu/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=vishu6213/vshu" alt="Участники проекта Vshu" />
 </a>
 
 <p align="center">
-  <img src="../assets/star-history.png" alt="График числа звёзд vshu-ide/vshu на GitHub" width="880" />
+  <img src="../assets/star-history.png" alt="График числа звёзд vishu6213/vshu на GitHub" width="880" />
 </p>
 
 ## Подписанные сборки

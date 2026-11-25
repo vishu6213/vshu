@@ -14,7 +14,7 @@ export type OrchestrationCallerRefusal = {
 /** Absent for non-session callers, unreachable runtimes or hosts predating orchestration.callerShow. */
 export type CliStatusCaller = OrchestrationCallerSession | OrchestrationCallerRefusal
 
-/** `null`: the caller is not a Vshu session. */
+/** `null`: the caller is not an Vshu session. */
 export type OrchestrationCallerShowResult = {
   caller: OrchestrationCallerSession | null
   /** True when this Vshu verified the calling terminal agent's launch. Absent from older Vshus. */

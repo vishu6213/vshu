@@ -17,11 +17,6 @@ export function checkVshuStarred(): Promise<boolean | null> {
   return inFlightStarCheck
 }
 
-/** @internal Drop any coalesced check so suites cannot inherit one another's. */
-export function __resetVshuStarCheckForTests(): void {
-  inFlightStarCheck = null
-}
-
 async function runVshuStarredCheck(): Promise<boolean | null> {
   await acquire()
   try {

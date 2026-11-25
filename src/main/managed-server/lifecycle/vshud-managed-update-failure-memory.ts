@@ -29,7 +29,3 @@ export function vshudUpdateFailedThisLaunch(host: VshudUpdateFailureHost): boole
 export function clearVshudUpdateFailedThisLaunch(host: VshudUpdateFailureHost): void {
   failedThisLaunch.delete(key(host))
 }
-
-export function resetVshudUpdateFailuresForTests(): void {
-  failedThisLaunch.clear()
-}

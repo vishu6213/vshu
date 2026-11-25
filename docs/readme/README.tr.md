@@ -3,8 +3,8 @@
 </h1>
 
 <p align="center">
-  <a href="https://github.com/vshu-ide/vshu"><img src="https://img.shields.io/github/stars/vshu-ide/vshu?style=flat&amp;label=%E2%98%85&amp;color=08C" alt="GitHub yıldızları" /></a>
-  <a href="https://github.com/vshu-ide/vshu/releases"><img src="../assets/readme-downloads.svg" alt="Tüm sürümlerdeki toplam indirme sayısı" /></a>
+  <a href="https://github.com/vishu6213/vshu"><img src="https://img.shields.io/github/stars/vishu6213/vshu?style=flat&amp;label=%E2%98%85&amp;color=08C" alt="GitHub yıldızları" /></a>
+  <a href="https://github.com/vishu6213/vshu/releases"><img src="../assets/readme-downloads.svg" alt="Tüm sürümlerdeki toplam indirme sayısı" /></a>
   <img src="https://img.shields.io/badge/license-MIT-08C?style=flat" alt="Lisans: MIT" />
   <a href="https://discord.gg/fzjDKHxv8Q"><img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white" alt="Vshu Discord'una katılın" /></a>
   <a href="https://x.com/vshu_build"><img src="https://img.shields.io/badge/X-000000?logo=x&logoColor=white" alt="Vshu'yı X'te takip edin" /></a>
@@ -164,7 +164,7 @@ Vshu'yı ajanlar da kullanır - her akışı `vshu worktree create`, `snapshot`,
 - **[Zengin repo önizlemeleri](https://vshu.dev/docs/editing/markdown)** - Çalışma alanında Markdown, görsel, PDF ve repo dokümanlarını önizleyin.
 - **[Bilgisayar Kullanımı](https://vshu.dev/docs/cli/computer-use)** - Bir akış gerçek etkileşim gerektirdiğinde ajanların masaüstü uygulamalarını ve görünür arayüzü kullanmasına izin verin.
 - **[Bildirimler ve okunmadı durumu](https://vshu.dev/docs/notifications)** - Bir ajan bittiğinde ya da ilginizi istediğinde haberiniz olsun; sonra dönmek için konuşmaları okunmadı olarak işaretleyin.
-- **Ve çok daha fazlası** - her gün sürüm çıkarıyoruz, bu liste sürekli geride kalıyor. Asıl özellik listesi [changelog](https://github.com/vshu-ide/vshu/releases).
+- **Ve çok daha fazlası** - her gün sürüm çıkarıyoruz, bu liste sürekli geride kalıyor. Asıl özellik listesi [changelog](https://github.com/vishu6213/vshu/releases).
 
 ---
 
@@ -217,13 +217,13 @@ Vshu'yı ajanlar da kullanır - her akışı `vshu worktree create`, `snapshot`,
 ### Masaüstü - macOS, Windows, Linux
 
 - **[vshu.dev üzerinden indirin](https://vshu.dev/download)**
-- Ya da derlemeyi doğrudan alın: [macOS Apple Silicon](https://github.com/vshu-ide/vshu/releases/latest/download/vshu-macos-arm64.dmg) · [macOS Intel](https://github.com/vshu-ide/vshu/releases/latest/download/vshu-macos-x64.dmg) · [Windows (.exe)](https://github.com/vshu-ide/vshu/releases/latest/download/vshu-windows-setup.exe) · [Linux AppImage](https://github.com/vshu-ide/vshu/releases/latest/download/vshu-linux.AppImage) · [Tüm derlemeler](https://github.com/vshu-ide/vshu/releases/latest)
+- Ya da derlemeyi doğrudan alın: [macOS Apple Silicon](https://github.com/vishu6213/vshu/releases/latest/download/vshu-macos-arm64.dmg) · [macOS Intel](https://github.com/vishu6213/vshu/releases/latest/download/vshu-macos-x64.dmg) · [Windows (.exe)](https://github.com/vishu6213/vshu/releases/latest/download/vshu-windows-setup.exe) · [Linux AppImage](https://github.com/vishu6213/vshu/releases/latest/download/vshu-linux.AppImage) · [Tüm derlemeler](https://github.com/vishu6213/vshu/releases/latest)
 
 _Ya da bir paket yöneticisiyle:_
 
 ```bash
 # macOS (Homebrew)
-brew install --cask vshu-ide/vshu/vshu
+brew install --cask vishu6213/vshu/vshu
 
 # Arch Linux (AUR) - kaynaktan derlemek için stably-vshu-git
 yay -S stably-vshu-bin
@@ -246,9 +246,9 @@ Ajanlarınızı telefonunuzdan izlemek ve yönlendirmek için masaüstü uygulam
 
   <img src="../assets/wechat-qr.jpg" alt="Vshu topluluğunun WeChat grubu karekodu" width="160" />
 
-- **Geri bildirim ve fikirler:** Hızlı sürüm çıkarıyoruz. Eksik bulduğunuz bir şey mi var? [Yeni bir özellik isteyin](https://github.com/vshu-ide/vshu/issues).
+- **Geri bildirim ve fikirler:** Hızlı sürüm çıkarıyoruz. Eksik bulduğunuz bir şey mi var? [Yeni bir özellik isteyin](https://github.com/vishu6213/vshu/issues).
 - **Gizlilik:** Vshu'nın hangi anonim kullanım verisini topladığını ve bunu nasıl kapatacağınızı [gizlilik ve telemetri dokümanlarında](https://vshu.dev/docs/telemetry) bulabilirsiniz.
-- **Destek olun:** Günlük sürümleri takip etmek için bu repoyu [yıldızlayın](https://github.com/vshu-ide/vshu).
+- **Destek olun:** Günlük sürümleri takip etmek için bu repoyu [yıldızlayın](https://github.com/vishu6213/vshu).
 
 ---
 
@@ -259,12 +259,12 @@ Katkıda bulunmak veya yerelde çalıştırmak ister misiniz? [CONTRIBUTING.md](
 Mobil uygulamayı bir masaüstü sunucusuyla eşleştiren relay de bu repoda,
 [`cloud/`](../../cloud/README.md) altında yer alıyor; ayrı bir pnpm workspace'i ve kurulum rehberi var.
 
-<a href="https://github.com/vshu-ide/vshu/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=vshu-ide/vshu" alt="Vshu katkıda bulunanlar" />
+<a href="https://github.com/vishu6213/vshu/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=vishu6213/vshu" alt="Vshu katkıda bulunanlar" />
 </a>
 
 <p align="center">
-  <img src="../assets/star-history.png" alt="vshu-ide/vshu için GitHub yıldız geçmişi grafiği" width="880" />
+  <img src="../assets/star-history.png" alt="vishu6213/vshu için GitHub yıldız geçmişi grafiği" width="880" />
 </p>
 
 ## İmzalı Derlemeler

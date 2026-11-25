@@ -100,7 +100,7 @@ export function readSessionRecipient(
       ? { sessionId, address: formatVshuSessionAddress(sessionId) }
       : {
           code: CODES.unknown,
-          message: `${recipient} does not name a Vshu session ID. No message was sent.`
+          message: `${recipient} does not name an Vshu session ID. No message was sent.`
         }
   }
   const sessionId = isVshuSessionId(recipient) ? recipient : null

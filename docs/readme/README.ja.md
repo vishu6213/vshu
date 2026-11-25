@@ -3,8 +3,8 @@
 </h1>
 
 <p align="center">
-  <a href="https://github.com/vshu-ide/vshu"><img src="https://img.shields.io/github/stars/vshu-ide/vshu?style=flat&amp;label=%E2%98%85&amp;color=08C" alt="GitHub スター数" /></a>
-  <a href="https://github.com/vshu-ide/vshu/releases"><img src="../assets/readme-downloads.svg" alt="全リリースの合計ダウンロード数" /></a>
+  <a href="https://github.com/vishu6213/vshu"><img src="https://img.shields.io/github/stars/vishu6213/vshu?style=flat&amp;label=%E2%98%85&amp;color=08C" alt="GitHub スター数" /></a>
+  <a href="https://github.com/vishu6213/vshu/releases"><img src="../assets/readme-downloads.svg" alt="全リリースの合計ダウンロード数" /></a>
   <img src="https://img.shields.io/badge/license-MIT-08C?style=flat" alt="ライセンス: MIT" />
   <a href="https://discord.gg/fzjDKHxv8Q"><img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white" alt="Vshu の Discord に参加" /></a>
   <a href="https://x.com/vshu_build"><img src="https://img.shields.io/badge/X-000000?logo=x&logoColor=white" alt="X で Vshu をフォロー" /></a>
@@ -164,7 +164,7 @@ PR、Issue、プロジェクトボードをアプリ内で閲覧 — 任意の�
 - **[リッチなリポジトリプレビュー](https://vshu.dev/docs/editing/markdown)** — Markdown、画像、PDF、リポジトリ文書をワークスペース内でプレビューできます。
 - **[Computer Use](https://vshu.dev/docs/cli/computer-use)** — 実際の操作が必要なワークフローでは、エージェントにデスクトップアプリや画面上の UI を操作させられます。
 - **[通知と未読ステータス](https://vshu.dev/docs/notifications)** — エージェントの完了や要対応をすぐに把握し、スレッドを未読に戻して後で確認できます。
-- **その他、まだまだたくさん** — 毎日リリースしているので、このリストは常に追いついていません。本当の機能一覧は[チェンジログ](https://github.com/vshu-ide/vshu/releases)です。
+- **その他、まだまだたくさん** — 毎日リリースしているので、このリストは常に追いついていません。本当の機能一覧は[チェンジログ](https://github.com/vishu6213/vshu/releases)です。
 
 ---
 
@@ -214,16 +214,16 @@ PR、Issue、プロジェクトボードをアプリ内で閲覧 — 任意の�
 ### デスクトップ — macOS, Windows, Linux
 
 - **[vshu.dev からダウンロード](https://vshu.dev/download)**
-- またはビルドを直接入手: [macOS Apple Silicon](https://github.com/vshu-ide/vshu/releases/latest/download/vshu-macos-arm64.dmg) · [macOS Intel](https://github.com/vshu-ide/vshu/releases/latest/download/vshu-macos-x64.dmg) · [Windows (.exe)](https://github.com/vshu-ide/vshu/releases/latest/download/vshu-windows-setup.exe) · [Linux AppImage](https://github.com/vshu-ide/vshu/releases/latest/download/vshu-linux.AppImage) · [すべてのビルド](https://github.com/vshu-ide/vshu/releases/latest)
+- またはビルドを直接入手: [macOS Apple Silicon](https://github.com/vishu6213/vshu/releases/latest/download/vshu-macos-arm64.dmg) · [macOS Intel](https://github.com/vishu6213/vshu/releases/latest/download/vshu-macos-x64.dmg) · [Windows (.exe)](https://github.com/vishu6213/vshu/releases/latest/download/vshu-windows-setup.exe) · [Linux AppImage](https://github.com/vishu6213/vshu/releases/latest/download/vshu-linux.AppImage) · [すべてのビルド](https://github.com/vishu6213/vshu/releases/latest)
 
 _パッケージマネージャーからもインストールできます:_
 
 ```bash
 # macOS (Homebrew)
 # 必ず完全な名前を使ってください。単なる `vshu` は無関係な Plotly の cask です。
-brew install --cask vshu-ide/vshu/vshu
+brew install --cask vishu6213/vshu/vshu
 # 既存のインストールをアップグレード
-brew upgrade --cask vshu-ide/vshu/vshu
+brew upgrade --cask vishu6213/vshu/vshu
 
 # Arch Linux (AUR) — or stably-vshu-git to build from source
 yay -S stably-vshu-bin
@@ -242,9 +242,9 @@ yay -S stably-vshu-bin
 
 - **Discord:** **[Discord](https://discord.gg/fzjDKHxv8Q)** のコミュニティに参加してください。
 - **Twitter / X:** アップデートやお知らせは **[@vshu_build](https://x.com/vshu_build)** をフォローしてください。
-- **フィードバックとアイデア:** 私たちは高速にリリースしています。足りない機能がありますか？[機能リクエストを送信](https://github.com/vshu-ide/vshu/issues)してください。
+- **フィードバックとアイデア:** 私たちは高速にリリースしています。足りない機能がありますか？[機能リクエストを送信](https://github.com/vishu6213/vshu/issues)してください。
 - **プライバシー:** Vshu が収集する匿名の利用データとオプトアウトの方法については、[プライバシーとテレメトリーのドキュメント](https://vshu.dev/docs/telemetry)をご覧ください。
-- **応援する:** 毎日のリリースを追うために、このリポジトリに[スター](https://github.com/vshu-ide/vshu)を付けてください。
+- **応援する:** 毎日のリリースを追うために、このリポジトリに[スター](https://github.com/vishu6213/vshu)を付けてください。
 
 ---
 
@@ -252,8 +252,8 @@ yay -S stably-vshu-bin
 
 貢献したい、またはローカルで実行したいですか？ [CONTRIBUTING.md](../../.github/CONTRIBUTING.md) ガイドをご覧ください。
 
-<a href="https://github.com/vshu-ide/vshu/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=vshu-ide/vshu" alt="Vshu のコントリビューター" />
+<a href="https://github.com/vishu6213/vshu/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=vishu6213/vshu" alt="Vshu のコントリビューター" />
 </a>
 
 ## ライセンス

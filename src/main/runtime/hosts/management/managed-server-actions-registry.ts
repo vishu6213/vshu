@@ -15,7 +15,9 @@ export type ManagedServerActions = {
   update: (
     selector: string,
     force: boolean,
-    pastLiveTerminals?: VshudManagedPastLiveTerminals
+    pastLiveTerminals?: VshudManagedPastLiveTerminals,
+    /** With force, accepts that terminals vshud runs itself end when the census cannot count them. */
+    endInProcessTerminals?: boolean
   ) => Promise<VshudManagedDeployResult>
   rollback: (selector: string) => Promise<VshudManagedRollbackResult>
   /** `acceptChangedState` restores the snapshot over state a rejected build changed. */

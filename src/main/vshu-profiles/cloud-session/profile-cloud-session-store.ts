@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, rmSync } from 'node:fs'
+import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { getSecretStore, type SecretStore } from '../../../shared/secure-storage/secret-store'
+import { getSecretStore } from '../../../shared/secure-storage/secret-store'
 import {
   VshuCloudSessionStorageRefusedError,
   sealedStorageRefusal
@@ -13,6 +14,13 @@ import type {
 } from '../../../shared/vshu-profiles/vshu-profiles'
 import { getVshuProfileDirectory } from '../profile-storage-paths'
 import { allowsPlaintextVshuCloudSession } from '../cloud-auth/profile-cloud-auth-config'
+import {
+  decodeStoredVshuCloudSession,
+  sealedSessionFormat,
+  type PersistedEncryptedSession,
+  type PersistedPlaintextSession
+} from './profile-cloud-session-codec'
+import { observeActiveTeamSession } from '../cloud-auth/active-team-capabilities'
 
 export type VshuCloudSession = {
   accessToken: string
@@ -32,23 +40,6 @@ export type VshuCloudSessionReadResult =
   | { status: 'decrypt-failed'; persistence: 'none'; error: string }
   /** Unlike decrypt-failed, unreadable proves nothing and must not authorize replacement. */
   | { status: 'unreadable'; persistence: 'none'; error: string }
-
-// vshud's host-key seal gets its own tag so a data folder shared with a desktop fails clearly, not as a decrypt error.
-type SealedSessionFormat = 'electron-safe-storage-v1' | 'vshud-host-key-v1'
-
-type PersistedEncryptedSession = {
-  version: 1
-  format: SealedSessionFormat
-  savedAt: number
-  ciphertext: string
-}
-
-type PersistedPlaintextSession = {
-  version: 1
-  format: 'dev-plaintext-v1'
-  savedAt: number
-  session: VshuCloudSession
-}
 
 type CachedVshuCloudSession = {
   session: VshuCloudSession
@@ -74,57 +65,6 @@ export function vshuCloudSessionKey(profileId: string, userDataPath: string): st
   return `${userDataPath}\0${profileId}`
 }
 
-function isObject(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value)
-}
-
-function isVshuCloudSession(value: unknown): value is VshuCloudSession {
-  if (!isObject(value) || !isObject(value.capabilities) || !isObject(value.capabilities.flags)) {
-    return false
-  }
-  if (value.organizations !== undefined && !isVshuCloudOrganizations(value.organizations)) {
-    return false
-  }
-  if (
-    value.identity !== undefined &&
-    !(
-      isObject(value.identity) &&
-      typeof value.identity.userId === 'string' &&
-      typeof value.identity.cloudProfileId === 'string'
-    )
-  ) {
-    return false
-  }
-  return (
-    typeof value.accessToken === 'string' &&
-    value.accessToken.length > 0 &&
-    typeof value.refreshToken === 'string' &&
-    value.refreshToken.length > 0 &&
-    typeof value.expiresAt === 'number' &&
-    Number.isFinite(value.expiresAt) &&
-    typeof value.capabilities.refreshedAt === 'number' &&
-    Number.isFinite(value.capabilities.refreshedAt)
-  )
-}
-
-function isVshuCloudOrganizations(value: unknown): value is VshuCloudOrgSummary[] {
-  if (!Array.isArray(value)) {
-    return false
-  }
-  return value.every((organization) => {
-    if (!isObject(organization)) {
-      return false
-    }
-    return (
-      typeof organization.orgId === 'string' &&
-      organization.orgId.length > 0 &&
-      typeof organization.name === 'string' &&
-      organization.name.length > 0 &&
-      (organization.role === undefined || typeof organization.role === 'string')
-    )
-  })
-}
-
 export function getVshuCloudSessionPath(profileId: string, userDataPath: string): string {
   return join(getVshuProfileDirectory(profileId, userDataPath), 'account-session.json.enc')
 }
@@ -134,12 +74,6 @@ const unsavedRotations = new Map<
   string,
   { profileId: string; userDataPath: string; session: VshuCloudSession }
 >()
-
-function sealedSessionFormat(secrets: SecretStore): SealedSessionFormat {
-  return secrets.describeSealing?.().kind === 'host-key'
-    ? 'vshud-host-key-v1'
-    : 'electron-safe-storage-v1'
-}
 
 function writeVshuCloudSession(
   profileId: string,
@@ -198,6 +132,7 @@ export function saveVshuCloudSession(
       options.requireSealed
     )
     unsavedRotations.delete(key)
+    observeActiveTeamSession(userDataPath, profileId, session)
     return persistence
   } catch (error) {
     if (!options.spentOnFailure) {
@@ -205,6 +140,7 @@ export function saveVshuCloudSession(
     }
     // Losing rotated tokens would replay spent disk tokens and risk revoking the family.
     unsavedRotations.set(key, { profileId, userDataPath, session })
+    observeActiveTeamSession(userDataPath, profileId, session)
     try {
       rmSync(getVshuCloudSessionPath(profileId, userDataPath), { force: true })
     } catch {
@@ -260,47 +196,11 @@ export function readVshuCloudSession(
   }
 
   try {
-    const parsed = JSON.parse(readFileSync(path, 'utf-8')) as
-      | PersistedEncryptedSession
-      | PersistedPlaintextSession
-    if (parsed.version !== 1) {
-      return { status: 'decrypt-failed', persistence: 'none', error: 'Unsupported session format.' }
+    const result = decodeStoredVshuCloudSession(readFileSync(path, 'utf-8'))
+    if (result.status === 'found' && result.persistence !== 'none') {
+      rememberMemorySession(cacheKey, { session: result.session, persistence: result.persistence })
     }
-    if (parsed.format === 'electron-safe-storage-v1' || parsed.format === 'vshud-host-key-v1') {
-      const secrets = getSecretStore()
-      if (parsed.format !== sealedSessionFormat(secrets)) {
-        return {
-          status: 'decrypt-failed',
-          persistence: 'none',
-          error:
-            parsed.format === 'vshud-host-key-v1'
-              ? "This Vshu account sign-in was saved by Vshu's headless server. Sign in again here."
-              : 'This Vshu account sign-in was saved by the Vshu app. Sign in again on this server.'
-        }
-      }
-      if (!secrets.isEncryptionAvailable()) {
-        return {
-          status: 'decrypt-failed',
-          persistence: 'none',
-          error: 'OS-backed encryption is unavailable.'
-        }
-      }
-      const decrypted = secrets.decryptString(Buffer.from(parsed.ciphertext, 'base64'))
-      const session = JSON.parse(decrypted) as VshuCloudSession
-      if (!isVshuCloudSession(session)) {
-        return { status: 'decrypt-failed', persistence: 'none', error: 'Invalid saved session.' }
-      }
-      rememberMemorySession(cacheKey, { session, persistence: 'encrypted' })
-      return { status: 'found', session, persistence: 'encrypted' }
-    }
-    if (parsed.format === 'dev-plaintext-v1' && allowsPlaintextVshuCloudSession()) {
-      if (!isVshuCloudSession(parsed.session)) {
-        return { status: 'decrypt-failed', persistence: 'none', error: 'Invalid saved session.' }
-      }
-      rememberMemorySession(cacheKey, { session: parsed.session, persistence: 'dev-plaintext' })
-      return { status: 'found', session: parsed.session, persistence: 'dev-plaintext' }
-    }
-    return { status: 'decrypt-failed', persistence: 'none', error: 'Unsafe session format.' }
+    return result
   } catch (error) {
     if (isUnreadableError(error)) {
       return {
@@ -317,13 +217,23 @@ export function readVshuCloudSession(
   }
 }
 
+export async function readStoredTeamPolicySession(
+  profileId: string,
+  userDataPath: string
+): Promise<VshuCloudSession | undefined> {
+  try {
+    const contents = await readFile(getVshuCloudSessionPath(profileId, userDataPath), 'utf-8')
+    const result = decodeStoredVshuCloudSession(contents)
+    return result.status === 'found' ? result.session : undefined
+  } catch {
+    return undefined
+  }
+}
+
 export function clearVshuCloudSession(profileId: string, userDataPath: string): void {
   const key = vshuCloudSessionKey(profileId, userDataPath)
   unsavedRotations.delete(key)
   memorySessions.delete(key)
+  observeActiveTeamSession(userDataPath, profileId, undefined)
   rmSync(getVshuCloudSessionPath(profileId, userDataPath), { force: true })
-}
-
-export function getVshuCloudMemorySessionCountForTests(): number {
-  return memorySessions.size
 }

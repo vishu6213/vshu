@@ -8,6 +8,12 @@ import type {
 import { CONNECTOR_SOURCE_NAMES } from '../connectors/external-conversation-link'
 import { botLinearWorkspaces, botSlackApps, type Bot } from '../bot-types'
 import { googleBotAsk, type GoogleBotConnectState } from '../google/google-bot-connect-state'
+import {
+  vshuCloudNeedsSignIn,
+  serverSignInSteps,
+  thisHost,
+  type VshuSignInServer
+} from './host-vshu-sign-in'
 
 export const CONNECTOR_OFFER_SOURCES = ['slack', 'linear', 'github', 'google'] as const
 export type ConnectorOfferSource = (typeof CONNECTOR_OFFER_SOURCES)[number]
@@ -51,10 +57,17 @@ function signInWhat(source: OfferSource): string {
   return source === 'webhook' ? 'Webhooks' : `${CONNECTOR_OFFER_NAMES[source]} events`
 }
 
-/** The line a client that can't draw the card shows instead. */
-export function connectorOfferText(offer: ConnectorOffer, botName: string): string {
+/** The line a client that can't draw the card shows instead; `server` names a headless host. */
+export function connectorOfferText(
+  offer: ConnectorOffer,
+  botName: string,
+  server?: VshuSignInServer
+): string {
   if (offer.signIn || offer.source === 'webhook') {
-    return `${signInWhat(offer.source)} need Vshu sign-in. Sign in to Vshu on your computer, then tell ${botName}.`
+    const steps = serverSignInSteps(server, botName, 'owner')
+    return steps
+      ? `${signInWhat(offer.source)} need Vshu Cloud sign-in on ${server}. ${steps} Then tell ${botName}.`
+      : `${signInWhat(offer.source)} need Vshu Cloud sign-in. Sign in to Vshu Cloud on your computer, then tell ${botName}.`
   }
   const name = CONNECTOR_OFFER_NAMES[offer.source]
   if (offer.addAccess && offer.source !== 'google') {
@@ -66,11 +79,12 @@ export function connectorOfferText(offer: ConnectorOffer, botName: string): stri
 
 export function connectorOfferBody(
   offer: ConnectorOffer,
-  botName: string
+  botName: string,
+  server?: VshuSignInServer
 ): AgentJournalPlainStatusItem & { connectorOffer: ConnectorOffer } {
   return {
     kind: 'status',
-    text: connectorOfferText(offer, botName),
+    text: connectorOfferText(offer, botName, server),
     presentation: CONNECTOR_OFFER_PRESENTATION,
     connectorOffer: offer
   }
@@ -112,16 +126,32 @@ function inNamedLinearWorkspace(bot: OfferingBot, workspace: string): boolean {
 export function signInOfferReply(
   bot: OfferingBot,
   source: OfferSource,
-  signedOut: boolean
+  /** The host's link to Vshu Cloud (ConnectorCloudStatus); undefined without Vshu Cloud. */
+  status: string | undefined,
+  server?: VshuSignInServer
 ): { offered: boolean; message: string } | null {
+  const signedOut = vshuCloudNeedsSignIn(status)
   if (source === 'google' || (source !== 'webhook' && !(signedOut && connected(bot, source)))) {
     return null
   }
-  if (!signedOut) {
+  // Only a known link says signed in: no Vshu Cloud at all is no proof of it.
+  if (status === undefined) {
     return {
       offered: false,
-      message:
-        'This computer is signed in to Vshu, so webhooks need no card; no card was shown. Set up the webhook again.'
+      message: `${thisHost(server)} has no Vshu Cloud connection, so it can't make webhooks; no card was shown.`
+    }
+  }
+  if (!signedOut) {
+    // Signed in; only a link that says ok is worth setting the webhook up again on.
+    const why =
+      status === 'ok'
+        ? 'Set up the webhook again.'
+        : status === 'unreachable'
+          ? "It can't reach Vshu Cloud right now; set up the webhook again once it can."
+          : 'Vshu Cloud refuses its link right now; tell your owner instead of trying again.'
+    return {
+      offered: false,
+      message: `${thisHost(server)} is signed in to Vshu Cloud, so webhooks need no card; no card was shown. ${why}`
     }
   }
   return {

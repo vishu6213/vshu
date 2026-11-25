@@ -33,6 +33,8 @@ export type WslVshudLivenessDependencies = {
   readIdentity: (distro: string, vshudPid: number | null) => Promise<WslGuestIdentity | null>
   openWatch: (connection: WslVshudConnection) => Promise<WslVshudWatch>
   collectCensus: (connection: WslVshudConnection) => Promise<VshudTerminalCensus>
+  /** The distro's vshud closed its sockets saying it stopped idle (#46567). */
+  wasIdleStopped?: (distro: string) => boolean
   /** A WSL project or terminal the user can see is open on this distro. */
   hasUserVisibleWork: (distro: string) => boolean | Promise<boolean>
   /** E9: recovery reconnects only into a distro confirmed running right before it spawns. */

@@ -2,7 +2,9 @@ import {
   compareAppVersions,
   isValidAppVersion
 } from '../../../shared/app-lifecycle/identity/app-version'
+import type { VshudManagedPastLiveTerminals } from '../../../shared/remote-runtime/vshud-lifecycle/vshud-managed-runtime'
 import type { VshudActivationRecord } from '../activation/vshud-activation-record'
+import type { VshudUpdateForce } from '../activation/vshud-update-plan'
 import {
   refuseVshudHostDowngrade,
   type VshudHostVersionRefusal
@@ -62,6 +64,22 @@ export function planVshudUpdateForIntent(
   }
   const { rolledBackFrom: _retried, ...record } = input.record
   return planManagedVshudAutoUpdate({ ...input, record, failedBefore: false })
+}
+
+/** Full force over an uncounted census ends terminals vshud runs itself, so it needs a confirmation, never a bare force. */
+export function managedVshudUpdateForce(input: {
+  force?: boolean
+  pastLiveTerminals?: VshudManagedPastLiveTerminals
+  /** The caller confirmed terminals vshud runs itself end, as CLI `--force --yes` does. */
+  endInProcessTerminals?: boolean
+}): VshudUpdateForce | undefined {
+  if (input.pastLiveTerminals) {
+    return input.pastLiveTerminals.uncounted ? true : 'live-terminals'
+  }
+  if (!input.force) {
+    return input.force
+  }
+  return input.endInProcessTerminals === true ? true : 'live-terminals'
 }
 
 export function admitVshudRecordForIntent(
@@ -125,4 +143,15 @@ export function availableManagedVshudUpdate(input: {
     failedBefore: false
   })
   return plan.action === 'update' ? candidateVersion : null
+}
+
+/** Update anyway was confirmed over one incumbent build; a build activated since then voids it. */
+export function admitConfirmedIncumbent(
+  admit: (record: VshudActivationRecord, candidateVersion: string) => string | null,
+  incumbentVersion: string | null
+): (record: VshudActivationRecord, candidateVersion: string) => string | null {
+  return (record, candidateVersion) =>
+    record.active !== incumbentVersion
+      ? "This host's server changed since the update was confirmed. Review it and update again."
+      : admit(record, candidateVersion)
 }

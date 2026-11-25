@@ -32,7 +32,11 @@ import {
 } from './vshud-managed-version-gc'
 
 import { clearVshudUpdateFailedThisLaunch } from './vshud-managed-update-failure-memory'
-import { admitVshudRecordForIntent } from './vshud-managed-update-decision'
+import {
+  admitConfirmedIncumbent,
+  admitVshudRecordForIntent,
+  managedVshudUpdateForce
+} from './vshud-managed-update-decision'
 import { collectManagedTerminalCensus } from './vshud-terminal-census-client'
 import { updateTerminalCounts } from '../activation/vshud-fenced-stop'
 import { refreshMaintainedVshudPairing } from './vshud-maintenance-pairing-refresh'
@@ -41,7 +45,11 @@ import { withManagedVshudLifecycle, followLaunchedServerPort } from './vshud-man
 
 export async function updateManagedVshudEnvironment(
   userDataPath: string,
-  args: LifecycleArgs & { force?: boolean; pastLiveTerminals?: VshudManagedPastLiveTerminals }
+  args: LifecycleArgs & {
+    force?: boolean
+    pastLiveTerminals?: VshudManagedPastLiveTerminals
+    endInProcessTerminals?: boolean
+  }
 ): Promise<VshudManagedDeployResult> {
   const { pastLiveTerminals } = args
   // Update anyway keeps Update's version admission even if a caller also passed force.
@@ -50,12 +58,10 @@ export async function updateManagedVshudEnvironment(
     const admitIntent = admitVshudRecordForIntent(intent, getAppEnvironment().getVersion())
     // Checked under the host fence: another desktop may have activated a build since the confirm.
     const admitRecord: NonNullable<VshudDeployOptions['admitRecord']> = pastLiveTerminals
-      ? (record, candidateVersion) =>
-          record.active !== pastLiveTerminals.incumbentVersion
-            ? "This host's server changed since the update was confirmed. Review it and update again."
-            : admitIntent(record, candidateVersion)
+      ? admitConfirmedIncumbent(admitIntent, pastLiveTerminals.incumbentVersion)
       : admitIntent
-    const force: VshudUpdateForce | undefined = pastLiveTerminals ? 'live-terminals' : args.force
+    // A confirmed uncounted census needs full force, which still requires proof no daemon is running.
+    const force = managedVshudUpdateForce(args)
     const result = await runManagedVshudUpdate(
       userDataPath,
       managed,
@@ -114,8 +120,7 @@ export async function runManagedVshudUpdate(
       reason: result.reason,
       // Force may override policy deferrals, including a newer host build.
       forceable:
-        isForceableVshudDeferral(result.code) ||
-        result.code === VSHUD_ACTIVATION_POLICY_REFUSED_CODE
+        isForceableVshudDeferral(result) || result.code === VSHUD_ACTIVATION_POLICY_REFUSED_CODE
     }
     // Policy refusal is final for this host, not a transient update to retry.
     if (result.code !== VSHUD_ACTIVATION_POLICY_REFUSED_CODE) {

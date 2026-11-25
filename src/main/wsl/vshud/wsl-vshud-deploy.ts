@@ -35,14 +35,19 @@ import { isWslMoveUnderwayOnHost } from '../../persistence/moving-wsl-projects/o
 import { readLocalFullVersion } from '../../managed-server/install/remote-versioned-install'
 import { createWslDistroHolder } from '../discovery/wsl-distro-holder'
 
-import { wslDistroHolderKey } from '../discovery/wsl-distro-holder-record'
+import { defaultWslVshudEnvironmentId } from './wsl-vshud-environment-id'
 import { readWslDistroRegistryIdShared } from '../discovery/wsl-distro-registry-id'
 import type { WslVshudHostTarget } from './wsl-vshud-host-target'
-import { createWslVshudHostTransport, type WslVshudHostTransport } from './wsl-vshud-host-transport'
+import { createWslVshudHostTransport } from './wsl-vshud-host-transport'
 import { holdWslDistroWithContext } from './wsl-vshud-held-context'
 import { deployWslVshudWithOneFence } from './wsl-vshud-one-fence-deploy'
 import { removeFailedFreshWslVshudInstall } from './wsl-vshud-failed-install-removal'
-import { probeWslActiveVshud, readWslVshudPid } from './wsl-vshud-active-probe'
+import {
+  probeWslActiveVshud,
+  readWslVshudPid,
+  type WslVshudLaunchMode
+} from './wsl-vshud-active-probe'
+import { relaunchAsWslHost } from './wsl-vshud-host-relaunch'
 import { wslVshudConnectStateHints } from './wsl-vshud-connect-state-snapshot'
 import { readWslVshudIncumbent, type WslVshudIncumbent } from './wsl-vshud-incumbent'
 import { adoptUnrecordedWslVshud } from './wsl-vshud-instance-adoption'
@@ -57,9 +62,7 @@ import { withOwnBuildLaunchEnv } from './wsl-vshud-own-build-launch-env'
 import { WSL_NODE_RUNTIME_DOWNLOAD_BUDGET } from '../execution/wsl-node-runtime-download-budget'
 
 /** Until the persisted deployment record (C7) assigns one, the environment is keyed per distro. */
-export function defaultWslVshudEnvironmentId(distro: string): string {
-  return `wsl:${wslDistroHolderKey(distro)}`
-}
+export { defaultWslVshudEnvironmentId }
 
 export async function deployAndLaunchWslVshud(
   distro: string,
@@ -75,7 +78,7 @@ export async function deployAndLaunchWslVshud(
     distro: name,
     label: options.label ?? name
   }
-  const conn = (options.createTransport ?? defaultTransport)(target)
+  const conn = options.createTransport?.(target) ?? createWslVshudHostTransport({ target })
   try {
     return await launchOverTransport(name, target, conn, options)
   } finally {
@@ -98,6 +101,7 @@ async function launchOverTransport(
   const holder = options.holder ?? createWslDistroHolder({ userDataPath: userDataPath() })
   // Read GUID alongside deploy; failure leaves the record without one.
   const distroId = (options.readRegistryId ?? readWslDistroRegistryIdShared)(name).catch(() => null)
+  options.onStage?.('starting-distro')
   const first = await holdWslDistroWithContext(name, target, conn, holder, signal)
   const { held, connectState } = first
   let context = first.context
@@ -120,6 +124,7 @@ async function launchOverTransport(
   if (adoption.outcome === 'adopted') {
     context = { ...context, activationRecord: adoption.record }
   }
+  options.onStage?.('installing-server')
   const localVshudDir = await materializeVshudArtifact(context.serverTarget, {
     signal,
     trustVerificationRecord: true,
@@ -165,7 +170,7 @@ async function launchOverTransport(
       conn,
       localVshudDir,
       target: context.serverTarget,
-      ...managedVshudDeployPolicy(context, appVersion, intent),
+      ...managedVshudDeployPolicy(context, appVersion, intent, options.pastUncountedTerminals),
       ...(incumbent
         ? {
             census: incumbent.census,
@@ -173,7 +178,8 @@ async function launchOverTransport(
             releaseIncumbentAdmission: incumbent.releaseAdmission
           }
         : {}),
-      force: intent === 'force',
+      // Only a confirmed Update anyway passes an uncounted census; plain Force defers it back to that confirm.
+      force: options.pastUncountedTerminals ? true : intent === 'force' && 'live-terminals',
       appVersion,
       recordedNodeRuntimeProbe: true,
       localWslHost: true,
@@ -211,9 +217,9 @@ async function launchOverTransport(
       candidateVersion: deployed.fullVersion,
       code: await wslVshudDeferralCode(slot, deployed, appVersion),
       reason: deployed.reason,
+      incumbentVersion,
       forceable:
-        isForceableVshudDeferral(deployed.code) ||
-        deployed.code === VSHUD_ACTIVATION_POLICY_REFUSED_CODE
+        isForceableVshudDeferral(deployed) || deployed.code === VSHUD_ACTIVATION_POLICY_REFUSED_CODE
     }
     // Live-terminal deferrals keep the incumbent serving until Update/Force.
     if (
@@ -233,11 +239,16 @@ async function launchOverTransport(
     return { outcome: 'deferred', distro: name, ...deferredUpdate }
   }
   clearVshudUpdateFailedThisLaunch(failureHost)
+  options.onStage?.('connecting')
+  // A holder, not a let: control flow would not see the probe closure set it.
+  const launch: { mode: WslVshudLaunchMode } = { mode: 'unknown' }
   const probe = async () => {
     const answer = await probeWslActiveVshud(context, localVshudDir, deployed.fullVersion, signal)
     probed = { fullVersion: deployed.fullVersion, pid: answer.pid }
+    launch.mode = answer.launch
     return answer.readiness
   }
+  let notWslHost: WslHostDeferredUpdate | null = null
   let readiness: ServeReadiness
   if (deployed.outcome === 'already-active') {
     // A stopped distro ended the active slot with it; the one-fence deploy already woke it.
@@ -255,6 +266,24 @@ async function launchOverTransport(
       await wakeAlreadyActiveVshud(slot)
       return probe()
     })
+    // Started without the WSL host marker (#43632): restart it as one when no terminal or chat runs.
+    if (launch.mode === 'other') {
+      const relaunch = await relaunchAsWslHost({
+        environmentId: target.id,
+        context,
+        slot,
+        fullVersion: deployed.fullVersion,
+        paired: options.pairedOffer ?? null,
+        moveRunning: isWslMoveUnderwayOnHost(userDataPath(), name),
+        readIncumbent: options.readIncumbent,
+        reprobe: async () => ({ readiness: await probe(), launch: launch.mode })
+      })
+      if (!relaunch.ready) {
+        return { outcome: 'deferred', distro: name, ...relaunch.deferredUpdate }
+      }
+      readiness = relaunch.readiness ?? readiness
+      notWslHost = relaunch.deferredUpdate
+    }
   } else {
     readiness = await probe()
   }
@@ -264,7 +293,8 @@ async function launchOverTransport(
     activeVersion: deployed.fullVersion,
     readiness
   })
-  return readyLaunch({ fullVersion: deployed.fullVersion, readiness })
+  const ready = await readyLaunch({ fullVersion: deployed.fullVersion, readiness })
+  return notWslHost ? { ...ready, deferredUpdate: notWslHost } : ready
 
   async function readyLaunch(serving: {
     fullVersion: string
@@ -289,10 +319,6 @@ async function launchOverTransport(
         : {})
     }
   }
-}
-
-function defaultTransport(target: WslVshudHostTarget): WslVshudHostTransport {
-  return createWslVshudHostTransport({ target })
 }
 
 function userDataPath(): string {

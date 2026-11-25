@@ -32,7 +32,7 @@ export function requireGitStageWorktreeScopeReceipt(
 type GitStageRunner = (args: string[], stdin?: string) => Promise<{ stdout: string }>
 
 export type StageGitWorktreeScopeOptions = {
-  /** Untracked paths `all` must skip: Vshu's shared symlinks, already verified as symlinks. */
+  /** Untracked paths `all` must skip: verified Vshu shared symlinks that Git does not ignore. */
   excludedUntrackedPaths?: readonly string[]
 }
 

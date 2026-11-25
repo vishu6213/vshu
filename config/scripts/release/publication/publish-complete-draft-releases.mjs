@@ -156,7 +156,7 @@ export function writeGithubOutputs({ published, skipped }, outputPath = process.
 
 async function main() {
   const token = process.env.GH_TOKEN || process.env.GITHUB_TOKEN
-  const repo = process.env.GITHUB_REPOSITORY || 'vshu-ide/vshu'
+  const repo = process.env.GITHUB_REPOSITORY || 'vishu6213/vshu'
   const result = await publishCompleteDraftReleases({ repo, token })
   writeGithubOutputs(result)
 }

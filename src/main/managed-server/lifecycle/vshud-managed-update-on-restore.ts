@@ -87,8 +87,3 @@ async function runRedeploy(
     return false
   }
 }
-
-export function resetManagedVshudRestoreUpdatesForTests(): void {
-  checked.clear()
-  redeploying.clear()
-}

@@ -71,7 +71,7 @@ function turn(psDone: boolean): NativeChatMessage[] {
         bash('1', `${CLI} repo list`),
         result('1', 'r1  vshu  /src/vshu\nr2  api  /src/api'),
         bash('2', "gh search prs --author=@me --state=open --limit 100 --jq '.[]'"),
-        result('2', 'vishu6213/vshu#388 bots: take over workspaces\nvshu-ide/vshu#30410 Retry'),
+        result('2', 'vishu6213/vshu#388 bots: take over workspaces\nstablyai/vshu#30410 Retry'),
         bash('3', `${CLI} linear list-issues --assignee me --state open --limit 50`),
         result('3', 'ENG-1  Todo  me  Bot onboarding'),
         bash('4', `${CLI} worktree ps --since 7d`),

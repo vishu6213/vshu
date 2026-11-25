@@ -32,7 +32,7 @@ async function copyVshuId(
   }
 }
 
-/** Copies a Vshu id the host resolves at click, `vshu_session_id:<id>`; null resolves as a failure. */
+/** Copies an Vshu id the host resolves at click, `vshu_session_id:<id>`; null resolves as a failure. */
 export function CopyVshuIdMenuItem({
   resolveVshuSessionId,
   copy,

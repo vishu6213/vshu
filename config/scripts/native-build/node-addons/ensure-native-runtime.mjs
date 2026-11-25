@@ -14,8 +14,7 @@ import {
 } from '../windows/windows-process-tree-gyp-rebuild.mjs'
 import { runProcessSync } from '@vshu/process-host'
 import { describeProcessFailure } from '../../tool-invocation/process-failure-message.mjs'
-import { buildHostProviderExec } from '../posix/build-provider-exec.mjs'
-import { shouldUseUpstreamReleaseAddons } from '../windows/upstream-release-windows-addons.mjs'
+import { ensureUnpackagedProviderExec } from '../posix/unpackaged-provider-exec.mjs'
 import {
   nativeRuntimeModules,
   isSharedNativePackage,
@@ -57,7 +56,7 @@ if (process.argv.includes(CHILD_CHECK_FLAG)) {
 }
 
 if ((runtime === 'node' || runtime === 'electron') && process.platform !== 'win32') {
-  buildHostProviderExec()
+  ensureUnpackagedProviderExec()
 }
 
 if (runtime === 'node') {
@@ -115,10 +114,7 @@ function readRuntimeArg() {
 }
 
 function ensureNodeRuntime() {
-  let initial = runNodeCheck()
-  if (!initial.ok && installUpstreamReleaseAddons(process.execPath)) {
-    initial = runNodeCheck()
-  }
+  const initial = runNodeCheck()
   const patchedNodePtyRebuildReason = getPatchedNodePtyRebuildReason()
   if (initial.ok && !patchedNodePtyRebuildReason && !forceRebuild) {
     return
@@ -162,11 +158,7 @@ function verifyNodeRuntimeAfterRebuild() {
 }
 
 function ensureElectronRuntime() {
-  let initial = runElectronCheck()
-  const electron = resolveInstalledElectronExecutable()
-  if (!initial.ok && electron.ok && installUpstreamReleaseAddons(electron.path)) {
-    initial = runElectronCheck()
-  }
+  const initial = runElectronCheck()
   const patchedNodePtyRebuildReason = getPatchedNodePtyRebuildReason()
   if (initial.ok && !patchedNodePtyRebuildReason) {
     return
@@ -321,7 +313,12 @@ function collectNativeModuleFailures() {
 function loadNativeModule(moduleName) {
   if (moduleName === '@vscode/windows-process-tree') {
     // Loadable node-addon-api prebuild can still read foreign command lines/ignore CreationTime; verify patched binary on both counts.
-    assertWindowsProcessTreeCreationTime({ module: require(moduleName) })
+    const windowsProcessTree = require(moduleName)
+    assertWindowsProcessTreeCreationTime({ module: windowsProcessTree })
+    // A stale build that still loads lacks the job exports shared Codex servers use.
+    if (typeof windowsProcessTree.createKillOnCloseJob !== 'function') {
+      throw new Error('stale build without the kill-on-close job exports; rebuild it')
+    }
     if (inspectWindowsProcessTreeAddon(windowsProcessTreeAddonPath()) === 'unpatched') {
       throw new Error(
         'the loaded addon still calls ReadProcessMemory, so it was not built from the patched ' +
@@ -343,7 +340,7 @@ function loadNativeModule(moduleName) {
   if (moduleName === '@vshu/windows-security') {
     const security = require(moduleName)
     // currentUserSid loads the addon; a stale build that still loads lacks the newest export.
-    if (!security.currentUserSid() || !security.hasNativeExport('isolatedSpawnBreaksAwayFromJob')) {
+    if (!security.currentUserSid() || !security.hasNativeExport('tcpClientOwnerAsync')) {
       throw new Error('stale build without the newest export; rebuild it')
     }
     return
@@ -473,26 +470,6 @@ function runNodeGyp(moduleName, { args, cwd }) {
     )
     process.exit(result.code ?? 1)
   }
-}
-
-// No MSVC: node-gyp cannot run, so take upstream's signed release binaries of the same sources.
-function installUpstreamReleaseAddons(executable) {
-  if (!shouldUseUpstreamReleaseAddons()) {
-    return false
-  }
-  console.warn('[native-runtime] No Visual Studio C++ toolchain; using upstream release addons.')
-  const result = spawnSync(
-    process.execPath,
-    [
-      resolve(
-        projectDir,
-        'config/scripts/native-build/windows/upstream-release-windows-addons.mjs'
-      ),
-      `--executable=${executable}`
-    ],
-    { cwd: projectDir, stdio: 'inherit' }
-  )
-  return !result.error && result.status === 0
 }
 
 function runNodeScript(args) {

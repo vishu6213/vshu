@@ -3,8 +3,8 @@
 </h1>
 
 <p align="center">
-  <a href="https://github.com/vshu-ide/vshu"><img src="https://img.shields.io/github/stars/vshu-ide/vshu?style=flat&amp;label=%E2%98%85&amp;color=08C" alt="GitHub Star 数" /></a>
-  <a href="https://github.com/vshu-ide/vshu/releases"><img src="../assets/readme-downloads.svg" alt="所有版本的总下载量" /></a>
+  <a href="https://github.com/vishu6213/vshu"><img src="https://img.shields.io/github/stars/vishu6213/vshu?style=flat&amp;label=%E2%98%85&amp;color=08C" alt="GitHub Star 数" /></a>
+  <a href="https://github.com/vishu6213/vshu/releases"><img src="../assets/readme-downloads.svg" alt="所有版本的总下载量" /></a>
   <img src="https://img.shields.io/badge/license-MIT-08C?style=flat" alt="许可证: MIT" />
   <a href="https://discord.gg/fzjDKHxv8Q"><img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white" alt="加入 Vshu Discord" /></a>
   <a href="https://x.com/vshu_build"><img src="https://img.shields.io/badge/X-000000?logo=x&logoColor=white" alt="在 X 上关注 Vshu" /></a>
@@ -164,7 +164,7 @@ VS Code 的编辑器，处处自动保存 — 把文件或图片直接拖入智�
 - **[丰富仓库预览](https://vshu.dev/docs/editing/markdown)** — 在工作区中预览 Markdown、图片、PDF 和仓库文档。
 - **[Computer Use](https://vshu.dev/docs/cli/computer-use)** — 当工作流需要真实交互时，让智能体操作桌面应用和可见 UI。
 - **[通知与未读状态](https://vshu.dev/docs/notifications)** — 第一时间知道智能体何时完成或需要关注，并可将会话标记为未读，稍后再回来处理。
-- **还有很多很多** — 我们每天发布新功能，这个列表永远跟不上。[更新日志](https://github.com/vshu-ide/vshu/releases)才是真正的功能列表。
+- **还有很多很多** — 我们每天发布新功能，这个列表永远跟不上。[更新日志](https://github.com/vishu6213/vshu/releases)才是真正的功能列表。
 
 ---
 
@@ -214,16 +214,16 @@ VS Code 的编辑器，处处自动保存 — 把文件或图片直接拖入智�
 ### 桌面端 — macOS、Windows、Linux
 
 - **[从 vshu.dev 下载](https://vshu.dev/download)**
-- 或直接获取安装包：[macOS Apple Silicon](https://github.com/vshu-ide/vshu/releases/latest/download/vshu-macos-arm64.dmg) · [macOS Intel](https://github.com/vshu-ide/vshu/releases/latest/download/vshu-macos-x64.dmg) · [Windows (.exe)](https://github.com/vshu-ide/vshu/releases/latest/download/vshu-windows-setup.exe) · [Linux AppImage](https://github.com/vshu-ide/vshu/releases/latest/download/vshu-linux.AppImage) · [全部构建](https://github.com/vshu-ide/vshu/releases/latest)
+- 或直接获取安装包：[macOS Apple Silicon](https://github.com/vishu6213/vshu/releases/latest/download/vshu-macos-arm64.dmg) · [macOS Intel](https://github.com/vishu6213/vshu/releases/latest/download/vshu-macos-x64.dmg) · [Windows (.exe)](https://github.com/vishu6213/vshu/releases/latest/download/vshu-windows-setup.exe) · [Linux AppImage](https://github.com/vishu6213/vshu/releases/latest/download/vshu-linux.AppImage) · [全部构建](https://github.com/vishu6213/vshu/releases/latest)
 
 _也可以通过包管理器安装：_
 
 ```bash
 # macOS (Homebrew)
 # 请始终使用完整名称；单独的 `vshu` 是无关的 Plotly cask。
-brew install --cask vshu-ide/vshu/vshu
+brew install --cask vishu6213/vshu/vshu
 # 升级已有安装
-brew upgrade --cask vshu-ide/vshu/vshu
+brew upgrade --cask vishu6213/vshu/vshu
 
 # Arch Linux (AUR) — or stably-vshu-git to build from source
 yay -S stably-vshu-bin
@@ -246,9 +246,9 @@ yay -S stably-vshu-bin
 
   <img src="../assets/wechat-qr.jpg" alt="Vshu 社区微信群二维码" width="160" />
 
-- **反馈与想法:** 我们发布很快。缺少什么功能？[提交功能请求](https://github.com/vshu-ide/vshu/issues)。
+- **反馈与想法:** 我们发布很快。缺少什么功能？[提交功能请求](https://github.com/vishu6213/vshu/issues)。
 - **隐私:** 查看[隐私与遥测文档](https://vshu.dev/docs/telemetry)，了解 Vshu 收集哪些匿名使用数据以及如何退出。
-- **支持我们:** 给这个仓库点 [Star](https://github.com/vshu-ide/vshu)，关注我们的日常发布。
+- **支持我们:** 给这个仓库点 [Star](https://github.com/vishu6213/vshu)，关注我们的日常发布。
 
 ---
 
@@ -256,8 +256,8 @@ yay -S stably-vshu-bin
 
 想要贡献代码或在本地运行？请参阅我们的 [CONTRIBUTING.md](../../.github/CONTRIBUTING.md) 指南。
 
-<a href="https://github.com/vshu-ide/vshu/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=vshu-ide/vshu" alt="Vshu 贡献者" />
+<a href="https://github.com/vishu6213/vshu/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=vishu6213/vshu" alt="Vshu 贡献者" />
 </a>
 
 ## 许可证

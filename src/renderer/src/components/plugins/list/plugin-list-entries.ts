@@ -61,6 +61,10 @@ export type PluginVerifiedSource =
   | { kind: 'official' | 'bundled' | 'dev' | 'unverified' }
   | { kind: 'catalog'; catalog: string | null; owner: string | null }
 
+export function pluginEntryManagingTeams(entry: PluginListEntry): string[] | undefined {
+  return entry.installed ? entry.installed.managedByTeams : entry.listing?.managedByTeams
+}
+
 function installedVerifiedSource(
   plugin: PluginHostListEntry,
   catalog: string | null
@@ -304,9 +308,9 @@ export function buildPluginListEntries(
           .map((candidate) => pluginDisplayBranding(candidate.marketplaceName))
         if (!own && entry.verifiedSource.kind === 'catalog') {
           // Why: another catalog's listing must never lend the install its name.
-          const from = plugin.source?.marketplace?.reference
           entry.verifiedSource.catalog =
-            sources.find((source) => source.source.url === from)?.marketplace?.name ?? null
+            sources.find((source) => source.source.url === plugin.source?.marketplace?.reference)
+              ?.marketplace?.name ?? null
         }
         return ownCatalog
           ? entry
@@ -333,18 +337,4 @@ export function buildPluginListEntries(
   )
 }
 
-/** Search across what a user can see or would type: name, key, publisher, description, categories. */
-export function matchesPluginSearch(entry: PluginListEntry, search: string): boolean {
-  const query = search.trim().toLowerCase()
-  if (!query) {
-    return true
-  }
-  return [
-    entry.name,
-    entry.pluginKey,
-    entry.publisher ?? '',
-    entry.description ?? '',
-    entry.listing?.marketplaceName ?? '',
-    ...entry.categories
-  ].some((value) => value.toLowerCase().includes(query))
-}
+export { matchesPluginSearch } from './plugin-list-search'

@@ -3,8 +3,8 @@
 </h1>
 
 <p align="center">
-  <a href="https://github.com/vshu-ide/vshu"><img src="https://img.shields.io/github/stars/vshu-ide/vshu?style=flat&amp;label=%E2%98%85&amp;color=08C" alt="Estrellas en GitHub" /></a>
-  <a href="https://github.com/vshu-ide/vshu/releases"><img src="../assets/readme-downloads.svg" alt="Descargas totales en todas las versiones" /></a>
+  <a href="https://github.com/vishu6213/vshu"><img src="https://img.shields.io/github/stars/vishu6213/vshu?style=flat&amp;label=%E2%98%85&amp;color=08C" alt="Estrellas en GitHub" /></a>
+  <a href="https://github.com/vishu6213/vshu/releases"><img src="../assets/readme-downloads.svg" alt="Descargas totales en todas las versiones" /></a>
   <img src="https://img.shields.io/badge/license-MIT-08C?style=flat" alt="Licencia: MIT" />
   <a href="https://discord.gg/fzjDKHxv8Q"><img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white" alt="Únete al Discord de Vshu" /></a>
   <a href="https://x.com/vshu_build"><img src="https://img.shields.io/badge/X-000000?logo=x&logoColor=white" alt="Sigue a Vshu en X" /></a>
@@ -164,7 +164,7 @@ Los agentes también manejan Vshu — automatiza cualquier flujo de trabajo con 
 - **[Previews ricos del repo](https://vshu.dev/docs/editing/markdown)** — Previsualiza Markdown, imágenes, PDFs y documentos del repo en el workspace.
 - **[Computer Use](https://vshu.dev/docs/cli/computer-use)** — Deja que los agentes manejen apps de escritorio y UI visible cuando un flujo de trabajo necesita interacción real.
 - **[Notificaciones y estado de no leído](https://vshu.dev/docs/notifications)** — Entérate cuando un agente termine o necesite tu atención, y marca hilos como no leídos para retomarlos después.
-- **Y muchas, muchas más** — lanzamos a diario, así que esta lista siempre va atrasada. El [changelog](https://github.com/vshu-ide/vshu/releases) es la verdadera lista de funciones.
+- **Y muchas, muchas más** — lanzamos a diario, así que esta lista siempre va atrasada. El [changelog](https://github.com/vishu6213/vshu/releases) es la verdadera lista de funciones.
 
 ---
 
@@ -214,16 +214,16 @@ Funciona con **cualquier agente CLI** — si corre en una terminal, corre en Vsh
 ### Escritorio — macOS, Windows, Linux
 
 - **[Descarga desde vshu.dev](https://vshu.dev/download)**
-- O descarga un build directamente: [macOS Apple Silicon](https://github.com/vshu-ide/vshu/releases/latest/download/vshu-macos-arm64.dmg) · [macOS Intel](https://github.com/vshu-ide/vshu/releases/latest/download/vshu-macos-x64.dmg) · [Windows (.exe)](https://github.com/vshu-ide/vshu/releases/latest/download/vshu-windows-setup.exe) · [Linux AppImage](https://github.com/vshu-ide/vshu/releases/latest/download/vshu-linux.AppImage) · [Todos los builds](https://github.com/vshu-ide/vshu/releases/latest)
+- O descarga un build directamente: [macOS Apple Silicon](https://github.com/vishu6213/vshu/releases/latest/download/vshu-macos-arm64.dmg) · [macOS Intel](https://github.com/vishu6213/vshu/releases/latest/download/vshu-macos-x64.dmg) · [Windows (.exe)](https://github.com/vishu6213/vshu/releases/latest/download/vshu-windows-setup.exe) · [Linux AppImage](https://github.com/vishu6213/vshu/releases/latest/download/vshu-linux.AppImage) · [Todos los builds](https://github.com/vishu6213/vshu/releases/latest)
 
 _O mediante un gestor de paquetes:_
 
 ```bash
 # macOS (Homebrew)
 # Usa siempre el nombre completo; `vshu` a secas es un cask de Plotly no relacionado.
-brew install --cask vshu-ide/vshu/vshu
+brew install --cask vishu6213/vshu/vshu
 # Actualizar una instalación existente
-brew upgrade --cask vshu-ide/vshu/vshu
+brew upgrade --cask vishu6213/vshu/vshu
 
 # Arch Linux (AUR) — or stably-vshu-git to build from source
 yay -S stably-vshu-bin
@@ -242,9 +242,9 @@ Vincúlala con tu app de escritorio para supervisar y dirigir a tus agentes desd
 
 - **Discord:** Únete a la comunidad en **[Discord](https://discord.gg/fzjDKHxv8Q)**.
 - **Twitter / X:** Sigue a **[@vshu_build](https://x.com/vshu_build)** para novedades y anuncios.
-- **Feedback e ideas:** Lanzamos rápido. ¿Te falta algo? [Pide una nueva feature](https://github.com/vshu-ide/vshu/issues).
+- **Feedback e ideas:** Lanzamos rápido. ¿Te falta algo? [Pide una nueva feature](https://github.com/vishu6213/vshu/issues).
 - **Privacidad:** Consulta la [documentación de privacidad y telemetría](https://vshu.dev/docs/telemetry) para saber qué datos anónimos de uso recopila Vshu y cómo desactivar su envío.
-- **Muéstranos tu apoyo:** Dale una [estrella](https://github.com/vshu-ide/vshu) a este repo para seguir nuestros lanzamientos diarios.
+- **Muéstranos tu apoyo:** Dale una [estrella](https://github.com/vishu6213/vshu) a este repo para seguir nuestros lanzamientos diarios.
 
 ---
 
@@ -252,8 +252,8 @@ Vincúlala con tu app de escritorio para supervisar y dirigir a tus agentes desd
 
 ¿Quieres contribuir o ejecutar Vshu localmente? Consulta nuestra guía [CONTRIBUTING.md](../../.github/CONTRIBUTING.md).
 
-<a href="https://github.com/vshu-ide/vshu/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=vshu-ide/vshu" alt="Contribuidores de Vshu" />
+<a href="https://github.com/vishu6213/vshu/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=vishu6213/vshu" alt="Contribuidores de Vshu" />
 </a>
 
 ## Licencia
