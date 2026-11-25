@@ -9,6 +9,7 @@ import type { PluginAuthor } from '../presentation/plugin-author'
 import { DetailSection } from './PluginDetailSections'
 import { Button } from '../../ui/button'
 import { openAppHttpLink } from '@/lib/browser/navigation/app-http-link-open'
+import { isBuiltInCatalogUrl } from '../presentation/plugin-source-display'
 
 export function PluginAuthorByline({ author }: { author: PluginAuthor }): React.JSX.Element {
   const t = useTranslate()
@@ -75,6 +76,7 @@ export function PluginAuthorCard({
   profileUrl: string | null
 }): React.JSX.Element {
   const t = useTranslate()
+  const visibleProfileUrl = profileUrl && !isBuiltInCatalogUrl(profileUrl) ? profileUrl : null
   return (
     <section
       data-plugin-author=""
@@ -84,12 +86,12 @@ export function PluginAuthorCard({
         {t('auto.components.settings.PluginAuthor.publisher', 'Publisher')}
       </h3>
       <p className="mt-3 truncate text-sm font-semibold" title={author.publisher}>
-        {profileUrl ? (
+        {visibleProfileUrl ? (
           <Button
             variant="link"
             size="inline"
             className="max-w-full"
-            onClick={(event) => openAppHttpLink(profileUrl, { event })}
+            onClick={(event) => openAppHttpLink(visibleProfileUrl, { event })}
           >
             <span className="truncate">{author.publisher}</span>
             <ArrowUpRight className="shrink-0" />

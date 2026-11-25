@@ -36,14 +36,16 @@ export function previewMatchesListing(
   preview: PluginMarketplaceHostInstallPreview,
   listing: PluginMarketplaceHostListing
 ): boolean {
-  if (pluginPreviewCatalogRevision(preview) !== pluginPreviewCatalogRevision(listing)) {
+  if (JSON.stringify(preview.managedByTeams) !== JSON.stringify(listing.managedByTeams)) {
     return false
   }
+  if (!listing.release) {
+    return pluginPreviewCatalogRevision(preview) === pluginPreviewCatalogRevision(listing)
+  }
   return (
-    !listing.release ||
-    (preview.resolvedCommit === listing.release.commit &&
-      preview.contentHash === listing.release.contentHash &&
-      pluginExecutionProfile(preview.manifest) === listing.release.execution)
+    preview.resolvedCommit === listing.release.commit &&
+    preview.contentHash === listing.release.contentHash &&
+    pluginExecutionProfile(preview.manifest) === listing.release.execution
   )
 }
 
@@ -52,8 +54,11 @@ function listingIdentity(listing: PluginMarketplaceHostListing): string {
   const release = listing.release
   return [
     listing.marketplaceSourceId,
-    pluginPreviewCatalogRevision(listing),
-    release?.commit ?? '',
+    JSON.stringify(listing.managedByTeams ?? null),
+    listing.source.url,
+    listing.source.ref,
+    listing.source.path ?? '',
+    release?.commit ?? pluginPreviewCatalogRevision(listing),
     release?.contentHash ?? '',
     release?.execution ?? ''
   ].join(':')
@@ -106,8 +111,9 @@ export function usePluginPageModel({
     listingIdentity(entry.listing) !== listingIdentity(pinned.listing)
   // Why a mismatched preview counts too: it is the catalog's newer release, not what is shown.
   const stale = newerListed || previewMatches === false
-  // Why disarm while refreshing: the listing under the button may be replaced any moment.
-  const disarmed = stale || refreshing
+  // Keep Install enabled while unrelated background catalog refreshes run.
+  const disarmed = stale
+  void refreshing
   // Why the mismatched preview is ignored: its rows would describe a release the page isn't on.
   const shownPreview = previewMatches === false ? null : preview
   const summary = listing?.release?.contributes

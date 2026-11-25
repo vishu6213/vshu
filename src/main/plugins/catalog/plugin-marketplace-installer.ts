@@ -2,14 +2,16 @@ import type { PluginBlockNotice } from '../../../shared/plugins/catalog/plugin-k
 import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import type { PluginManifest } from '../../../shared/plugins/manifest/plugin-manifest'
+import {
+  isQualifiedPluginKey,
+  type PluginManifest
+} from '../../../shared/plugins/manifest/plugin-manifest'
 import type { PluginHostImages } from '../../../shared/plugins/images/plugin-image-url'
 import type { PluginImageCache } from '../media/plugin-image-cache'
 import { cachePluginPreviewImages } from './plugin-marketplace-preview-images'
 import { readPluginVmRecipeIdentities } from '../contributions/plugin-vm-recipe-identities'
 import type { PluginVmRecipeIdentities } from '../../../shared/plugins/approval/plugin-update-access-growth'
 import { pluginCatalogReleaseCompatibilityError } from '../../../shared/plugins/manifest/plugin-manifest-compatibility'
-import { isQualifiedPluginKey } from '../../../shared/plugins/manifest/plugin-manifest'
 import { getUserPluginsDir } from '../discovery/plugin-discovery'
 import { readPluginRollbackVersion } from '../installation/plugin-rollback-candidate'
 import { checkoutPluginGitSource } from '../installation/plugin-git-repository'
@@ -27,6 +29,7 @@ import type {
 import {
   marketplaceInstallMoved,
   marketplaceInstallOf,
+  marketplacePreviewMatchesListing,
   type MarketplaceInstall
 } from './plugin-marketplace-install-origin'
 import type {
@@ -182,7 +185,7 @@ export class PluginMarketplaceInstaller {
     if (incompatible) {
       return { ok: false, error: incompatible }
     }
-    if (listing.marketplaceCommit !== preview.marketplaceCommit) {
+    if (!marketplacePreviewMatchesListing(listing, preview)) {
       return { ok: false, error: 'marketplace changed after preview; review the plugin again' }
     }
     const sourceState = (await this.marketplace.listSources()).find(
@@ -281,10 +284,12 @@ export class PluginMarketplaceInstaller {
     if (!installed || !listing) {
       return null
     }
-    const source = (await this.marketplace.listSources()).find(
-      ({ id }) => id === installed.sourceId
-    )
-    return { listing, officialCatalog: source?.official === true }
+    return {
+      listing,
+      officialCatalog: (await this.marketplace.listSources()).some(
+        (s) => s.id === installed.sourceId && s.official
+      )
+    }
   }
 
   /** What `rollback` would restore, read only when the UI asks. */

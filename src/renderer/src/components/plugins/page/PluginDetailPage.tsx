@@ -1,5 +1,6 @@
 import { pluginBlockCopy } from '../presentation/plugin-block-copy'
 import { pluginDisplayText } from '../../../../../shared/plugins/plugin-display-text'
+import { pluginDisplayBranding } from '../../../../../shared/plugins/manifest/plugin-display-branding'
 import { Fragment, useEffect, useMemo, useRef } from 'react'
 import { BadgeCheck, ChevronLeft } from 'lucide-react'
 import { translate } from '@/i18n/i18n'
@@ -74,7 +75,11 @@ function sourceLabel(entry: PluginListEntry, t: Translate = translate): string |
     return t('auto.components.settings.PluginDetailPage.gitUrl', 'Git URL')
   }
   // Why: the verified-source chip already names a community catalog.
-  return entry.verifiedSource.kind === 'catalog' ? null : (entry.listing?.marketplaceName ?? null)
+  return entry.verifiedSource.kind === 'catalog'
+    ? null
+    : entry.listing?.marketplaceName
+      ? pluginDisplayBranding(entry.listing.marketplaceName)
+      : null
 }
 
 /** One plugin's page: what it adds, what it can reach, where it came from, and its logs. */

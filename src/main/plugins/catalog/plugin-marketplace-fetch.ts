@@ -29,7 +29,7 @@ import type { PluginMarketplaceRegisteredSource } from './plugin-marketplace-sto
 const MARKETPLACE_INDEX_MAX_BYTES = 16 * 1024 * 1024
 // Why its own cap: a catalog repository may hold far more than one plugin, and only its index is read.
 const MARKETPLACE_DOWNLOAD_MAX_BYTES = 512 * 1024 * 1024
-const MARKETPLACE_GIT_TIMEOUT_MS = 120_000
+const MARKETPLACE_GIT_TIMEOUT_MS = 300_000
 // Extraction's 64 MiB image budget plus one round of reads that budget later refuses; past it, read sequentially.
 const CATALOG_BLOB_CACHE_MAX_BYTES = 96 * 1024 * 1024
 // One cat-file batch per round; extraction spends its budget between rounds, like sequential reads.

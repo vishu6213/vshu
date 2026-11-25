@@ -15,6 +15,11 @@ import {
 import { Input } from '../../ui/input'
 import { Label } from '../../ui/label'
 import { managedCatalogLabel } from '../presentation/plugin-author'
+import { pluginDisplayBranding } from '../../../../../shared/plugins/manifest/plugin-display-branding'
+import {
+  isBuiltInCatalogUrl,
+  pluginDisplayPublisherName
+} from '../presentation/plugin-source-display'
 
 type PluginMarketplaceSourceDialogProps = {
   open: boolean
@@ -222,7 +227,12 @@ export function PluginMarketplaceSourceDialog({
                   >
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium">
-                        {source.marketplace?.name ?? source.source.url}
+                        {pluginDisplayBranding(
+                          source.marketplace?.name ??
+                            (isBuiltInCatalogUrl(source.source.url)
+                              ? 'Vshu Plugins'
+                              : source.source.url)
+                        )}
                         {source.managed ? (
                           <Badge variant="outline" className="ml-2 align-middle">
                             {managedCatalogLabel(source.managedByTeams ?? [], t)}
@@ -241,12 +251,16 @@ export function PluginMarketplaceSourceDialog({
                           {t(
                             'auto.components.settings.PluginMarketplaceSourceDialog.owner',
                             'Owner: {{value0}}',
-                            { value0: source.marketplace.owner }
+                            { value0: pluginDisplayPublisherName(source.marketplace.owner) }
                           )}
                         </p>
                       ) : null}
                       <p className="mt-1 truncate font-mono text-xs text-muted-foreground">
-                        {source.source.url}#{source.source.ref}
+                        {isBuiltInCatalogUrl(source.source.url)
+                          ? source.official
+                            ? 'Vshu Official Catalog'
+                            : 'Vshu Community Catalog'
+                          : `${source.source.url}#${source.source.ref}`}
                       </p>
                       {source.marketplace ? (
                         <p
@@ -276,7 +290,14 @@ export function PluginMarketplaceSourceDialog({
                       aria-label={t(
                         'auto.components.settings.PluginMarketplaceSourceDialog.refreshLabel',
                         'Refresh {{value0}}',
-                        { value0: source.marketplace?.name ?? source.source.url }
+                        {
+                          value0: pluginDisplayBranding(
+                            source.marketplace?.name ??
+                              (isBuiltInCatalogUrl(source.source.url)
+                                ? 'Vshu Plugins'
+                                : source.source.url)
+                          )
+                        }
                       )}
                       onClick={() => void refresh(source.id)}
                     >
@@ -290,7 +311,14 @@ export function PluginMarketplaceSourceDialog({
                         aria-label={t(
                           'auto.components.settings.PluginMarketplaceSourceDialog.removeLabel',
                           'Remove {{value0}}',
-                          { value0: source.marketplace?.name ?? source.source.url }
+                          {
+                            value0: pluginDisplayBranding(
+                              source.marketplace?.name ??
+                                (isBuiltInCatalogUrl(source.source.url)
+                                  ? 'Vshu Plugins'
+                                  : source.source.url)
+                            )
+                          }
                         )}
                         onClick={() => void remove(source.id)}
                       >

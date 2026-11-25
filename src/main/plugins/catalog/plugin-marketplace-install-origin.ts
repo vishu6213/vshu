@@ -28,3 +28,24 @@ export function marketplaceInstallMoved(
   const installed = marketplaceInstallOf(entry)
   return installed !== null && !isSamePluginSource(installed.plugin, source)
 }
+
+/** Whether a catalog listing still points at the exact plugin release that was previewed. */
+export function marketplacePreviewMatchesListing(
+  listing: {
+    marketplaceCommit: string
+    source: { url: string; path?: string }
+    release?: { commit: string }
+  },
+  preview: {
+    marketplaceCommit: string
+    resolvedCommit: string
+    source?: { url: string; path?: string }
+  }
+): boolean {
+  return (
+    (!preview.source || isSamePluginSource(listing.source, preview.source)) &&
+    (listing.release
+      ? listing.release.commit === preview.resolvedCommit
+      : listing.marketplaceCommit === preview.marketplaceCommit)
+  )
+}

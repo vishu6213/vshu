@@ -4,6 +4,8 @@ import type { Translate } from '@/i18n/use-translate'
 import { pluginEntryManagingTeams, type PluginListEntry } from '../list/plugin-list-entries'
 import { LOCAL_PLUGIN_PUBLISHER } from '../../../../../shared/plugins/installation/plugin-publisher-derivation'
 import { sanitizePluginDisplayText } from '../../../../../shared/plugins/manifest/plugin-display-text'
+import { pluginDisplayBranding } from '../../../../../shared/plugins/manifest/plugin-display-branding'
+import { pluginDisplayPublisherName } from './plugin-source-display'
 
 export type PluginAuthor = {
   publisher: string
@@ -39,13 +41,14 @@ export function pluginAuthor(
   if (!publisher || publisher === LOCAL_PLUGIN_PUBLISHER) {
     return null
   }
-  const catalog = entry.installed
+  const rawCatalog = entry.installed
     ? pluginAuthorCatalogId(entry)
       ? (entry.listing?.marketplaceName ?? null)
       : entry.verifiedSource.kind === 'catalog'
         ? (entry.verifiedSource.catalog ?? entry.verifiedSource.owner)
         : null
     : (entry.listing?.marketplaceName ?? null)
+  const catalog = rawCatalog ? pluginDisplayBranding(rawCatalog) : null
   const installed = entry.installed
   const sourceKind = installed?.source?.kind
   const provenance: PluginAuthor['provenance'] =
@@ -56,7 +59,7 @@ export function pluginAuthor(
         : catalog || sourceKind === 'marketplace' || (!installed && entry.listing)
           ? 'catalog'
           : 'unknown'
-  return { publisher, catalog, provenance }
+  return { publisher: pluginDisplayPublisherName(publisher), catalog, provenance }
 }
 
 /** The catalog scope is known only for listings joined to the installed source. */

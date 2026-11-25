@@ -20,6 +20,7 @@ import {
   pluginSourceReadmeUrl
 } from '../presentation/plugin-source-links'
 import { PluginAuthorCard } from './PluginAuthor'
+import { isBuiltInCatalogUrl, pluginDisplayKey } from '../presentation/plugin-source-display'
 
 function InfoRow({
   label,
@@ -84,8 +85,10 @@ export function PluginDetailInfo({
   const updated = formatPluginReleaseDate(listing?.updatedAt, intlLocale)
   const license = plugin?.license ?? listing?.license
   const sourceUrl = pluginSourceGitUrl(entry)
-  const repository = sourceUrl ? pluginRepositoryPageUrl(sourceUrl) : null
-  const readme = pluginSourceReadmeUrl(entry)
+  const rawRepository = sourceUrl ? pluginRepositoryPageUrl(sourceUrl) : null
+  const repository = rawRepository && !isBuiltInCatalogUrl(rawRepository) ? rawRepository : null
+  const rawReadme = pluginSourceReadmeUrl(entry)
+  const readme = rawReadme && !isBuiltInCatalogUrl(rawReadme) ? rawReadme : null
 
   return (
     <aside className="@max-2xl/plugin-detail:mt-6">
@@ -155,7 +158,7 @@ export function PluginDetailInfo({
           ) : null}
           <InfoRow
             label={t('auto.components.settings.PluginDetailPage.pluginId', 'Plugin ID')}
-            value={entry.pluginKey}
+            value={pluginDisplayKey(entry.pluginKey)}
             mono
           />
         </dl>

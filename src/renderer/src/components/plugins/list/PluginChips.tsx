@@ -3,6 +3,7 @@ import { useTranslate, type Translate } from '@/i18n/use-translate'
 import { Badge } from '../../ui/badge'
 import type { PluginListEntry, PluginVerifiedSource } from './plugin-list-entries'
 import { pluginDisplayBranding } from '../../../../../shared/plugins/manifest/plugin-display-branding'
+import { isHiddenRepositoryOwnerLabel } from '../presentation/plugin-source-display'
 
 /** Where a plugin's trust comes from; null when the Official mark or Bundled chip already says it. */
 export function pluginVerifiedSourceLabel(
@@ -19,8 +20,9 @@ export function pluginVerifiedSourceLabel(
       return t('auto.components.settings.PluginManagerRows.unverified', 'Unverified')
     case 'catalog': {
       const catalogName = pluginDisplayBranding(source.catalog ?? '')
+      const owner = isHiddenRepositoryOwnerLabel(source.owner) ? null : source.owner
       return (
-        [catalogName, source.owner].filter(Boolean).join(' · ') ||
+        [catalogName, owner].filter(Boolean).join(' · ') ||
         t('auto.components.settings.PluginManagerRows.unverified', 'Unverified')
       )
     }

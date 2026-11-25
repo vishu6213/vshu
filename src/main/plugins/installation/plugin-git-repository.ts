@@ -15,7 +15,7 @@ import { MAX_PLUGIN_TOTAL_BYTES } from '../artifacts/plugin-content-hash'
 import { materializePluginGitTree, type PluginGitBytesRunner } from './plugin-git-tree'
 import { PLUGIN_GIT_CLONE_TEMP_PREFIX } from './plugin-git-temp-sweep'
 
-const PLUGIN_GIT_TIMEOUT_MS = 120_000
+const PLUGIN_GIT_TIMEOUT_MS = 300_000
 // Why headroom over the tree cap: a depth-1 pack of incompressible files carries per-object overhead.
 export const PLUGIN_GIT_DOWNLOAD_MAX_BYTES = MAX_PLUGIN_TOTAL_BYTES + 16 * 1024 * 1024
 const DOWNLOAD_POLL_MS = 200

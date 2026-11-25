@@ -12,6 +12,10 @@ import { PluginCard } from '../list/PluginCard'
 import { PluginChips } from '../list/PluginChips'
 import { PluginCardAction } from './PluginCardAction'
 import { pluginDisplayBranding } from '../../../../../shared/plugins/manifest/plugin-display-branding'
+import {
+  isBuiltInCatalogUrl,
+  pluginDisplayPublisherName
+} from '../presentation/plugin-source-display'
 import { Badge } from '../../ui/badge'
 import { PluginCategoryBadge } from '../list/PluginCategoryBadge'
 import { usePluginArtPalettes } from '../state/use-plugin-art-palettes'
@@ -27,7 +31,14 @@ function sourceDetail(source: PluginMarketplaceHostSourceState, t: Translate = t
   const trust = source.official
     ? t('auto.components.settings.PluginManager.verified', 'verified')
     : t('auto.components.settings.PluginManager.unverified', 'unverified')
-  const origin = source.official ? source.marketplace?.owner : source.source.url
+  if (isBuiltInCatalogUrl(source.source.url)) {
+    return source.official ? `${trust} · Vshu Official` : trust
+  }
+  const origin = source.official
+    ? source.marketplace?.owner
+      ? pluginDisplayPublisherName(source.marketplace.owner)
+      : undefined
+    : source.source.url
   return origin ? `${trust} · ${origin}` : trust
 }
 
