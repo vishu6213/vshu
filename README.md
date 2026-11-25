@@ -19,23 +19,29 @@
 
 ## What is Vshu?
 
-Vshu is a desktop IDE (Electron + TypeScript) built around agentic development: you give each
-task its own worktree, start an agent in it, and review, test and merge the results from one
-window.
+Vshu is a desktop IDE (Electron + TypeScript) built around parallel, agentic software
+development. Instead of juggling branches in a single checkout, Vshu gives every task its own
+isolated **Git worktree**, lets you run multiple AI coding agents side by side, and brings
+chat, terminals, a built-in browser, and unified diff review together in a single window.
 
 ## Features
 
-- **Parallel agents.** Dispatch Claude Code, Codex, OpenCode and other CLI agents across
-  separate worktrees at the same time, and watch their status from one sidebar.
-- **Worktree-first Git.** Create, switch and clean up worktrees; review agent changes as
-  unified diffs, annotate them, and commit or open pull requests.
-- **Chat or terminal.** Talk to an agent in a chat view or drop into its full terminal without
-  losing context.
-- **Built-in browser.** Preview web apps, inspect elements and let agents drive the page.
-- **Remote and WSL.** Work on SSH hosts and WSL distributions as if they were local.
-- **Plugins and themes.** Extend Vshu with themes, language packs and agent tools.
-- **True-black UI.** A pure black (`#000000`) monochrome theme that is easy on OLED screens.
-- **In-app updates.** New releases install from Settings with one click (see
+- **Parallel AI Agents.** Dispatch Claude Code, Codex, OpenCode, and other CLI agents across
+  separate worktrees simultaneously, with live status tracking in the sidebar.
+- **Worktree-First Git.** Create, switch, and clean up worktrees effortlessly; review agent
+  changes as unified diffs, leave inline annotations, commit, or open pull requests.
+- **Chat & Full Terminal.** Interact with agents in a structured chat view or drop directly
+  into an interactive PTY terminal without losing context.
+- **Built-in Browser.** Preview local web apps, inspect DOM elements, capture screenshots, and
+  let agents interact with pages directly inside the IDE.
+- **Remote Hosts & WSL.** Connect to SSH servers and WSL distributions seamlessly, working on
+  remote repositories as if they were local.
+- **Workspace Hooks (`vshu.yaml`).** Automate per-repository environment setup, bootstrap
+  scripts, and teardown hooks when worktrees are created.
+- **Plugins & Themes.** Extend Vshu with custom themes, language packs, and tools.
+- **True-Black OLED UI.** A pure-black (`#000000`) high-contrast monochrome interface designed
+  for long coding sessions.
+- **One-Click In-App Updates.** New releases download and install directly from Settings (see
   [Updates](#updates)).
 
 ## Screenshots
@@ -103,11 +109,44 @@ pnpm package:vshu        # dist/Vshu/Vshu.exe and Vshu_Installer/Vshu-<version>-
 ```
 
 `pnpm package:vshu` uses `config/electron-builder.simple.cjs` and also writes `latest.yml`
-and the installer `.blockmap` to `dist/`. `pnpm release:build` runs all of the above from a
-clean output folder. `config/electron-builder.config.cjs` is the full upstream release
-configuration (signing, macOS, Linux) and needs extra native tools.
+and the installer `.blockmap` to `dist/`. `pnpm release:build` runs a clean full build from
+scratch. `config/electron-builder.config.cjs` contains the full multi-platform release
+configuration (signing, macOS, Linux).
 
-Useful checks: `pnpm run typecheck`, `pnpm exec oxlint`, `pnpm rebrand:check`.
+## Useful Commands
+
+| Command              | Description                                      |
+| :------------------- | :----------------------------------------------- |
+| `pnpm dev`           | Start Vshu in development mode                   |
+| `pnpm typecheck`     | Run TypeScript typechecking across all targets   |
+| `pnpm test`          | Run the test suite                               |
+| `pnpm lint`          | Run linting and static checks                    |
+| `pnpm format`        | Format files with `oxfmt`                        |
+| `pnpm package:vshu`  | Build the Windows portable app & setup installer |
+| `pnpm release:build` | Clean build and package release artifacts        |
+
+## Vshu CLI
+
+Vshu includes a built-in `vshu` CLI (`out/cli/index.js`) for automating workspaces, terminals,
+agents, and the embedded browser from scripts or agent sessions:
+
+- `vshu status` — inspect running workspaces, agents, and host status
+- `vshu worktree` — create, list, and manage Git worktrees
+- `vshu terminal` — open, read, and send input to IDE terminals
+- `vshu browser` — open URLs, inspect pages, and capture screenshots
+
+You can also launch Vshu on Windows using [launch-vshu.bat](launch-vshu.bat) or
+[launch-vshu.vbs](launch-vshu.vbs) (silent launcher).
+
+## Project Structure
+
+- `src/main/` — Electron main process, worktree management, PTYs, and daemon/host services
+- `src/renderer/` — React UI, editor/diff views, chat, terminal, and browser panes
+- `src/cli/` — `vshu` CLI commands and runtime client
+- `src/shared/` — Shared types, RPC contracts, and workspace configuration (`vshu.yaml`)
+- `mobile/` — Companion mobile web shell
+- `native/` — Native addons for PTY, security, and OS integration
+- `resources/` — App icons, bundled themes, plugins, and skill assets
 
 ## License
 
