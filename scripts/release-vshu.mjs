@@ -204,7 +204,9 @@ function publish(version, files, opts) {
   // An existing tag on GitHub is used as is; otherwise gh creates it at HEAD, which must be pushed.
   if (!quiet('gh', ['api', `repos/${RELEASE_REPO}/git/ref/tags/${tag}`]).ok) {
     const head = quiet('git', ['rev-parse', 'HEAD']).out
-    if (!quiet('gh', ['api', `repos/${RELEASE_REPO}/commits/${head}`]).ok && !opts.dryRun) {
+    // --jq keeps the reply small: a commit touching many files overflows spawnSync's buffer.
+    const onGitHub = quiet('gh', ['api', `repos/${RELEASE_REPO}/commits/${head}`, '--jq', '.sha'])
+    if (!onGitHub.ok && !opts.dryRun) {
       throw new Error(
         `HEAD (${head.slice(0, 12)}) is not on github.com/${RELEASE_REPO}. Push your branch first.`
       )
