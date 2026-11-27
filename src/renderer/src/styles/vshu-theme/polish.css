@@ -1,0 +1,60 @@
+/*
+ * Finishing touches: chrome focus rings, fading hairline dividers, cool selection, and subtle
+ * top-edge tab hover highlight across ALL themes.
+ */
+:root:not([data-window-material]) {
+  & ::selection {
+    background-color: color-mix(in srgb, var(--vshu-accent) 32%, transparent);
+  }
+
+  & [data-slot='button'][data-variant='default']:not(:disabled):focus-visible {
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.85),
+      inset 0 -1px 0 rgb(0 0 0 / 0.16),
+      var(--vshu-focus-ring);
+  }
+
+  &
+    [data-slot='button']:is([data-variant='outline'], [data-variant='secondary']):not(
+      :disabled
+    ):focus-visible {
+    border-color: color-mix(in srgb, var(--vshu-accent) 55%, transparent);
+    box-shadow: var(--vshu-highlight), var(--vshu-focus-ring);
+  }
+
+  & [data-contextual-tour-target='sidebar-navigation'] button:focus-visible {
+    outline: none;
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--vshu-accent) 52%, transparent),
+      0 0 14px -6px var(--vshu-accent-glow);
+  }
+
+  & [data-vshu-status-bar] {
+    border-image: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--vshu-hairline-strong) 18%,
+        var(--vshu-hairline-strong) 82%,
+        transparent 100%
+      )
+      1;
+  }
+
+  & div[data-native-chat-turn-status] {
+    border-image: linear-gradient(
+        90deg,
+        var(--vshu-hairline-strong) 0%,
+        var(--vshu-hairline) 60%,
+        transparent 100%
+      )
+      1;
+  }
+
+  & [data-tab-group-strip-id] [data-tab-id][data-active='false']:hover {
+    background-image: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--foreground) 5%, transparent),
+      transparent 70%
+    );
+  }
+}

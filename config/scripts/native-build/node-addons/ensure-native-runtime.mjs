@@ -12,6 +12,7 @@ import {
   stageWindowsProcessTreeNodeAddonApiHeaders,
   windowsProcessTreeAddonPath
 } from '../windows/windows-process-tree-gyp-rebuild.mjs'
+import { shouldUseUpstreamReleaseAddons } from '../windows/upstream-release-windows-addons.mjs'
 import { runProcessSync } from '@vshu/process-host'
 import { describeProcessFailure } from '../../tool-invocation/process-failure-message.mjs'
 import { ensureUnpackagedProviderExec } from '../posix/unpackaged-provider-exec.mjs'
@@ -317,6 +318,14 @@ function loadNativeModule(moduleName) {
     assertWindowsProcessTreeCreationTime({ module: windowsProcessTree })
     // A stale build that still loads lacks the job exports shared Codex servers use.
     if (typeof windowsProcessTree.createKillOnCloseJob !== 'function') {
+      // The pinned upstream prebuilt (no MSVC on this host) predates the job exports; the app
+      // checks for them at runtime and Windows Codex chats then keep their own server.
+      if (shouldUseUpstreamReleaseAddons()) {
+        console.warn(
+          '[native-runtime] @vscode/windows-process-tree prebuilt has no kill-on-close job exports; shared Codex servers stay off on Windows.'
+        )
+        return
+      }
       throw new Error('stale build without the kill-on-close job exports; rebuild it')
     }
     if (inspectWindowsProcessTreeAddon(windowsProcessTreeAddonPath()) === 'unpatched') {

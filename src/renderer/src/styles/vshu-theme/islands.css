@@ -1,0 +1,206 @@
+/*
+ * Floating Liquid Obsidian Islands: window chrome splits into crisp, rounded liquid-glass islands
+ * (left sidebar, workspace, right tool panel, and pill status dock) so the live backdrop gleams
+ * along every seam. Works consistently across ALL themes (default dark, Vshu OLED, Midnight, etc.).
+ */
+:root:not([data-window-material]) {
+  --vshu-island-gap: 8px;
+  --vshu-island-radius: 16px;
+  --vshu-island-ring:
+    inset 0 0 0 1px var(--vshu-hairline-strong),
+    inset 0 1px 0 color-mix(in srgb, var(--foreground) 12%, transparent);
+  --vshu-island-drop: 0 22px 54px -26px rgb(0 0 0 / 0.92), 0 0 0 1px rgb(0 0 0 / 0.52);
+
+  & .app-layout {
+    padding: 6px var(--vshu-island-gap) var(--vshu-island-gap);
+    gap: var(--vshu-island-gap);
+  }
+
+  /* Preserve window dragging along the top 6px seam above islands. */
+  & .app-layout::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    -webkit-app-region: drag;
+  }
+
+  & .app-layout[data-linux-tiling-window-mode]::before {
+    -webkit-app-region: no-drag;
+  }
+
+  /* Left island: title strip + sidebar form one unified obsidian glass slab. */
+  & div:has(> .titlebar-left:not(.titlebar-left-floating)) {
+    border-radius: var(--vshu-island-radius);
+    box-shadow: var(--vshu-island-drop);
+  }
+
+  & .titlebar-left:not(.titlebar-left-floating) {
+    border-radius: var(--vshu-island-radius) var(--vshu-island-radius) 0 0;
+    background-color: var(--vshu-island-surface);
+    background-image:
+      var(--vshu-specular),
+      linear-gradient(180deg, rgb(255 255 255 / 0.055), rgb(255 255 255 / 0.012));
+    background-size: var(--vshu-specular-size), auto;
+    background-position:
+      top,
+      0 0;
+    background-repeat: no-repeat;
+    box-shadow:
+      inset 1px 0 0 var(--vshu-hairline-strong),
+      inset -1px 0 0 var(--vshu-hairline-strong),
+      inset 0 1px 0 color-mix(in srgb, var(--foreground) 14%, transparent);
+  }
+
+  & .titlebar-left:not(.titlebar-left-floating) + * [data-sidebar-content-shell] {
+    border-radius: 0 0 var(--vshu-island-radius) var(--vshu-island-radius);
+    background-color: var(--vshu-island-surface);
+    box-shadow:
+      inset 1px 0 0 var(--vshu-hairline-strong),
+      inset -1px 0 0 var(--vshu-hairline-strong),
+      inset 0 -1px 0 var(--vshu-hairline);
+  }
+
+  /* Centre island: workspace canvas with top caustic sheen and crisp glass bevel ring. */
+  & [data-workspace-shell-content] {
+    position: relative;
+    border-radius: var(--vshu-island-radius);
+    background-color: var(--vshu-workspace-surface);
+    background-image:
+      var(--vshu-specular), linear-gradient(180deg, rgb(255 255 255 / 0.032), transparent 140px);
+    background-size: var(--vshu-specular-size), auto;
+    background-position:
+      top,
+      0 0;
+    background-repeat: no-repeat;
+    box-shadow: var(--vshu-island-drop);
+    isolation: isolate;
+  }
+
+  & [data-workspace-shell-content]::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 40;
+    border-radius: inherit;
+    box-shadow: var(--vshu-island-ring);
+    pointer-events: none;
+  }
+
+  & [data-workspace-shell-content]:not(:first-child) {
+    margin-left: var(--vshu-island-gap);
+  }
+
+  /* Full-width title bar (Settings, plugins, etc.) floats as its own glass slab. */
+  & .titlebar:not([data-workspace-shell-content] .titlebar) {
+    margin-bottom: var(--vshu-island-gap);
+    border-bottom-color: transparent;
+    border-radius: var(--vshu-island-radius);
+    background-color: var(--vshu-island-surface);
+    background-image: var(--vshu-specular), var(--vshu-glass-fill);
+    background-size: var(--vshu-specular-size), auto;
+    background-position:
+      top,
+      0 0;
+    background-repeat: no-repeat;
+    box-shadow: var(--vshu-island-ring), var(--vshu-island-drop);
+  }
+
+  & .workspace-sidebar-seam {
+    border-left-color: transparent;
+  }
+
+  /* Right island: explorer, source control, and auxiliary panels. */
+  & .bg-sidebar:has(> .right-sidebar-header-inset) {
+    margin-left: var(--vshu-island-gap);
+    border-radius: var(--vshu-island-radius);
+    overflow: hidden;
+    background-image: var(--vshu-specular);
+    background-size: var(--vshu-specular-size);
+    background-position: top;
+    background-repeat: no-repeat;
+    box-shadow: var(--vshu-island-ring), var(--vshu-island-drop);
+  }
+
+  /* Window controls: crisp glass pills inset inside the workspace corner. */
+  & .window-controls {
+    top: 10px;
+    right: calc(var(--vshu-island-gap) + 6px);
+    height: 28px;
+    gap: 3px;
+  }
+
+  & .window-controls-btn {
+    width: 38px;
+    border-radius: 9px;
+    transition:
+      background-color 140ms ease,
+      color 140ms ease,
+      transform 140ms var(--vshu-ease-out);
+  }
+
+  & .window-controls-btn:hover {
+    background-color: color-mix(in srgb, var(--foreground) 9%, transparent);
+    box-shadow: inset 0 0 0 1px var(--vshu-hairline-strong);
+  }
+
+  & .window-controls-close:hover {
+    background-color: #c42b1c;
+    box-shadow: 0 0 14px -4px rgb(196 43 28 / 0.65);
+  }
+
+  /* Floating pill status dock at bottom. */
+  & [data-vshu-status-bar] {
+    height: 30px;
+    min-height: 30px;
+    padding-inline: 10px;
+    border: 1px solid var(--vshu-hairline-strong);
+    border-image: none;
+    border-radius: 999px;
+    background-color: var(--vshu-dock-surface);
+    background-image: var(--vshu-specular), var(--vshu-glass-fill);
+    background-size:
+      72% 1px,
+      auto;
+    background-position:
+      top center,
+      0 0;
+    background-repeat: no-repeat;
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--foreground) 10%, transparent),
+      var(--vshu-island-drop);
+  }
+
+  & [data-vshu-status-bar] :is(button, [role='button']) {
+    border-radius: 999px;
+  }
+
+  & [data-vshu-status-bar] [data-usage-trigger] {
+    padding-inline: 8px;
+    background-color: color-mix(in srgb, var(--foreground) 4%, transparent);
+    box-shadow: inset 0 0 0 1px var(--vshu-hairline);
+    transition: background-color 140ms ease;
+  }
+
+  & [data-vshu-status-bar] [data-usage-trigger]:hover {
+    background-color: color-mix(in srgb, var(--foreground) 9%, transparent);
+  }
+}
+
+:root[data-reduce-effects]:not([data-window-material]) {
+  --vshu-island-drop: 0 0 0 1px rgb(0 0 0 / 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root
+    :is(
+      .window-controls-btn,
+      [data-testid='sortable-tab'],
+      .settings-view-shell > aside button,
+      .native-chat-composer-card
+    ) {
+    transition: none;
+  }
+}

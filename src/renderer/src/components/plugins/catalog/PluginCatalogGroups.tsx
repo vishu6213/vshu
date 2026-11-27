@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { pluginBlockCopy } from '../presentation/plugin-block-copy'
 import { managedCatalogLabel } from '../presentation/plugin-author'
 import { AlertTriangle, CircleAlert } from 'lucide-react'
@@ -218,21 +219,31 @@ export function PluginCatalogGroups({
   openSources: () => void
 }): React.JSX.Element {
   const t = useTranslate()
-  const order = new Map(
-    catalog.listings.map((listing, index) => [
-      `${listing.marketplaceSourceId}:${listing.pluginKey}`,
-      index
-    ])
+  const order = useMemo(
+    () =>
+      new Map(
+        catalog.listings.map((listing, index) => [
+          `${listing.marketplaceSourceId}:${listing.pluginKey}`,
+          index
+        ])
+      ),
+    [catalog.listings]
   )
-  const rank = (entry: PluginListEntry): number =>
-    order.get(`${entry.listing?.marketplaceSourceId}:${entry.pluginKey}`) ?? Number.MAX_SAFE_INTEGER
-  const listed = [...installed.filter((entry) => entry.listing), ...available]
-  const availableBySource = catalog.sources.map((source) => {
-    const rows = listed
-      .filter((entry) => entry.listing?.marketplaceSourceId === source.id && matches(entry))
-      .sort((left, right) => rank(left) - rank(right))
-    return { source, rows }
-  })
+  const listed = useMemo(
+    () => [...installed.filter((entry) => entry.listing), ...available],
+    [installed, available]
+  )
+  const availableBySource = useMemo(() => {
+    const rank = (entry: PluginListEntry): number =>
+      order.get(`${entry.listing?.marketplaceSourceId}:${entry.pluginKey}`) ??
+      Number.MAX_SAFE_INTEGER
+    return catalog.sources.map((source) => {
+      const rows = listed
+        .filter((entry) => entry.listing?.marketplaceSourceId === source.id && matches(entry))
+        .sort((left, right) => rank(left) - rank(right))
+      return { source, rows }
+    })
+  }, [catalog.sources, listed, matches, order])
   return catalog.loading ? (
     <PluginListGroup
       layout="grid"

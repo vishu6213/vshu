@@ -53,7 +53,7 @@ export function SettingsGroup({
       data-settings-group-card=""
       className={cn(
         // Search can filter out every row; hide the empty card but keep the header and its action.
-        'overflow-hidden rounded-xl border border-border bg-card/50 shadow-xs has-[>[data-settings-group-body]:empty]:hidden',
+        'overflow-hidden rounded-xl border border-border bg-card/50 has-[>[data-settings-group-body]:empty]:hidden',
         SETTINGS_GROUP_INSET_CLASS,
         bodyClassName
       )}
@@ -62,7 +62,13 @@ export function SettingsGroup({
     </div>
   )
   return (
-    <section data-settings-group="" className={cn('space-y-3', className)}>
+    <section
+      data-settings-group=""
+      className={cn(
+        'space-y-3 [content-visibility:auto] [contain-intrinsic-size:auto_180px] contain-[layout_style_paint]',
+        className
+      )}
+    >
       {title ? (
         <SettingsGroupHeader
           title={title}

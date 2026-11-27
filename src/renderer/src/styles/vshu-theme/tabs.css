@@ -1,0 +1,124 @@
+/*
+ * Capsule tabs: browser-style tab strip rendered as floating liquid-glass pills with a glowing
+ * centered underlight on the active tab across ALL themes.
+ */
+:root:not([data-window-material]) {
+  & [data-tab-group-strip-id] {
+    background-color: transparent;
+    border-bottom-color: transparent;
+    background-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--vshu-hairline) 20%,
+      var(--vshu-hairline) 80%,
+      transparent 100%
+    );
+    background-size: 100% 1px;
+    background-position: bottom;
+    background-repeat: no-repeat;
+  }
+
+  & [data-tab-strip-scroller] {
+    border-right-color: transparent;
+    padding-inline: 4px;
+    gap: 3px;
+  }
+
+  & [data-tab-strip-slot] {
+    padding: 4px 1px;
+  }
+
+  & [data-testid='sortable-tab'] {
+    border: 1px solid transparent;
+    border-radius: 999px;
+    padding-inline: 11px 7px;
+    transition:
+      background-color 140ms ease,
+      border-color 140ms ease,
+      color 140ms ease;
+  }
+
+  & [data-testid='sortable-tab'][data-active='false'] {
+    background-color: transparent;
+    background-image: none;
+  }
+
+  & [data-testid='sortable-tab'][data-active='false']:hover {
+    background-color: color-mix(in srgb, var(--foreground) 6%, transparent);
+    background-image: none;
+    border-color: var(--vshu-hairline);
+  }
+
+  & [data-testid='sortable-tab'][data-active='true'] {
+    background-color: color-mix(
+      in srgb,
+      var(--card) 72%,
+      color-mix(in srgb, var(--vshu-accent) 14%, transparent)
+    );
+    background-image:
+      var(--vshu-specular),
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--foreground) 12%, transparent) 0%,
+        color-mix(in srgb, var(--vshu-accent) 6%, transparent) 55%,
+        transparent
+      ),
+      radial-gradient(
+        80% 120% at 50% 120%,
+        color-mix(in srgb, var(--vshu-accent) 22%, transparent),
+        transparent 72%
+      );
+    background-size:
+      65% 1px,
+      auto,
+      auto;
+    background-position:
+      top center,
+      0 0,
+      0 0;
+    background-repeat: no-repeat;
+    border-color: color-mix(in srgb, var(--vshu-silver) 30%, transparent);
+    color: var(--vshu-silver-hi);
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--foreground) 14%, transparent),
+      inset 0 -1px 0 rgb(0 0 0 / 0.28),
+      0 4px 14px -6px rgb(0 0 0 / 0.85),
+      0 0 18px -8px var(--vshu-accent-glow);
+  }
+
+  /* Short glowing chrome pill under active tab center. */
+  & [data-testid='sortable-tab'] .bg-tab-active-indicator {
+    left: calc(50% - 13px);
+    right: auto;
+    bottom: -1px;
+    width: 26px;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(
+      90deg,
+      var(--vshu-silver-lo),
+      var(--vshu-silver-hi),
+      var(--vshu-silver-lo)
+    );
+    box-shadow: 0 0 10px 1px var(--vshu-accent-glow);
+  }
+
+  & [data-testid='sortable-tab'] [data-tab-close-button] {
+    border-radius: 999px;
+  }
+
+  /* New tab & quick command strip pills. */
+  & [data-tab-group-strip-id] :is([aria-label='New tab'], [aria-label='Add quick command']) {
+    border-radius: 999px;
+  }
+
+  & [data-tab-group-strip-id] [aria-label='Add quick command'] {
+    padding-inline: 10px;
+    box-shadow: inset 0 0 0 1px var(--vshu-hairline);
+    background-image: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--foreground) 6%, transparent),
+      color-mix(in srgb, var(--foreground) 1.5%, transparent)
+    );
+  }
+}

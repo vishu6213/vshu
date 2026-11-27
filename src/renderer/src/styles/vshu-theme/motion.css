@@ -1,0 +1,192 @@
+/*
+ * Live GPU-composited Liquid Glass motion across ALL themes.
+ * Strictly animates transform & opacity (plus fast short hover micro-interactions) so frame times
+ * remain silky-smooth under Windows Electron compositing without triggering layout or paint.
+ */
+@keyframes vshu-rise-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes vshu-indicator-in {
+  from {
+    opacity: 0;
+    transform: scaleX(0.15);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes vshu-sweep {
+  from {
+    transform: translate3d(-100%, 0, 0);
+  }
+  to {
+    transform: translate3d(100%, 0, 0);
+  }
+}
+
+@keyframes vshu-pulse-dot {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes vshu-ping {
+  0% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  80%,
+  100% {
+    opacity: 0;
+    transform: scale(2.35);
+  }
+}
+
+@keyframes vshu-breathe {
+  0%,
+  100% {
+    opacity: 0.84;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes vshu-caustic-glow {
+  0%,
+  100% {
+    opacity: 0.65;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-window-material]) {
+    & [data-slot='button']:is([data-variant='outline'], [data-variant='secondary']) {
+      transition-property: color, background-color, border-color, opacity, transform;
+      transition-duration: 150ms;
+    }
+
+    &
+      [data-slot='button']:is(
+        [data-variant='default'],
+        [data-variant='outline'],
+        [data-variant='secondary']
+      ):not(:disabled):active {
+      transform: scale(0.97);
+    }
+
+    & [data-contextual-tour-target='sidebar-navigation'] button > svg:first-child {
+      transition: transform 200ms var(--vshu-ease-spring);
+    }
+
+    & [data-contextual-tour-target='sidebar-navigation'] button:hover > svg:first-child {
+      transform: translate3d(1px, 0, 0) scale(1.08);
+    }
+
+    & [data-native-chat-jump-latest] {
+      transition-property: opacity, translate, transform, background-color;
+    }
+
+    & [data-native-chat-jump-latest][data-shown='true']:hover {
+      transform: translate3d(0, -2px, 0);
+    }
+
+    & .bg-\(--bots-onboarding-card\),
+    & [data-setup-script-prompt-layer] > div {
+      animation: vshu-rise-in 380ms var(--vshu-ease-out) both;
+    }
+
+    & .bg-tab-active-indicator {
+      transform-origin: 50% 50%;
+      animation: vshu-indicator-in 320ms var(--vshu-ease-out) both;
+    }
+
+    & .titlebar-logo {
+      transition: transform 240ms var(--vshu-ease-spring);
+    }
+
+    & .titlebar-logo:hover {
+      transform: scale(1.08);
+    }
+  }
+
+  /* Live compositor-only effects (auto-disabled under Reduce visual effects). */
+  :root:not([data-window-material], [data-reduce-effects]) {
+    & div[data-native-chat-turn-status='active'] {
+      position: relative;
+      overflow: hidden;
+    }
+
+    & div[data-native-chat-turn-status='active']::before {
+      content: '';
+      flex: none;
+      width: 6px;
+      height: 6px;
+      margin-right: 0.25rem;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, var(--vshu-silver-hi), var(--vshu-accent));
+      box-shadow: 0 0 8px var(--vshu-accent-glow);
+      animation: vshu-pulse-dot 1.6s ease-in-out infinite;
+    }
+
+    & div[data-native-chat-turn-status='active']::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      will-change: transform;
+      background: linear-gradient(
+        100deg,
+        transparent 30%,
+        color-mix(in srgb, var(--vshu-silver-hi) 12%, transparent) 50%,
+        transparent 70%
+      );
+      animation: vshu-sweep 2.4s var(--vshu-ease-out) infinite;
+    }
+
+    & [data-worktree-unread-alert]::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      border: 1px solid var(--unread);
+      pointer-events: none;
+      animation: vshu-ping 2.4s var(--vshu-ease-out) infinite;
+    }
+
+    /* Subtle living liquid glow on active tab capsule underline & active workspace accent rail. */
+    & [data-testid='sortable-tab'][data-active='true'] .bg-tab-active-indicator,
+    & [data-worktree-card-surface][data-worktree-card-active='primary']::before {
+      animation:
+        vshu-indicator-in 320ms var(--vshu-ease-out) both,
+        vshu-caustic-glow 4.2s ease-in-out infinite;
+    }
+
+    & [data-worktree-card-surface][data-worktree-card-active='primary']::before {
+      animation: vshu-caustic-glow 4.2s ease-in-out infinite;
+    }
+
+    & .titlebar-logo {
+      animation: vshu-breathe 5.5s ease-in-out infinite;
+    }
+  }
+}

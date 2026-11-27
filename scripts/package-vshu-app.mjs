@@ -130,9 +130,37 @@ for (const dir of ['plugins', 'skills']) {
     recursive: true
   })
 }
+const extraResources = [
+  // Embedded-browser automation driver (`vshu browser ...`) and its version-matched catalog.
+  [
+    'node_modules/@agent-browser/cli-win32-x64-msvc/bin/agent-browser.exe',
+    'agent-browser-win32-x64.exe'
+  ],
+  ['node_modules/agent-browser/skills/agent-browser', 'skills/agent-browser'],
+  ['node_modules/agent-browser/skill-data', 'skill-data'],
+  ['native/computer-use-windows/runtime.ps1', 'computer-use-windows/runtime.ps1'],
+  ['resources/native-chat-visuals', 'native-chat-visuals'],
+  ['resources/onboarding/feature-wall', 'onboarding/feature-wall']
+]
+for (const [from, to] of extraResources) {
+  const src = path.join(repoRoot, from)
+  if (!fs.existsSync(src)) {
+    console.warn(`Missing ${from}; skipping.`)
+    continue
+  }
+  fs.cpSync(src, path.join(resourcesDir, to), { recursive: true })
+}
 
+// resources/bin/vshu.cmd and the daemon/worker forks run out/ from app.asar.unpacked (the layout
+// the installer produces), so that copy needs node_modules beside it as well.
 console.log('Linking node_modules...')
-fs.symlinkSync(path.join(repoRoot, 'node_modules'), path.join(appDir, 'node_modules'), 'junction')
+const repoNodeModules = path.join(repoRoot, 'node_modules')
+fs.symlinkSync(repoNodeModules, path.join(appDir, 'node_modules'), 'junction')
+fs.symlinkSync(
+  repoNodeModules,
+  path.join(resourcesDir, 'app.asar.unpacked', 'node_modules'),
+  'junction'
+)
 
 // 5. Embed icon and version info with electron-builder's own resource editor
 // (resedit, pure JS), resolved from node_modules instead of a cached rcedit.exe.
@@ -188,6 +216,12 @@ if (!refreshInstalled) {
     fs.mkdirSync(installedDir, { recursive: true })
     fs.rmSync(path.join(installedDir, 'resources', 'app.asar'), { force: true })
     fs.rmSync(path.join(installedDir, 'resources', 'app'), { recursive: true, force: true })
+    // A previous installer leaves app.asar.unpacked/node_modules as a real directory, which
+    // cannot be replaced by the dist junction; drop the whole stale tree.
+    fs.rmSync(path.join(installedDir, 'resources', 'app.asar.unpacked'), {
+      recursive: true,
+      force: true
+    })
     fs.cpSync(distRoot, installedDir, { recursive: true, force: true })
     if (fs.existsSync(iconPath)) {
       fs.copyFileSync(iconPath, path.join(installedDir, 'vshu-logo-bw.ico'))

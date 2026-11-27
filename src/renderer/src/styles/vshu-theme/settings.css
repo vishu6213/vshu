@@ -1,15 +1,28 @@
 /*
- * Settings: a glass navigation rail with a chrome-lit current page, glass section cards and
- * silver headings, all floating over the ambient light.
+ * Settings: glass navigation rail with a chrome-lit active item, high-FPS opaque GPU scroll
+ * viewport (eliminates alpha re-compositing over .vshu-ambient during Settings & Plugins scroll),
+ * and crisp specular group cards without expensive multi-pass blur drop-shadows.
  */
-:root.dark:not([data-theme-background], [data-window-material], [style*='--background:']) {
+:root:not([data-window-material]) {
   & .settings-view-shell {
     background-color: transparent;
   }
 
-  /* Navigation rail. */
+  /* Opaque composited scroller so Chromium viz occludes .vshu-ambient behind Settings/Plugins. */
+  & [data-settings-scroll-container] {
+    background-color: var(--background);
+    background-image: radial-gradient(
+      80% 240px at 50% 0%,
+      color-mix(in srgb, var(--vshu-accent) 6%, transparent),
+      transparent 100%
+    );
+    background-repeat: no-repeat;
+    contain: layout style paint;
+    transform: translateZ(0);
+  }
+
   & .settings-view-shell > aside {
-    background-color: color-mix(in srgb, var(--worktree-sidebar) 50%, transparent);
+    background-color: var(--vshu-island-surface);
     border-right-color: var(--vshu-hairline);
   }
 
@@ -23,17 +36,16 @@
 
   & .settings-view-shell > aside button[aria-current='page'] {
     position: relative;
-    background-color: rgb(169 190 220 / 0.06);
+    background-color: color-mix(in srgb, var(--vshu-accent) 8%, transparent);
     background-image: linear-gradient(
       90deg,
-      rgb(169 190 220 / 0.14) 0%,
-      rgb(255 255 255 / 0.03) 70%,
-      rgb(255 255 255 / 0.015) 100%
+      color-mix(in srgb, var(--vshu-accent) 16%, transparent) 0%,
+      color-mix(in srgb, var(--foreground) 3%, transparent) 70%,
+      color-mix(in srgb, var(--foreground) 1.5%, transparent) 100%
     );
     box-shadow:
       inset 0 0 0 1px var(--vshu-hairline-strong),
-      var(--vshu-highlight),
-      0 6px 18px -12px rgb(0 0 0 / 0.9);
+      var(--vshu-highlight);
   }
 
   & .settings-view-shell > aside button[aria-current='page']::before {
@@ -45,17 +57,15 @@
     width: 3px;
     border-radius: 0 3px 3px 0;
     background: linear-gradient(180deg, var(--vshu-silver-hi), var(--vshu-silver-lo));
-    box-shadow: 0 0 10px var(--vshu-accent-glow);
+    box-shadow: 0 0 8px var(--vshu-accent-glow);
     pointer-events: none;
   }
 
-  /* Page header (breadcrumb bar). */
   & .settings-view-shell > div > header {
-    background-color: rgb(var(--vshu-glass-tint) / 0.35);
+    background-color: color-mix(in srgb, var(--background) 88%, transparent);
     border-bottom-color: var(--vshu-hairline);
   }
 
-  /* Section title: brushed-silver lettering when it is plain text. */
   & [data-settings-section] > div > div > h2:not(:has(*)) {
     width: fit-content;
     letter-spacing: -0.015em;
@@ -68,7 +78,6 @@
     border-bottom-color: var(--vshu-hairline);
   }
 
-  /* Group headings carry a small chrome tick. */
   & [data-settings-group-heading] {
     display: flex;
     align-items: center;
@@ -83,15 +92,26 @@
     height: 0.9em;
     border-radius: 3px;
     background: linear-gradient(180deg, var(--vshu-silver-hi), var(--vshu-silver-lo));
-    box-shadow: 0 0 8px var(--vshu-accent-glow);
+    pointer-events: none;
   }
 
-  /* Group cards: frosted slabs with a lit top edge. */
+  /* Crisp specular cards with 0ms shadow-blur overhead for butter-smooth Settings scrolling. */
   & [data-settings-group-card] {
-    background-color: rgb(var(--vshu-glass-tint) / 0.52);
-    background-image: var(--vshu-glass-fill);
-    border-color: var(--vshu-hairline);
-    box-shadow: var(--vshu-glass-shadow);
+    background-color: color-mix(
+      in srgb,
+      var(--card) 94%,
+      color-mix(in srgb, var(--vshu-accent) 4%, transparent)
+    );
+    background-image: var(--vshu-specular), var(--vshu-glass-fill);
+    background-size:
+      72% 1px,
+      auto;
+    background-position:
+      top center,
+      0 0;
+    background-repeat: no-repeat;
+    border-color: var(--vshu-hairline-strong);
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--foreground) 7%, transparent);
   }
 
   & [data-settings-group-body] [data-settings-row]:not([data-settings-row] *) {

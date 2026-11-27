@@ -1,26 +1,30 @@
 /*
- * Floating glass: dialogs, menus and popovers frost whatever sits behind them. These are small,
- * short-lived and already their own compositing layers (fixed + transformed), so the blur is
- * cheap and changes no containing block. Reduce visual effects strips backdrop-filter globally
- * (main.css) and tokens.css makes the surfaces solid again.
+ * Floating glass: dialogs, menus, popovers, and toasts frost what sits behind them using
+ * optimized GPU blur radii (14-16px instead of 28-40px) so overlays open cleanly without Windows
+ * compositor stalls. Security dialogs (.plugin-security-chrome) retain their hardened chrome.
  */
-:root.dark:not([data-theme-background], [data-window-material], [style*='--background:']) {
-  & [data-slot='dialog-content'] {
-    background-image: var(--vshu-glass-fill);
+:root:not([data-window-material]) {
+  & [data-slot='dialog-content']:not(.plugin-security-chrome, .plugin-security-chrome *) {
+    background-image: var(--vshu-specular), var(--vshu-glass-fill);
+    background-size: var(--vshu-specular-size), auto;
+    background-position:
+      top,
+      0 0;
+    background-repeat: no-repeat;
     border-color: var(--vshu-hairline-strong);
-    backdrop-filter: blur(28px) saturate(140%);
+    backdrop-filter: blur(16px) saturate(140%);
     box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.08),
-      0 0 0 1px rgb(0 0 0 / 0.6),
-      0 32px 90px -24px rgb(0 0 0 / 0.9),
-      0 0 60px -30px var(--vshu-accent-glow);
+      inset 0 1px 0 color-mix(in srgb, var(--foreground) 10%, transparent),
+      0 0 0 1px rgb(0 0 0 / 0.55),
+      0 26px 70px -22px rgb(0 0 0 / 0.88),
+      0 0 50px -28px var(--vshu-accent-glow);
   }
 
   & [data-slot='dialog-overlay'] {
     background-image: radial-gradient(
       120% 90% at 50% 40%,
-      rgb(20 24 34 / 0.25) 0%,
-      rgb(0 0 0 / 0.35) 100%
+      rgb(16 20 28 / 0.34) 0%,
+      rgb(0 0 0 / 0.56) 100%
     );
   }
 
@@ -33,34 +37,39 @@
       [data-slot='context-menu-sub-content'],
       [data-slot='select-content'],
       [data-slot='hover-card-content']
-    ) {
-    background-color: rgb(11 12 16 / 0.86);
-    background-image: var(--vshu-glass-fill);
+    ):not(.plugin-security-chrome, .plugin-security-chrome *) {
+    background-color: var(--floating-surface);
+    background-image: var(--vshu-specular), var(--vshu-glass-fill);
+    background-size: var(--vshu-specular-size), auto;
+    background-position:
+      top,
+      0 0;
+    background-repeat: no-repeat;
     border-color: var(--vshu-hairline-strong);
-    backdrop-filter: blur(22px) saturate(150%);
+    backdrop-filter: blur(14px) saturate(140%);
     box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.07),
-      0 0 0 1px rgb(0 0 0 / 0.5),
-      0 18px 48px -12px rgb(0 0 0 / 0.85);
+      inset 0 1px 0 color-mix(in srgb, var(--foreground) 9%, transparent),
+      0 0 0 1px rgb(0 0 0 / 0.45),
+      0 18px 44px -14px rgb(0 0 0 / 0.85);
   }
 
   & [data-sonner-toast] {
-    background-color: rgb(11 12 16 / 0.86);
-    background-image: var(--vshu-glass-fill);
+    background-color: var(--floating-surface);
+    background-image: var(--vshu-specular), var(--vshu-glass-fill);
+    background-size: var(--vshu-specular-size), auto;
+    background-position:
+      top,
+      0 0;
+    background-repeat: no-repeat;
     border-color: var(--vshu-hairline-strong);
-    backdrop-filter: blur(22px) saturate(150%);
+    backdrop-filter: blur(14px) saturate(140%);
     box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.07),
-      0 18px 48px -12px rgb(0 0 0 / 0.85);
+      inset 0 1px 0 color-mix(in srgb, var(--foreground) 9%, transparent),
+      0 16px 40px -12px rgb(0 0 0 / 0.85);
   }
 }
 
-/* Reduce visual effects: no blur means the menus must be fully opaque again. */
-:root.dark[data-reduce-effects]:not(
-    [data-theme-background],
-    [data-window-material],
-    [style*='--background:']
-  )
+:root[data-reduce-effects]:not([data-window-material])
   :is(
     [data-slot='popover-content'],
     [data-slot='dropdown-menu-content'],
@@ -70,6 +79,6 @@
     [data-slot='select-content'],
     [data-slot='hover-card-content'],
     [data-sonner-toast]
-  ) {
+  ):not(.plugin-security-chrome, .plugin-security-chrome *) {
   background-color: var(--popover);
 }

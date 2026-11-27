@@ -84,7 +84,7 @@ function ThemeArt({ palettes }: { palettes: readonly PluginArtPalette[] }): Reac
 function SyntaxArt({ fileType }: { fileType: string | null }): React.JSX.Element {
   const widths = [62, 40, 74, 28, 54]
   return (
-    <div className="absolute inset-[14%] overflow-hidden rounded-md border border-border bg-background shadow-xs">
+    <div className="absolute inset-[14%] overflow-hidden rounded-md border border-border bg-background">
       <div className="flex items-center gap-1.5 border-b border-border px-2.5 py-1.5 font-mono text-3xs text-muted-foreground">
         <FileCode className="size-3" />
         {fileType}
@@ -127,7 +127,7 @@ function IconThemeArt(): React.JSX.Element {
       {glyphs.map(({ name, Glyph }, index) => (
         <span
           key={name}
-          className="flex size-9 items-center justify-center rounded-lg border border-border bg-background shadow-xs"
+          className="flex size-9 items-center justify-center rounded-lg border border-border bg-background"
         >
           <Glyph className="size-4" style={{ color: ART_INKS[index % ART_INKS.length] }} />
         </span>
@@ -153,7 +153,7 @@ function KeycapArt({ shortcut }: { shortcut: string | null }): React.JSX.Element
       {keys.map((key, index) => (
         <span
           key={`${key}-${index}`}
-          className="flex h-16 min-w-16 items-center justify-center rounded-xl border border-border border-b-4 bg-background px-3 text-2xl font-medium text-foreground shadow-xs"
+          className="flex h-16 min-w-16 items-center justify-center rounded-xl border border-border border-b-4 bg-background px-3 text-2xl font-medium text-foreground"
         >
           {key}
         </span>
@@ -167,7 +167,7 @@ function PanelArt({ worker, seed }: { worker: boolean; seed: ArtSeed }): React.J
   const Icon = worker ? Cpu : Blocks
   return (
     <div className="absolute inset-0 flex items-center justify-center p-3">
-      <div className="absolute inset-x-[12%] top-[12%] bottom-0 flex flex-col justify-between overflow-hidden rounded-t-xl border border-b-0 border-border/80 bg-card/85 p-3 shadow-xs backdrop-blur-xs">
+      <div className="absolute inset-x-[12%] top-[12%] bottom-0 flex flex-col justify-between overflow-hidden rounded-t-xl border border-b-0 border-border/80 bg-card/95 p-3">
         <div className="flex items-center justify-between border-b border-border/60 pb-2">
           <div className="flex items-center gap-1.5">
             <span className="size-2 rounded-full bg-border" />
@@ -182,7 +182,7 @@ function PanelArt({ worker, seed }: { worker: boolean; seed: ArtSeed }): React.J
         </div>
         <div className="flex flex-1 items-center justify-center py-2">
           <div
-            className="flex size-12 items-center justify-center rounded-xl border border-border/80 shadow-xs"
+            className="flex size-12 items-center justify-center rounded-xl border border-border/80"
             style={{ backgroundColor: `color-mix(in srgb, ${seed.ink} 14%, var(--card))` }}
           >
             <Icon
@@ -243,10 +243,10 @@ function ThemeOutlineArt({ seed }: { seed: ArtSeed }): React.JSX.Element {
       data-mirrored={seed.mirrored}
       className="absolute inset-0 flex items-center justify-center gap-3 px-[12%] data-[mirrored=true]:flex-row-reverse"
     >
-      <div className="h-[62%] flex-1 rounded-md border border-border bg-background p-[6%] shadow-xs">
+      <div className="h-[62%] flex-1 rounded-md border border-border bg-background p-[6%]">
         <OutlineLines inverted={false} seed={seed} />
       </div>
-      <div className="h-[62%] flex-1 rounded-md border border-border bg-foreground p-[6%] shadow-xs">
+      <div className="h-[62%] flex-1 rounded-md border border-border bg-foreground p-[6%]">
         <OutlineLines inverted seed={seed} />
       </div>
     </div>
@@ -306,7 +306,7 @@ export function PluginCardArt({
     // Why a glyph, not initials: letters on a blank tile read as an empty listing.
     art = (
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="flex size-16 items-center justify-center rounded-2xl border border-border bg-background text-muted-foreground shadow-xs">
+        <span className="flex size-16 items-center justify-center rounded-2xl border border-border bg-background text-muted-foreground">
           <Puzzle className="size-7" style={{ color: seed.ink }} />
         </span>
       </div>

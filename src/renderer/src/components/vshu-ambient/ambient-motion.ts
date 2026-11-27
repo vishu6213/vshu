@@ -60,6 +60,12 @@ function defaultEnvironment(): AmbientEnvironment {
   return { win: window, doc: document, now: () => performance.now() }
 }
 
+const PAUSE_ROOT_ATTRIBUTES = [
+  'data-reduce-effects',
+  'data-theme-background',
+  'data-window-material'
+] as const
+
 /**
  * Drives the ambient drift at AMBIENT_FPS. It runs only while the window is visible and focused,
  * motion is allowed (prefers-reduced-motion, Reduce visual effects) and stops on dispose.
@@ -81,12 +87,19 @@ export function startAmbientMotion(
     paintAmbientFrame(root, ambientFrameAt((now() - epoch) / 1000, win.innerWidth, win.innerHeight))
   }
 
+  const hasBlockingRootAttribute = (): boolean =>
+    PAUSE_ROOT_ATTRIBUTES.some((attr) => doc.documentElement.hasAttribute(attr))
+
+  const isHiddenByLayout = (): boolean =>
+    typeof win.getComputedStyle === 'function' && win.getComputedStyle(root)?.display === 'none'
+
   const canAnimate = (): boolean =>
     !disposed &&
     doc.visibilityState === 'visible' &&
     doc.hasFocus() &&
     !reducedMotion?.matches &&
-    !doc.documentElement.hasAttribute('data-reduce-effects')
+    !hasBlockingRootAttribute() &&
+    !isHiddenByLayout()
 
   const tick = (timestamp: number): void => {
     frameHandle = null
@@ -119,11 +132,11 @@ export function startAmbientMotion(
   win.addEventListener('focus', sync)
   win.addEventListener('blur', sync)
   reducedMotion?.addEventListener?.('change', sync)
-  // Reduce visual effects flips an attribute on the root, with no event of its own.
+  // Reduce visual effects, theme backgrounds, and window materials flip root attributes with no event.
   const effectsObserver = typeof MutationObserver === 'function' ? new MutationObserver(sync) : null
   effectsObserver?.observe(doc.documentElement, {
     attributes: true,
-    attributeFilter: ['data-reduce-effects']
+    attributeFilter: [...PAUSE_ROOT_ATTRIBUTES]
   })
 
   return () => {

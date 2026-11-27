@@ -149,6 +149,7 @@ export function renderSettingsPage(
         />
         <div
           ref={interactions.setContentScrollNode}
+          data-settings-scroll-container=""
           className={cn(
             'min-h-0 flex-1',
             // Why a stable gutter: pages that start or stop scrolling must not shift sideways.

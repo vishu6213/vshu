@@ -1,0 +1,152 @@
+/*
+ * Chat: floating Liquid Glass capsule composer wrapped in a brushed-chrome ring with a glowing
+ * send orb, liquid-glass user bubbles, silver assistant accent rail, and pill turn-status chip.
+ * Works uniformly across ALL themes (Default, Vshu OLED, Midnight, etc.).
+ */
+:root:not([data-window-material]) {
+  & .native-chat-composer-card {
+    --vshu-composer-ring: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--vshu-silver) 38%, transparent) 0%,
+      color-mix(in srgb, var(--vshu-accent) 20%, transparent) 35%,
+      color-mix(in srgb, var(--vshu-accent) 34%, transparent) 70%,
+      color-mix(in srgb, var(--vshu-silver-hi) 38%, transparent) 100%
+    );
+    border-radius: 22px;
+    border-color: transparent;
+    padding: 8px 8px 6px;
+    background-color: transparent;
+    background-image:
+      var(--vshu-specular), var(--vshu-glass-fill),
+      linear-gradient(
+        color-mix(in srgb, var(--chat-composer-surface) 92%, transparent),
+        var(--chat-composer-surface)
+      ),
+      var(--vshu-composer-ring);
+    background-size:
+      72% 1px,
+      auto,
+      auto,
+      auto;
+    background-position:
+      top center,
+      0 0,
+      0 0,
+      0 0;
+    background-repeat: no-repeat;
+    background-origin: border-box;
+    background-clip: padding-box, padding-box, padding-box, border-box;
+    box-shadow:
+      0 20px 46px -22px rgb(0 0 0 / 0.92),
+      0 0 38px -22px var(--vshu-accent-glow);
+  }
+
+  & .native-chat-composer-card:focus-within {
+    --vshu-composer-ring: linear-gradient(
+      135deg,
+      var(--vshu-silver-hi) 0%,
+      color-mix(in srgb, var(--vshu-accent) 45%, transparent) 30%,
+      var(--vshu-accent) 62%,
+      var(--vshu-silver-hi) 100%
+    );
+    border-color: transparent;
+    box-shadow:
+      0 0 0 3px color-mix(in srgb, var(--vshu-accent) 12%, transparent),
+      0 22px 48px -22px rgb(0 0 0 / 0.92),
+      0 0 34px -8px var(--vshu-accent-glow);
+  }
+
+  & .native-chat-composer-card [data-composer-control] :is(button, [data-slot='button']) {
+    border-radius: 999px;
+  }
+
+  /* Send orb: glowing chrome sphere with tactile hover lift. */
+  & .native-chat-composer-card [data-slot='button'][data-size='icon-round'] {
+    border-radius: 999px;
+    background-image: radial-gradient(
+      circle at 34% 26%,
+      #ffffff 0%,
+      var(--vshu-silver-hi) 34%,
+      var(--vshu-silver) 72%,
+      var(--vshu-silver-lo) 100%
+    );
+    background-size: 100% 100%;
+    background-position: 0 0;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.9),
+      inset 0 -2px 4px rgb(30 40 60 / 0.35),
+      0 0 0 3px color-mix(in srgb, var(--vshu-accent) 14%, transparent),
+      0 0 20px -2px var(--vshu-accent-glow);
+    transition: transform 150ms var(--vshu-ease-spring);
+  }
+
+  & .native-chat-composer-card [data-slot='button'][data-size='icon-round']:not(:disabled):hover {
+    transform: scale(1.06);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.95),
+      inset 0 -2px 4px rgb(30 40 60 / 0.35),
+      0 0 0 4px color-mix(in srgb, var(--vshu-accent) 20%, transparent),
+      0 0 26px 0 var(--vshu-accent-glow);
+  }
+
+  /* User chat bubbles: liquid-glass pill with tucked corner and top caustic glint. */
+  & .bg-chat-user-surface {
+    border-radius: 18px 18px 6px 18px;
+    border-color: color-mix(in srgb, var(--vshu-silver) 22%, transparent);
+    background-image:
+      var(--vshu-specular),
+      linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--vshu-accent) 16%, transparent) 0%,
+        color-mix(in srgb, var(--vshu-accent) 7%, transparent) 55%,
+        rgb(255 255 255 / 0.025) 100%
+      );
+  }
+
+  /* Assistant replies: sleek glowing liquid-chrome accent rail down the left edge. */
+  & [data-native-chat-message-id].select-text {
+    padding-left: 16px;
+  }
+
+  & [data-native-chat-message-id].select-text::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    bottom: 2px;
+    left: 0;
+    width: 2px;
+    border-radius: 2px;
+    background: linear-gradient(
+      180deg,
+      var(--vshu-silver-hi) 0%,
+      var(--vshu-accent) 44%,
+      color-mix(in srgb, var(--vshu-accent) 10%, transparent) 100%
+    );
+    box-shadow: 0 0 10px var(--vshu-accent-glow);
+    pointer-events: none;
+  }
+
+  /* Turn status pill ("Worked for 3s"). */
+  & :is(div, button)[data-native-chat-turn-status] {
+    align-self: flex-start;
+    width: fit-content;
+    min-height: 26px;
+    padding-inline: 12px;
+    border: 1px solid var(--vshu-hairline);
+    border-image: none;
+    border-radius: 999px;
+    background-image: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--foreground) 6%, transparent),
+      color-mix(in srgb, var(--foreground) 1.5%, transparent)
+    );
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--foreground) 6%, transparent);
+    font-size: 12px;
+    letter-spacing: 0.02em;
+  }
+
+  & button[data-native-chat-turn-status]:hover {
+    border-color: color-mix(in srgb, var(--vshu-silver) 24%, transparent);
+    background-color: color-mix(in srgb, var(--foreground) 5%, transparent);
+  }
+}

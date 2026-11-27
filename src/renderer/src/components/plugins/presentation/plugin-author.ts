@@ -28,9 +28,10 @@ export function managedCatalogLabel(teams: string[], t: Translate): string {
 
 export function pluginDisplayPublisher(entry: PluginListEntry, t: Translate): string | null {
   const teams = pluginEntryManagingTeams(entry)
-  return teams
-    ? managingTeamNames(teams) || t('plugins.catalog.teamPublisher', 'Your team')
-    : entry.publisher
+  if (teams) {
+    return managingTeamNames(teams) || t('plugins.catalog.teamPublisher', 'Your team')
+  }
+  return entry.publisher ? pluginDisplayPublisherName(entry.publisher) : entry.publisher
 }
 
 export function pluginAuthor(

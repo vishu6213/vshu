@@ -165,13 +165,16 @@ function documentBuiltIns(): Record<string, string> {
 
 // Why: menus and dialogs paint a fixed glass tint, which would ignore the theme's --popover
 // (a true-black theme got grey dialogs).
-const FLOATING_SURFACE_TOKENS = ['--floating-surface', '--dialog-surface'] as const
-
 function withFloatingSurfaces(tokens: Record<string, string>): Record<string, string> {
   const popover = tokens['--popover']
-  return popover
-    ? { ...tokens, ...Object.fromEntries(FLOATING_SURFACE_TOKENS.map((token) => [token, popover])) }
-    : tokens
+  if (!popover) {
+    return tokens
+  }
+  return {
+    ...tokens,
+    '--floating-surface': `color-mix(in srgb, ${popover} 82%, transparent)`,
+    '--dialog-surface': `color-mix(in srgb, ${popover} 90%, transparent)`
+  }
 }
 
 /** Paints tokens that stay readable over this mode's built-ins; returns what was painted. */

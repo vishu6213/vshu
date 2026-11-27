@@ -1,0 +1,220 @@
+/*
+ * Liquid-glass slabs: sidebar inline cards, user chat bubbles, Jump-to-latest orb, command palette,
+ * and glass menus across ALL themes.
+ * No backdrop-filter on repeating/scrolling cards or bubbles so scrolling remains 60+ fps.
+ */
+:root:not([data-window-material]) {
+  /* Plugin marketplace cards: crisp obsidian glass bevel with fast hairline hover lift. */
+  & [data-plugin-key] {
+    background-color: color-mix(
+      in srgb,
+      var(--card) 94%,
+      color-mix(in srgb, var(--vshu-accent) 4%, transparent)
+    );
+    background-image: var(--vshu-specular), var(--vshu-glass-fill);
+    background-size:
+      65% 1px,
+      auto;
+    background-position:
+      top center,
+      0 0;
+    background-repeat: no-repeat;
+    border-color: var(--vshu-hairline-strong);
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--foreground) 7%, transparent);
+  }
+
+  & [data-plugin-key]:hover {
+    border-color: color-mix(in srgb, var(--vshu-silver) 30%, transparent);
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--foreground) 12%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--vshu-accent) 14%, transparent);
+  }
+
+  /* Empty workspace Landing Liquid Glass hero upgrade. */
+  & [data-vshu-landing-emblem] {
+    background:
+      var(--vshu-specular),
+      radial-gradient(
+        100% 100% at 50% 0%,
+        color-mix(in srgb, var(--vshu-accent) 18%, transparent),
+        transparent 75%
+      ),
+      color-mix(in srgb, var(--card) 82%, transparent);
+    background-size:
+      70% 1px,
+      auto,
+      auto;
+    background-position:
+      top center,
+      0 0,
+      0 0;
+    background-repeat: no-repeat;
+    border-color: color-mix(in srgb, var(--vshu-silver) 26%, transparent);
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--foreground) 14%, transparent),
+      0 18px 40px -16px rgb(0 0 0 / 0.85),
+      0 0 34px -12px var(--vshu-accent-glow);
+  }
+
+  & [data-vshu-landing] h1 {
+    color: transparent;
+    background-image: var(--vshu-chrome-text);
+    background-clip: text;
+  }
+
+  & [data-vshu-landing] button {
+    background-image:
+      var(--vshu-specular),
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--foreground) 8%, transparent),
+        color-mix(in srgb, var(--foreground) 2%, transparent)
+      );
+    background-size:
+      70% 1px,
+      auto;
+    background-position:
+      top center,
+      0 0;
+    background-repeat: no-repeat;
+    border-color: var(--vshu-hairline-strong);
+    box-shadow: var(--vshu-highlight);
+  }
+
+  & [data-vshu-landing-shortcuts] {
+    background-image: var(--vshu-specular), var(--vshu-glass-fill);
+    background-size:
+      65% 1px,
+      auto;
+    background-position:
+      top center,
+      0 0;
+    background-repeat: no-repeat;
+    border-color: var(--vshu-hairline);
+    box-shadow: var(--vshu-highlight);
+  }
+
+  & .bg-\(--bots-onboarding-card\),
+  & [data-setup-script-prompt-layer] > div {
+    background-image: var(--vshu-specular), var(--vshu-glass-fill);
+    background-size: var(--vshu-specular-size), auto;
+    background-position:
+      top,
+      0 0;
+    background-repeat: no-repeat;
+    border-color: var(--vshu-hairline-strong);
+    box-shadow:
+      inset 0 0 0 1px var(--vshu-hairline),
+      var(--vshu-highlight),
+      0 14px 36px -18px rgb(0 0 0 / 0.85),
+      0 0 36px -26px var(--vshu-accent-glow);
+  }
+
+  & .worktree-sidebar-card-hover:hover:not([data-worktree-card-selected]) {
+    border-color: var(--vshu-hairline-strong);
+    box-shadow:
+      var(--vshu-highlight),
+      0 6px 18px -14px rgb(0 0 0 / 0.85);
+  }
+
+  & [data-contextual-tour-target='sidebar-navigation'] > button:first-child {
+    box-shadow:
+      inset 0 0 0 1px var(--vshu-hairline),
+      var(--vshu-highlight);
+    transition:
+      background-color 150ms ease,
+      color 150ms ease;
+  }
+
+  & [data-contextual-tour-target='sidebar-navigation'] > button:first-child:hover {
+    box-shadow:
+      inset 0 0 0 1px var(--vshu-hairline-strong),
+      var(--vshu-highlight),
+      0 0 16px -10px var(--vshu-accent-glow);
+  }
+
+  & .bg-chat-user-surface {
+    background-image: var(--vshu-specular), var(--vshu-glass-fill);
+    background-size: var(--vshu-specular-size), auto;
+    background-position:
+      top,
+      0 0;
+    background-repeat: no-repeat;
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--foreground) 6%, transparent),
+      0 8px 22px -16px rgb(0 0 0 / 0.85);
+  }
+
+  & [data-native-chat-jump-latest] {
+    border-color: var(--vshu-hairline-strong);
+    background-image: var(--vshu-glass-fill);
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--foreground) 12%, transparent),
+      0 8px 22px -10px rgb(0 0 0 / 0.85),
+      0 0 22px -10px var(--vshu-accent-glow);
+  }
+
+  & [data-slot='command-dialog-content'] {
+    background-image: var(--vshu-specular), var(--vshu-glass-fill);
+    background-size: var(--vshu-specular-size), auto;
+    background-position:
+      top,
+      0 0;
+    background-repeat: no-repeat;
+    border-color: var(--vshu-hairline-strong);
+    backdrop-filter: blur(16px) saturate(145%);
+    box-shadow:
+      inset 0 0 0 1px var(--vshu-hairline),
+      0 0 0 1px rgb(0 0 0 / 0.55),
+      0 26px 70px -22px rgb(0 0 0 / 0.88),
+      0 0 60px -30px var(--vshu-accent-glow);
+  }
+
+  & [data-slot='command-input'] {
+    caret-color: var(--vshu-silver-hi);
+  }
+
+  & [data-slot='command-item'][data-selected='true'] {
+    background-image: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--vshu-accent) 14%, transparent) 0%,
+      color-mix(in srgb, var(--foreground) 3%, transparent) 70%,
+      transparent 100%
+    );
+    box-shadow:
+      inset 0 0 0 1px var(--vshu-hairline),
+      var(--vshu-highlight);
+  }
+
+  &
+    :is(
+      [data-slot='dialog-content'],
+      [data-slot='popover-content'],
+      [data-slot='dropdown-menu-content'],
+      [data-slot='context-menu-content'],
+      [data-slot='select-content'],
+      [data-slot='hover-card-content']
+    ):not(.plugin-security-chrome, .plugin-security-chrome *) {
+    background-image: var(--vshu-specular), var(--vshu-glass-fill);
+    background-size: var(--vshu-specular-size), auto;
+    background-position:
+      top,
+      0 0;
+    background-repeat: no-repeat;
+  }
+
+  &
+    :is(
+      [data-slot='dropdown-menu-item'],
+      [data-slot='context-menu-item'],
+      [data-slot='select-item']
+    )[data-highlighted] {
+    background-image: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--vshu-accent) 13%, transparent) 0%,
+      color-mix(in srgb, var(--foreground) 2.5%, transparent) 80%,
+      transparent 100%
+    );
+    box-shadow: var(--vshu-highlight);
+  }
+}

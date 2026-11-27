@@ -1,17 +1,14 @@
 /*
- * The live backdrop behind the Vshu chrome (VshuAmbientBackground.tsx). It sits under every
- * surface at z-index -1 and only shows through the glass surfaces of glass-shell.css.
- *
- * Cost model: the orbs are soft radial gradients rasterized once; the driver only moves them
- * with transform at a throttled frame rate, so a frame is a compositor-only re-composite. No
- * filter or backdrop-filter is applied to anything here.
+ * Live obsidian liquid backdrop (VshuAmbientBackground.tsx).
+ * GPU compositor-only layers: zero SVG feTurbulence filters and zero backdrop-filter passes.
+ * Active across built-in dark and plugin themes (Vshu OLED, Midnight, etc.) so changing themes
+ * updates the subtle obsidian/theme-accent glow rather than shutting off the live glass feel.
  */
 .vshu-ambient {
   display: none;
 }
 
-:root.dark:not([data-theme-background], [data-window-material], [style*='--background:'])
-  .vshu-ambient {
+:root.dark:not([data-theme-background], [data-window-material]) .vshu-ambient {
   position: fixed;
   inset: 0;
   z-index: -1;
@@ -20,8 +17,34 @@
   pointer-events: none;
   contain: strict;
   background:
-    radial-gradient(120% 90% at 50% 0%, rgb(30 36 48 / 0.35) 0%, transparent 60%),
-    radial-gradient(140% 120% at 50% 120%, rgb(14 16 24 / 0.6) 0%, transparent 55%), #000;
+    radial-gradient(
+      120% 85% at 50% 0%,
+      color-mix(in srgb, var(--vshu-accent, #a9bedc) 15%, transparent) 0%,
+      transparent 58%
+    ),
+    radial-gradient(
+      140% 110% at 50% 115%,
+      color-mix(in srgb, var(--card, #06080e) 76%, transparent) 0%,
+      transparent 55%
+    ),
+    var(--background, #000000);
+}
+
+:root.light:not([data-theme-background], [data-window-material]) .vshu-ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  display: block;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+  background:
+    radial-gradient(
+      120% 85% at 50% 0%,
+      color-mix(in srgb, var(--vshu-accent, #4b6584) 10%, transparent) 0%,
+      transparent 60%
+    ),
+    var(--background, #ffffff);
 }
 
 .vshu-ambient__orb {
@@ -30,50 +53,50 @@
   left: 0;
   border-radius: 50%;
   will-change: transform;
-  /* The driver writes --vshu-orb-x/y in px; the start position is the CSS default. */
+  backface-visibility: hidden;
   transform: translate3d(var(--vshu-orb-x, 0px), var(--vshu-orb-y, 0px), 0);
 }
 
-/* Cool silver key light, high behind the title bar and tabs. */
+/* Cool silver caustic key light behind title bar and workspace top. */
 .vshu-ambient__orb[data-orb='key'] {
-  width: 84vmax;
-  height: 84vmax;
-  margin: -42vmax 0 0 -26vmax;
+  width: 78vmax;
+  height: 78vmax;
+  margin: -40vmax 0 0 -24vmax;
   background: radial-gradient(
     closest-side,
-    rgb(184 200 226 / 0.6),
-    rgb(124 144 182 / 0.24) 45%,
+    color-mix(in srgb, var(--vshu-silver-hi, #dce6f7) 26%, transparent),
+    color-mix(in srgb, var(--vshu-accent, #7c90b6) 11%, transparent) 46%,
     transparent 100%
   );
 }
 
-/* Deep steel-blue fill, lower right. */
+/* Deep obsidian sapphire fill, lower right. */
 .vshu-ambient__orb[data-orb='fill'] {
-  width: 70vmax;
-  height: 70vmax;
-  margin: 18vh 0 0 46vw;
+  width: 66vmax;
+  height: 66vmax;
+  margin: 20vh 0 0 48vw;
   background: radial-gradient(
     closest-side,
-    rgb(90 114 170 / 0.42),
-    rgb(60 76 124 / 0.16) 50%,
+    color-mix(in srgb, var(--vshu-accent, #5a72aa) 22%, transparent),
+    color-mix(in srgb, var(--vshu-accent, #3c4c7c) 8%, transparent) 52%,
     transparent 100%
   );
 }
 
-/* Faint violet rim light, lower left, a hint of the logo's sparkle. */
+/* Subtle cool-iris rim light, lower left. */
 .vshu-ambient__orb[data-orb='rim'] {
-  width: 56vmax;
-  height: 56vmax;
-  margin: 52vh 0 0 -18vmax;
+  width: 52vmax;
+  height: 52vmax;
+  margin: 54vh 0 0 -16vmax;
   background: radial-gradient(
     closest-side,
-    rgb(146 136 206 / 0.3),
-    rgb(100 96 150 / 0.12) 50%,
+    color-mix(in srgb, var(--vshu-silver, #9288ce) 18%, transparent),
+    color-mix(in srgb, var(--vshu-accent, #646096) 7%, transparent) 52%,
     transparent 100%
   );
 }
 
-/* A slow brushed-metal sheen band. */
+/* Brushed liquid-chrome sheen sweeping smoothly behind the islands. */
 .vshu-ambient__sheen {
   position: absolute;
   top: -50%;
@@ -81,27 +104,33 @@
   width: 200%;
   height: 200%;
   will-change: transform;
+  backface-visibility: hidden;
   transform: translate3d(var(--vshu-sheen-x, 0px), 0, 0) rotate(-18deg);
   background: linear-gradient(
     90deg,
-    transparent 38%,
-    rgb(220 230 245 / 0.025) 46%,
-    rgb(240 244 250 / 0.045) 50%,
-    rgb(220 230 245 / 0.025) 54%,
-    transparent 62%
+    transparent 36%,
+    rgb(220 230 245 / 0.024) 45%,
+    rgb(245 248 255 / 0.055) 50%,
+    rgb(220 230 245 / 0.024) 55%,
+    transparent 64%
   );
 }
 
-/* Static film grain and vignette: kills 8-bit banding in the dark gradients. */
+:root.light .vshu-ambient__sheen {
+  background: linear-gradient(90deg, transparent 38%, rgb(255 255 255 / 0.16) 50%, transparent 62%);
+}
+
+/* Lightweight vignette framing (zero expensive SVG feTurbulence filter). */
 .vshu-ambient__grain {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(130% 100% at 50% 40%, transparent 60%, rgb(0 0 0 / 0.35) 100%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background: radial-gradient(135% 105% at 50% 40%, transparent 56%, rgb(0 0 0 / 0.42) 100%);
 }
 
-/* Reduce visual effects keeps the light but drops the sheen. */
+:root.light .vshu-ambient__grain {
+  background: radial-gradient(135% 105% at 50% 40%, transparent 62%, rgb(0 0 0 / 0.06) 100%);
+}
+
 :root[data-reduce-effects] .vshu-ambient__sheen {
   display: none;
 }

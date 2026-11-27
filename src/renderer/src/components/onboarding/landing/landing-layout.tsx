@@ -10,22 +10,27 @@ export type LandingShortcutItem = {
 }
 
 export const LANDING_ACTION_BUTTON_CLASS =
-  'inline-flex items-center gap-1.5 bg-secondary/70 border border-border/80 text-foreground font-medium text-sm px-4 py-2 rounded-md cursor-pointer hover:bg-accent transition-colors'
+  'inline-flex items-center gap-2 rounded-full border border-border/80 bg-secondary/75 px-4.5 py-2 text-sm font-medium text-foreground cursor-pointer hover:bg-accent transition-colors'
 
 export function LandingBrand(): React.JSX.Element {
   const t = useTranslate()
   return (
     <>
-      <div className="flex items-center justify-center size-20 rounded-2xl border border-border/80 shadow-lg shadow-black/60 bg-zinc-950">
+      <div
+        data-vshu-landing-emblem=""
+        className="relative flex size-22 items-center justify-center rounded-3xl border border-border/80 bg-card/85 shadow-lg shadow-black/60"
+      >
         <img
           src={logo}
           alt={t('auto.components.Landing.520304a067', 'Vshu logo')}
-          className="size-12"
+          className="size-13"
         />
       </div>
-      <h1 className="text-4xl font-bold text-foreground tracking-tight">
-        {t('auto.components.Landing.6ca6ff404e', 'VSHU')}
-      </h1>
+      <div className="flex flex-col items-center gap-1">
+        <h1 className="text-4xl font-bold tracking-tight text-foreground">
+          {t('auto.components.Landing.6ca6ff404e', 'VSHU')}
+        </h1>
+      </div>
     </>
   )
 }
@@ -36,7 +41,10 @@ export function LandingShortcutList({
   shortcuts: readonly LandingShortcutItem[]
 }): React.JSX.Element {
   return (
-    <div className="mt-6 w-full max-w-xs space-y-2">
+    <div
+      data-vshu-landing-shortcuts=""
+      className="mt-5 w-full max-w-xs space-y-2 rounded-2xl border border-border/70 bg-card/55 px-4 py-3.5"
+    >
       {shortcuts.map((shortcut) => (
         <div key={shortcut.id} className="grid grid-cols-[1fr_auto] items-center gap-3">
           <span className="text-sm text-muted-foreground">{shortcut.action}</span>

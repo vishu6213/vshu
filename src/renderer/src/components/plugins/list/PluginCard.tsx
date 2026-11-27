@@ -55,7 +55,7 @@ export function PluginCard({
   return (
     <li
       data-plugin-key={entry.pluginKey}
-      className="group/plugin-card relative flex flex-col overflow-hidden rounded-xl border border-border/70 bg-card shadow-xs transition-colors hover:border-foreground/20 has-[[data-plugin-row-name]:focus-visible]:ring-2 has-[[data-plugin-row-name]:focus-visible]:ring-ring"
+      className="group/plugin-card relative flex flex-col overflow-hidden rounded-xl border border-border/70 bg-card transition-colors hover:border-foreground/25 focus-within:ring-2 focus-within:ring-ring [content-visibility:auto] [contain-intrinsic-size:auto_320px] contain-[layout_style_paint]"
       onPointerEnter={onIntent}
       onPointerLeave={onIntentEnd}
     >

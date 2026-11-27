@@ -1,0 +1,104 @@
+/*
+ * Settings island edition: inset floating glass navigation rail with capsule items and glowing
+ * active pill across ALL themes.
+ */
+:root:not([data-window-material]) {
+  & .settings-view-shell > aside {
+    margin: 10px 0 10px 10px;
+    border: 1px solid var(--vshu-hairline-strong);
+    border-radius: 14px;
+    overflow: hidden;
+    background-color: var(--vshu-island-surface);
+    background-image:
+      var(--vshu-specular),
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--foreground) 4.5%, transparent),
+        transparent 160px
+      );
+    background-size: var(--vshu-specular-size), auto;
+    background-position:
+      top,
+      0 0;
+    background-repeat: no-repeat;
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--foreground) 7%, transparent),
+      0 18px 44px -24px rgb(0 0 0 / 0.92);
+  }
+
+  & .settings-view-shell > aside > div {
+    border-bottom-color: var(--vshu-hairline);
+  }
+
+  & .settings-view-shell > aside :is(button, input) {
+    border-radius: 999px;
+  }
+
+  & .settings-view-shell > aside button {
+    padding-inline: 16px 12px;
+    transition:
+      background-color 140ms ease,
+      color 140ms ease,
+      transform 140ms var(--vshu-ease-out);
+  }
+
+  & .settings-view-shell > aside button:not([data-current='true']):hover {
+    background-image: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--vshu-accent) 12%, transparent),
+      color-mix(in srgb, var(--foreground) 2.5%, transparent)
+    );
+    box-shadow: inset 0 0 0 1px var(--vshu-hairline);
+  }
+
+  & .settings-view-shell > aside button[data-current='true'] {
+    background-color: color-mix(
+      in srgb,
+      var(--card) 75%,
+      color-mix(in srgb, var(--vshu-accent) 16%, transparent)
+    );
+    background-image:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--foreground) 12%, transparent) 0%,
+        color-mix(in srgb, var(--vshu-accent) 6%, transparent) 60%,
+        transparent
+      ),
+      radial-gradient(
+        60% 140% at 0% 50%,
+        color-mix(in srgb, var(--vshu-accent) 22%, transparent),
+        transparent 70%
+      );
+    color: var(--vshu-silver-hi);
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--vshu-silver) 26%, transparent),
+      inset 0 1px 0 color-mix(in srgb, var(--foreground) 12%, transparent),
+      0 6px 18px -10px rgb(0 0 0 / 0.85),
+      0 0 18px -8px var(--vshu-accent-glow);
+  }
+
+  & .settings-view-shell > aside button[aria-current='page']::before {
+    left: 5px;
+    top: 34%;
+    bottom: 34%;
+    width: 2px;
+    border-radius: 999px;
+  }
+
+  & .settings-view-shell > div > header {
+    background-color: transparent;
+    border-bottom-color: var(--vshu-hairline);
+  }
+
+  & [data-settings-group-heading] {
+    font-size: 11.5px;
+    font-weight: 650;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  & [data-settings-group-card] {
+    border-radius: 16px;
+    border-color: var(--vshu-hairline-strong);
+  }
+}

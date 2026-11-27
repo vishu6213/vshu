@@ -1348,33 +1348,8 @@ body[data-modal-overlay-open]
     border-box;
 }
 
-/* Blur source regions independently so status-bar animation cannot re-filter the workspace. */
-:root:not([data-reduce-effects])
-  body:is([data-modal-overlay-open], [data-onboarding-overlay-open])
-  .app-layout {
-  --app-layout-modal-blur: blur(2px);
-}
-
-/* Always applies, so it overrides any filter utility on a direct child of .app-layout. */
-.app-layout > :not(.window-controls) {
-  --app-layout-modal-blur: inherit;
-  filter: var(--app-layout-modal-blur);
-}
-
-:root:not([data-reduce-effects])
-  body
-  > :is(
-    [data-slot='dialog-content'],
-    [data-slot='command-dialog-content'],
-    [data-slot='sheet-content'],
-    [data-onboarding-overlay]
-  ):has(
-    ~ :is([data-slot='dialog-overlay'], [data-slot='sheet-overlay']):not([data-state='closed'])
-  ) {
-  filter: blur(2px);
-}
-
-/* Reduce visual effects (#20936): no blur passes over the workspace, and solid floating surfaces. */
+/* Keep modal blur minimal on full-app tree so opening dialogs stays instant under Windows GPU compositing. */
+/* Reduce visual effects (#20936): solid floating surfaces with no backdrop blur passes. */
 :root[data-reduce-effects] {
   --floating-surface: var(--popover);
   --dialog-surface: var(--background);

@@ -16,9 +16,12 @@ module.exports = {
   nodeGypRebuild: false,
   buildDependenciesFromSource: false,
   asar: true,
+  // Node-mode entries (resources/bin/vshu.cmd runs out/cli with ELECTRON_RUN_AS_NODE, plus
+  // daemon/worker forks) cannot read app.asar, and out/cli requires ../../shared and
+  // out/package.json's CommonJS boundary, so unpack all of out/ (the release config unpacks
+  // the same closure piecemeal).
   asarUnpack: [
-    'out/main/**',
-    'out/cli/**',
+    'out/**',
     'native/**',
     'resources/plugins/**',
     'resources/skills/**',
@@ -44,7 +47,19 @@ module.exports = {
       from: 'resources/win32/bin',
       to: 'bin',
       filter: ['**/*']
-    }
+    },
+    // Embedded-browser automation (`vshu browser ...`): main resolves the driver at
+    // <resourcesPath>/agent-browser-win32-x64.exe, and the driver finds its version-matched
+    // command catalog via the nearest skills/ above it. Mirrors config/electron-builder.config.cjs.
+    {
+      from: 'node_modules/@agent-browser/cli-win32-x64-msvc/bin/agent-browser.exe',
+      to: 'agent-browser-win32-x64.exe'
+    },
+    { from: 'node_modules/agent-browser/skills/agent-browser', to: 'skills/agent-browser' },
+    { from: 'node_modules/agent-browser/skill-data', to: 'skill-data' },
+    { from: 'native/computer-use-windows/runtime.ps1', to: 'computer-use-windows/runtime.ps1' },
+    { from: 'resources/native-chat-visuals', to: 'native-chat-visuals' },
+    { from: 'resources/onboarding/feature-wall', to: 'onboarding/feature-wall' }
   ],
   directories: {
     output: 'dist',
