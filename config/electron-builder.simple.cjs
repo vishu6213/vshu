@@ -88,8 +88,18 @@ module.exports = {
     output: 'dist',
     buildResources: 'resources/build'
   },
-  // Rust launchers leave cargo target/ dirs (~40 MB of build-script intermediates) under native/.
-  files: ['out/**/*', 'native/**/*', '!native/*/target{,/**/*}', 'resources/**/*', 'package.json'],
+  // Rust launchers leave cargo target/ dirs and pnpm leaves node_modules junctions (e.g.
+  // compile-time node-addon-api) under native/, which break 7za during NSIS packing on CI.
+  files: [
+    'out/**/*',
+    '!out/**/*.map',
+    '!out/relay{,/**/*}',
+    'native/**/*',
+    '!native/*/target{,/**/*}',
+    '!native/**/node_modules{,/**/*}',
+    'resources/**/*',
+    'package.json'
+  ],
   win: {
     target: [{ target: 'nsis', arch: ['x64'] }],
     // electron-builder embeds the icon and version strings itself (resedit),
