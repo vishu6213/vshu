@@ -25,25 +25,10 @@ git push origin master
 Use a prerelease version such as `1.1.0-rc.1` to publish a release only users on the RC
 channel are offered.
 
-## 2a. Publish from GitHub Actions (tag)
-
-```bash
-git tag v1.0.1
-git push origin v1.0.1
-```
-
-`.github/workflows/release.yml` builds the installer on `windows-latest` and creates the
-release with the three assets, using the workflow's own `GITHUB_TOKEN` (no secrets to set up).
-The tag must equal `v` + the `package.json` version or the workflow stops. To rebuild an
-existing tag, run the workflow manually from the Actions tab with that tag.
-
-Push only the one tag (`git push origin v1.0.1`), never `git push --tags`: the local clone
-may hold upstream's tags, which would show up as releases of this repository.
-
-## 2b. Publish from your machine
+## 2. Build & publish from your machine
 
 With the [GitHub CLI](https://cli.github.com/) logged in (`gh auth login`, as an account
-that can write to the repository):
+that can write to `vishu6213/vshu`):
 
 ```bash
 pnpm release:win                                # build, then create release v<version>

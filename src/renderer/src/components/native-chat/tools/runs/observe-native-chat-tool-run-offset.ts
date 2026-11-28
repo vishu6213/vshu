@@ -12,21 +12,35 @@ export function observeNativeChatToolRunOffset(
     return
   }
 
-  const readOffset = (isScrolling: boolean): void => {
+  let pendingFrame: number | null = null
+  let latestIsScrolling = false
+  const flushOffset = (): void => {
+    pendingFrame = null
     if (viewport.clientHeight > 0) {
       // The virtualizer uses member coordinates while the transcript owns the scrollbar.
       onOffset(
         viewport.getBoundingClientRect().top +
           viewport.clientTop -
           members.getBoundingClientRect().top,
-        isScrolling
+        latestIsScrolling
       )
     }
   }
+  const readOffset = (isScrolling: boolean): void => {
+    latestIsScrolling = isScrolling
+    if (pendingFrame === null) {
+      pendingFrame = window.requestAnimationFrame(flushOffset)
+    }
+  }
   const stopScroll = observeElementOffset(instance, (_, isScrolling) => readOffset(isScrolling))
-  readOffset(false)
+  flushOffset()
   if (typeof ResizeObserver === 'undefined') {
-    return stopScroll
+    return () => {
+      if (pendingFrame !== null) {
+        window.cancelAnimationFrame(pendingFrame)
+      }
+      stopScroll?.()
+    }
   }
   // Streaming or expanding earlier rows can move the run without a transcript scroll event.
   const observer = new ResizeObserver(() => readOffset(instance.isScrolling))
@@ -37,6 +51,9 @@ export function observeNativeChatToolRunOffset(
     }
   }
   return () => {
+    if (pendingFrame !== null) {
+      window.cancelAnimationFrame(pendingFrame)
+    }
     stopScroll?.()
     observer.disconnect()
   }

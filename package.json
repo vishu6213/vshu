@@ -1,9 +1,13 @@
 {
   "name": "vshu",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Vshu — AI-Powered Parallel Development IDE",
-  "homepage": "https://github.com/vishu6213/vshu",
+  "homepage": "https://vshu.dev",
   "author": "Vshu Contributors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vishu6213/vshu.git"
+  },
   "bin": {
     "vshu": "./out/cli/index.js",
     "vshu-dev": "./config/scripts/development/launch/vshu-dev.mjs"

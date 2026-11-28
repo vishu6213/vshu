@@ -1,9 +1,11 @@
 import { useNativeChatViewDisconnect } from '../../pane/ownership/use-native-chat-view-disconnect'
 import { useNativeChatReaderReturn } from './use-native-chat-reader-return'
 import { useNativeChatTranscriptResize } from './use-native-chat-transcript-resize'
+import { useNativeChatForwardedScroll } from './use-native-chat-forwarded-scroll'
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { UIEventHandler } from 'react'
+import { useNativeChatVisibilityScroll } from './use-native-chat-visibility-scroll'
 import {
   distanceFromBottom,
   geometryOf,
@@ -22,22 +24,25 @@ import type {
 } from './native-chat-transcript-scroll-types'
 import type { NativeChatAlignEdge } from '../virtualization/use-native-chat-viewport-align'
 
-export function useNativeChatTranscriptScroll({
-  scrollRef,
-  contentRef,
-  itemCount,
-  isWorking,
-  showsTailRow,
-  isVisible,
-  alignToViewportTop,
-  isAlignPending,
-  scrollToEnd,
-  restoreScrollOffset,
-  consumeProgrammaticScroll,
-  reconcileReaderScroll,
-  onLeaveEnd,
-  onReturnToEnd
-}: NativeChatTranscriptScrollOptions): NativeChatTranscriptScroll {
+export function useNativeChatTranscriptScroll(
+  options: NativeChatTranscriptScrollOptions
+): NativeChatTranscriptScroll {
+  const {
+    scrollRef,
+    contentRef,
+    itemCount,
+    isWorking,
+    showsTailRow,
+    isVisible,
+    alignToViewportTop,
+    isAlignPending,
+    scrollToEnd,
+    restoreScrollOffset,
+    consumeProgrammaticScroll,
+    reconcileReaderScroll,
+    onLeaveEnd,
+    onReturnToEnd
+  } = options
   const [showJump, setShowJump] = useState(false)
   const followingRef = useRef(true)
   const previousGeometryRef = useRef<ScrollGeometry | null>(null)
@@ -48,53 +53,42 @@ export function useNativeChatTranscriptScroll({
   const previousIsVisibleRef = useRef(isVisible)
   const previousDistanceFromEndRef = useRef(Number.POSITIVE_INFINITY)
 
-  const forwardedInputRef = useRef(false)
-  const forwardedMovementRef = useRef(false)
-  const deferredPinRef = useRef(false)
-  const forwardedFrameRef = useRef<number | null>(null)
-  const clearForwardedScroll = useCallback(() => {
-    forwardedInputRef.current = false
-    forwardedMovementRef.current = false
-    deferredPinRef.current = false
-    if (forwardedFrameRef.current !== null) {
-      window.cancelAnimationFrame(forwardedFrameRef.current)
-      forwardedFrameRef.current = null
-    }
-  }, [])
-  const invalidateForwardedGesture = useCallback(() => {
-    forwardedInputRef.current = false
-    forwardedMovementRef.current = false
-    // A cancelled gesture still owes the following reader any growth held for it.
-    if (!deferredPinRef.current) {
-      clearForwardedScroll()
-    }
-  }, [clearForwardedScroll])
-  const expireForwardedScroll = useCallback(() => {
-    if (forwardedFrameRef.current === null) {
-      // A scroll and its cross-frame input report may arrive in either order.
-      forwardedFrameRef.current = window.requestAnimationFrame(() => {
-        forwardedFrameRef.current = window.requestAnimationFrame(() => {
-          const resumePin = deferredPinRef.current && followingRef.current
-          clearForwardedScroll()
-          if (resumePin && isVisibleRef.current && hasMeasurableViewport(scrollRef.current)) {
-            performApplicationScroll(scrollToEnd)
-          }
-        })
-      })
-    }
-  }, [clearForwardedScroll, performApplicationScroll, scrollRef, scrollToEnd])
+  const {
+    forwardedInputRef,
+    forwardedMovementRef,
+    deferredPinRef,
+    clearForwardedScroll,
+    invalidateForwardedGesture,
+    expireForwardedScroll: scheduleForwardedExpire
+  } = useNativeChatForwardedScroll()
+  const expireForwardedScroll = useCallback(
+    () =>
+      scheduleForwardedExpire(() => {
+        if (
+          followingRef.current &&
+          isVisibleRef.current &&
+          hasMeasurableViewport(scrollRef.current)
+        ) {
+          performApplicationScroll(scrollToEnd)
+        }
+      }),
+    [performApplicationScroll, scheduleForwardedExpire, scrollRef, scrollToEnd]
+  )
   useEffect(() => clearForwardedScroll, [clearForwardedScroll])
 
-  const syncScrollState = useCallback((): ScrollGeometry | null => {
-    const element = scrollRef.current
-    if (!isVisibleRef.current || !hasMeasurableViewport(element)) {
-      return null
-    }
-    const geometry = geometryOf(element)
-    detachedScrollTopRef.current = followingRef.current ? null : geometry.scrollTop
-    setShowJump(shouldShowJumpToLatest(followingRef.current, geometry))
-    return geometry
-  }, [scrollRef])
+  const syncScrollState = useCallback(
+    (knownGeometry?: ScrollGeometry): ScrollGeometry | null => {
+      const element = scrollRef.current
+      if (!isVisibleRef.current || !hasMeasurableViewport(element)) {
+        return null
+      }
+      const geometry = knownGeometry ?? geometryOf(element)
+      detachedScrollTopRef.current = followingRef.current ? null : geometry.scrollTop
+      setShowJump(shouldShowJumpToLatest(followingRef.current, geometry))
+      return geometry
+    },
+    [scrollRef]
+  )
 
   const readerLeavesEnd = useCallback(() => {
     clearForwardedScroll()
@@ -143,6 +137,8 @@ export function useNativeChatTranscriptScroll({
     [
       clearForwardedScroll,
       expireForwardedScroll,
+      forwardedInputRef,
+      forwardedMovementRef,
       invalidateForwardedGesture,
       isAlignPending,
       readerLeavesEnd
@@ -175,6 +171,8 @@ export function useNativeChatTranscriptScroll({
     [
       clearForwardedScroll,
       expireForwardedScroll,
+      forwardedInputRef,
+      forwardedMovementRef,
       invalidateForwardedGesture,
       readerLeavesEnd,
       reconcileReaderScroll,
@@ -200,7 +198,7 @@ export function useNativeChatTranscriptScroll({
       })
       reconcileReaderScroll(false)
       previousDistanceFromEndRef.current = distanceFromBottom(geometry)
-      syncScrollState()
+      syncScrollState(geometry)
       if (readerReturn.readerReturned(geometry, programmatic)) {
         onReturnToEnd?.()
       }
@@ -226,7 +224,15 @@ export function useNativeChatTranscriptScroll({
       clearForwardedScroll()
       performApplicationScroll(scrollToEnd)
     }
-  }, [clearForwardedScroll, performApplicationScroll, scrollRef, scrollToEnd])
+  }, [
+    clearForwardedScroll,
+    deferredPinRef,
+    forwardedInputRef,
+    forwardedMovementRef,
+    performApplicationScroll,
+    scrollRef,
+    scrollToEnd
+  ])
 
   const scrollToBottom = useCallback(
     (reason?: 'send') => {
@@ -257,42 +263,23 @@ export function useNativeChatTranscriptScroll({
     observeVisibility(false, false)
   })
 
-  useLayoutEffect(() => {
-    if (isVisible !== previousIsVisibleRef.current) {
-      clearForwardedScroll()
-    }
-    const revealed = isVisible && !previousIsVisibleRef.current
-    isVisibleRef.current = isVisible
-    previousIsVisibleRef.current = isVisible
-    observeVisibility(isVisible, revealed)
-    if (!isVisible) {
-      return
-    }
-    if (!followingRef.current) {
-      if (revealed) {
-        if (detachedScrollTopRef.current !== null) {
-          const offset = detachedScrollTopRef.current
-          performApplicationScroll(() => restoreScrollOffset(offset))
-        }
-        followingRef.current = readerAtEnd(NATIVE_CHAT_FOLLOW_REARM_PX)
-      }
-      syncScrollState()
-      return
-    }
-    scrollToEndWhenMeasurable()
-  }, [
-    clearForwardedScroll,
+  useNativeChatVisibilityScroll({
     isVisible,
     itemCount,
     isWorking,
-    performApplicationScroll,
-    readerAtEnd,
-    observeVisibility,
-    restoreScrollOffset,
     showsTailRow,
-    scrollToEndWhenMeasurable,
-    syncScrollState
-  ])
+    isVisibleRef,
+    previousIsVisibleRef,
+    followingRef,
+    detachedScrollTopRef,
+    clearForwardedScroll,
+    observeVisibility,
+    performApplicationScroll,
+    restoreScrollOffset,
+    readerAtEnd,
+    syncScrollState,
+    scrollToEndWhenMeasurable
+  })
 
   useNativeChatTranscriptResize({
     scrollRef,

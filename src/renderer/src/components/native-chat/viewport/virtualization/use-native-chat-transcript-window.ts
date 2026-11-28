@@ -10,7 +10,7 @@ import {
 } from './native-chat-row-height-estimate'
 import { nativeChatPinnedRowIndexes, nativeChatTranscriptRange } from './native-chat-pinned-rows'
 import { useNativeChatRowMeasure } from './use-native-chat-row-measure'
-import { nativeChatSlotKey } from '../../conversation/slots/native-chat-transcript-slot-selection'
+import { resolveStableNativeChatSlotKeys } from './native-chat-slot-key-list'
 import type { NativeChatTranscriptSlot } from '../../conversation/slots/native-chat-transcript-slots'
 import {
   nativeChatScrollOffsetWithin,
@@ -81,10 +81,8 @@ export function useNativeChatTranscriptWindow({
     () => nativeChatPinnedRowIndexes({ count: slots.length, revealIndex, newRowsMarkerIndex }),
     [slots.length, revealIndex, newRowsMarkerIndex]
   )
-  // Keep measured offsets through content-only growth to preserve the end anchor; rebuild only on structural changes.
-  // Encoded only when the slots change: scroll and range renders reuse it.
-  const encodedItemKeys = useMemo(() => JSON.stringify(slots.map(nativeChatSlotKey)), [slots])
-  const itemKeys = useMemo(() => JSON.parse(encodedItemKeys) as string[], [encodedItemKeys])
+  const prevItemKeysRef = useRef<string[]>([])
+  const itemKeys = useMemo(() => resolveStableNativeChatSlotKeys(prevItemKeysRef, slots), [slots])
   const estimateSize = useCallback(
     (index: number) => slots[index]?.estimatedHeight ?? FALLBACK_ROW_PX,
     [slots]
@@ -110,6 +108,8 @@ export function useNativeChatTranscriptWindow({
     gap: scaledGapPx,
     scrollMargin,
     scrollPaddingStart: jumpDrawnAbovePx, // A jump's row drawn above its top lands by its first line.
+    // Never block frame ticks with synchronous React flushSync during wheel/trackpad scrolling.
+    useFlushSync: false,
     // A hidden pane has no boxes to measure; retain its last visible row sizes.
     useCachedMeasurements: !isVisible,
     anchorTo: 'end',
@@ -168,12 +168,12 @@ export function useNativeChatTranscriptWindow({
     measuredScrollMargin.current = offset
     setScrollMargin(offset)
   }, [programmaticScrollMarks, scrollRef, virtualizer])
-  // A hidden pane is display:none: its offset walk would only force layout on every retained chat's render.
+  // A hidden pane is display:none: only re-read margin when visibility or reader setup changes.
   useLayoutEffect(() => {
     if (isVisible) {
       readScrollMargin()
     }
-  })
+  }, [isVisible, readScrollMargin])
 
   useLayoutEffect(() => {
     const container = scrollRef.current

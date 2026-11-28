@@ -32,18 +32,29 @@ export function useBotTranscriptReaderAnchor({
   scrollTo: (offset: number) => void
 }): { record: () => void; clear: () => void } {
   const anchor = useRef<Anchor | null>(null)
+  const recordFrameRef = useRef<number | null>(null)
   const clear = useCallback(() => {
+    if (recordFrameRef.current !== null) {
+      window.cancelAnimationFrame(recordFrameRef.current)
+      recordFrameRef.current = null
+    }
     anchor.current = null
   }, [])
   const record = useCallback(() => {
-    const scroller = scrollRef.current
-    const content = contentRef.current
-    if (!scroller || !content || scroller.clientHeight === 0) {
-      anchor.current = null
+    if (recordFrameRef.current !== null) {
       return
     }
-    const node = topRow(scroller, content)
-    anchor.current = { node, top: node.getBoundingClientRect().top }
+    recordFrameRef.current = window.requestAnimationFrame(() => {
+      recordFrameRef.current = null
+      const scroller = scrollRef.current
+      const content = contentRef.current
+      if (!scroller || !content || scroller.clientHeight === 0) {
+        anchor.current = null
+        return
+      }
+      const node = topRow(scroller, content)
+      anchor.current = { node, top: node.getBoundingClientRect().top }
+    })
   }, [contentRef, scrollRef])
   useEffect(() => {
     const scroller = scrollRef.current

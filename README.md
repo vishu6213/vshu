@@ -3,8 +3,8 @@
 </h1>
 
 <p align="center">
+  <a href="https://vshu.dev"><img src="https://img.shields.io/badge/Website-vshu.dev-black?style=flat-square" alt="Website: vshu.dev" /></a>
   <a href="https://github.com/vishu6213/vshu/releases/latest"><img src="https://img.shields.io/github/v/release/vishu6213/vshu?style=flat-square&color=black&label=release" alt="Latest release" /></a>
-  <a href="https://github.com/vishu6213/vshu/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/vishu6213/vshu/ci.yml?branch=master&style=flat-square&label=CI" alt="CI status" /></a>
   <img src="https://img.shields.io/badge/License-MIT-black?style=flat-square" alt="License: MIT" />
   <img src="https://img.shields.io/badge/Platform-Windows-black?style=flat-square" alt="Platform: Windows" />
 </p>
@@ -12,7 +12,8 @@
 <p align="center">
   <strong>An IDE for running many AI coding agents in parallel.</strong><br/>
   Run Claude Code, Codex, OpenCode and other agents side by side, each in its own Git worktree,
-  with a built-in terminal, browser, diff review and a true-black interface.
+  with a built-in terminal, browser, diff review and a true-black interface.<br/>
+  <a href="https://vshu.dev">Website (vshu.dev)</a> · <a href="https://github.com/vishu6213/vshu/releases/latest">Download Latest Release</a>
 </p>
 
 ---
@@ -55,8 +56,7 @@ chat, terminals, a built-in browser, and unified diff review together in a singl
 
 ## Download
 
-Get the latest Windows installer, `Vshu-<version>-windows-setup.exe`, from
-[**GitHub Releases**](https://github.com/vishu6213/vshu/releases/latest).
+Get the latest Windows installer, `Vshu-<version>-windows-setup.exe`, from [**vshu.dev**](https://vshu.dev) or [**GitHub Releases**](https://github.com/vishu6213/vshu/releases/latest).
 
 The installer is per-user: it installs to `%LOCALAPPDATA%\Programs\vshu`, needs no
 administrator rights, and adds Start menu and desktop shortcuts.

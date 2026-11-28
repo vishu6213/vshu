@@ -28,7 +28,7 @@ const requireFromRepo = createRequire(path.join(repoRoot, 'package.json'))
 
 console.log('=== PACKAGING VSHU APPLICATION ===')
 
-// 1. Ensure out/ is built
+// 1. Ensure out/ (main, renderer, mobile-web, web client) is built
 if (
   !fs.existsSync(path.join(repoRoot, 'out', 'main', 'index.js')) ||
   !fs.existsSync(path.join(repoRoot, 'out', 'renderer', 'index.html'))
@@ -44,6 +44,74 @@ if (
         'desktop-build',
         'execution',
         'run-electron-vite-build.mjs'
+      )
+    ],
+    { stdio: 'inherit', cwd: repoRoot }
+  )
+}
+
+if (!fs.existsSync(path.join(repoRoot, 'out', 'renderer', 'web-index.html'))) {
+  console.log('Projecting web client into out/renderer/web-index.html...')
+  execFileSync(
+    process.execPath,
+    [
+      path.join(
+        repoRoot,
+        'config',
+        'scripts',
+        'development',
+        'web-client',
+        'project-renderer-web-client.mjs'
+      )
+    ],
+    { stdio: 'inherit', cwd: repoRoot }
+  )
+}
+
+if (!fs.existsSync(path.join(repoRoot, 'out', 'mobile-web', 'manifest.json'))) {
+  console.log('Building mobile-web bundle into out/mobile-web...')
+  execFileSync(
+    process.execPath,
+    [
+      path.join(
+        repoRoot,
+        'config',
+        'scripts',
+        'build',
+        'mobile-web-app',
+        'build-mobile-web-app-bundle.mjs'
+      )
+    ],
+    { stdio: 'inherit', cwd: repoRoot }
+  )
+  execFileSync(
+    process.execPath,
+    [
+      path.join(
+        repoRoot,
+        'config',
+        'scripts',
+        'build',
+        'mobile-web-app',
+        'verify-mobile-web-app-bundle.mjs'
+      )
+    ],
+    { stdio: 'inherit', cwd: repoRoot }
+  )
+}
+
+if (!fs.existsSync(path.join(repoRoot, 'out', 'relay'))) {
+  console.log('Building WSL/SSH relay & vshud bundle into out/relay...')
+  execFileSync(
+    process.execPath,
+    [
+      path.join(
+        repoRoot,
+        'config',
+        'scripts',
+        'remote-host-build',
+        'wsl-guest',
+        'build-wsl-guest.mjs'
       )
     ],
     { stdio: 'inherit', cwd: repoRoot }

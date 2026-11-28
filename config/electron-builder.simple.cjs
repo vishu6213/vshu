@@ -1,7 +1,15 @@
-// Local Windows packaging (dist/ + Vshu_Installer/), used by
-// scripts/package-vshu-app.mjs --installer. The release config is
+// Local & GitHub Release Windows packaging (dist/ + Vshu_Installer/), used by
+// scripts/package-vshu-app.mjs --installer. The cross-platform release config is
 // config/electron-builder.config.cjs; keep appId, productName and the
 // protocol in sync with it.
+const { existsSync } = require('node:fs')
+const { join, resolve } = require('node:path')
+const { copyPackagedTranscribeCpp } = require('./packaged-transcribe-cpp.cjs')
+const {
+  normalizeElectronArchitecture,
+  prunePackagedRuntimeNodeModules,
+  readPackage
+} = require('./packaged-runtime-node-modules.cjs')
 
 /** @type {import('electron-builder').Configuration} */
 module.exports = {
@@ -59,8 +67,23 @@ module.exports = {
     { from: 'node_modules/agent-browser/skill-data', to: 'skill-data' },
     { from: 'native/computer-use-windows/runtime.ps1', to: 'computer-use-windows/runtime.ps1' },
     { from: 'resources/native-chat-visuals', to: 'native-chat-visuals' },
-    { from: 'resources/onboarding/feature-wall', to: 'onboarding/feature-wall' }
+    { from: 'resources/onboarding/feature-wall', to: 'onboarding/feature-wall' },
+    {
+      from: 'node_modules/emojibase-data/en/shortcodes/emojibase.json',
+      to: 'node_modules/emojibase-data/en/shortcodes/emojibase.json'
+    },
+    ...(existsSync(resolve(__dirname, '../out/relay')) ? [{ from: 'out/relay', to: 'relay' }] : [])
   ],
+  async afterPack(context) {
+    const resourcesDir = join(context.appOutDir, 'resources')
+    const arch = normalizeElectronArchitecture(context.arch)
+    try {
+      copyPackagedTranscribeCpp(readPackage, resourcesDir, context.electronPlatformName, arch)
+    } catch (error) {
+      console.warn('[package] Skipping transcribe-cpp CRT copy:', error?.message ?? error)
+    }
+    prunePackagedRuntimeNodeModules(resourcesDir, context.electronPlatformName, context.arch)
+  },
   directories: {
     output: 'dist',
     buildResources: 'resources/build'
@@ -88,7 +111,8 @@ module.exports = {
     uninstallerIcon: 'resources/build/icon.ico',
     installerHeaderIcon: 'resources/build/icon.ico',
     createDesktopShortcut: 'always',
-    createStartMenuShortcut: true
+    createStartMenuShortcut: true,
+    include: resolve(__dirname, 'nsis', 'vshu-installer-hooks.nsh')
   },
   // In-app updates. Declaring a publisher makes electron-builder write latest.yml and the
   // installer .blockmap next to the installer, and resources/app-update.yml into the app

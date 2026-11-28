@@ -67,7 +67,11 @@ export function NativeChatTranscriptItems({
                 <div
                   data-index={item.index}
                   ref={window.measureRow}
-                  className={leavesWhole ? 'w-full' : 'flow-root w-full'}
+                  className={
+                    leavesWhole
+                      ? 'w-full contain-[layout_style]'
+                      : 'flow-root w-full contain-[layout_style]'
+                  }
                 >
                   <NativeChatTranscriptRow
                     slot={slot}

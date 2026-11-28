@@ -22,7 +22,7 @@
 //      scripts/apply-vshu-branding.mjs (committing any change), and runs
 //      `vshu-rebrand.mjs --check`.
 //    Conflicts in other files are left for you: resolve them, commit, then run
-//    `node scripts/apply-vshu-branding.mjs` and `pnpm rebrand:check` (update-vshu.bat does).
+//    `node scripts/apply-vshu-branding.mjs` and `pnpm rebrand:check`.
 //
 // First sync: if HEAD shares history with upstream, the first snapshot is parented on
 // merge-base(HEAD, upstream/main). If not (Vshu began as a squashed "forked from Orca"
@@ -418,7 +418,7 @@ function regenerateBranding(repoRoot) {
     createRequire(script).resolve('sharp')
   } catch {
     console.log('sharp is not installed yet: run `pnpm install`, then')
-    console.log('`node scripts/apply-vshu-branding.mjs` (update-vshu.bat does this).')
+    console.log('`node scripts/apply-vshu-branding.mjs`.')
     return
   }
   step('Regenerating brand assets (apply-vshu-branding.mjs)')

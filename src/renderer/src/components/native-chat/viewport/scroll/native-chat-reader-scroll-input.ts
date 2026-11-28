@@ -42,6 +42,10 @@ function gestureReachesTranscript(
     element && element !== transcript;
     element = element.parentElement
   ) {
+    // Skip getComputedStyle for non-scrollable nodes (~99% of chat elements).
+    if (element.scrollHeight <= element.clientHeight) {
+      continue
+    }
     const style = getComputedStyle(element)
     if (style.overflowY !== 'auto' && style.overflowY !== 'scroll') {
       continue
