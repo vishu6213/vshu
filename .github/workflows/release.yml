@@ -62,7 +62,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install mobile dependencies
-        uses: ./.github/actions/install-mobile-dependencies
+        run: pnpm -C mobile install --no-frozen-lockfile
 
       # Builds the CLI and app bundles, rebuilds native addons for Electron (MSVC is on the
       # runner), and packages the NSIS installer with config/electron-builder.simple.cjs.
