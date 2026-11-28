@@ -5,6 +5,7 @@
 <p align="center">
   <a href="https://vshu.dev"><img src="https://img.shields.io/badge/Website-vshu.dev-black?style=flat-square" alt="Website: vshu.dev" /></a>
   <a href="https://github.com/vishu6213/vshu/releases/latest"><img src="https://img.shields.io/github/v/release/vishu6213/vshu?style=flat-square&color=black&label=release" alt="Latest release" /></a>
+  <a href="https://github.com/vishu6213/vshu/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/vishu6213/vshu/ci.yml?branch=master&style=flat-square&label=CI" alt="CI status" /></a>
   <img src="https://img.shields.io/badge/License-MIT-black?style=flat-square" alt="License: MIT" />
   <img src="https://img.shields.io/badge/Platform-Windows-black?style=flat-square" alt="Platform: Windows" />
 </p>
