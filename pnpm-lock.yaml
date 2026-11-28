@@ -7,153 +7,153 @@ importers:
     configDependencies: {}
     packageManagerDependencies:
       pnpm:
-        specifier: 12.18.0
-        version: 12.18.0
+        specifier: 12.14.0
+        version: 12.14.0
 
 packages:
 
-  '@pnpm/exe.android-arm64@12.18.0':
-    resolution: {integrity: sha512-fOF6IwgvnUKEmVedGqiAsNPfN2Ry8GvaqzSQOiF3RJFbpBfPKO/6YT54s1GjToyYinRxw9preHHPe4y2N3SzhA==}
+  '@pnpm/exe.android-arm64@12.14.0':
+    resolution: {integrity: sha512-+iSh7x21C3A2hqc+Z0ZmbKTcn6YNlzrXM142PsnQH/dLj0DYxFzoBvc6XAnL/yfQ5nnH2ebBiRj/zVxr61fZbQ==}
     cpu: [arm64]
     os: [android]
 
-  '@pnpm/exe.android-x64@12.18.0':
-    resolution: {integrity: sha512-6OiolnaCsB3/GcJ9XNrenbUH3zFHRJ+5QynrMUUEyThbgnnCzWxa199hpQlOmxN4rAXuYQ0IYgWFNUZxyzg31Q==}
+  '@pnpm/exe.android-x64@12.14.0':
+    resolution: {integrity: sha512-qT+0LqEr2wBVaxcG2T8cX/R8SSRz2Rvpp8nRR4fh8tnGUZRch87gFmsHUAoSQh7w6j1h0qTjrA384j4xi8frvw==}
     cpu: [x64]
     os: [android]
 
-  '@pnpm/exe.darwin-arm64@12.18.0':
-    resolution: {integrity: sha512-zkq+4YzVIX39ETYLyC3W7LY7MpHEU/J3nRhHl4i2yPld2Cf2+rEKRh3ejJ4AmaQ77HHJLCktY4Z3jq0fpcxFXg==}
+  '@pnpm/exe.darwin-arm64@12.14.0':
+    resolution: {integrity: sha512-tnrdUB8ecJoehuKKqi1YHCBVl61xtJ9XVGcx5EviC6fWO4DeGI8GtXrjvJxDBM3nuVjJeWistgsUp/N142x4sw==}
     cpu: [arm64]
     os: [darwin]
 
-  '@pnpm/exe.darwin-x64@12.18.0':
-    resolution: {integrity: sha512-qMsL9qx92unOTa6hgkfiTJv8ceZaTx0IQg7InhYDVX2ZrTECujaVEEVypnJK5m3eGUsP1KD7Y4qIgleCwfRsYw==}
+  '@pnpm/exe.darwin-x64@12.14.0':
+    resolution: {integrity: sha512-vlBfGkruqQRsEHTW43cPwpYd7QlbIJ//cvpAdb3bVXkI8SgTPoXhCnc05m+ZNiPrrEkBsX/t7KHw9aXpkzPm3Q==}
     cpu: [x64]
     os: [darwin]
 
-  '@pnpm/exe.freebsd-x64@12.18.0':
-    resolution: {integrity: sha512-/9vy/4ms52cU4MjZ5NhHd6N2d9L9W0kARf5/ff2tweAHu0VeUzs/0qp/7ZHFuddm2Wa/m0AKQoPum9AVUCqKsw==}
+  '@pnpm/exe.freebsd-x64@12.14.0':
+    resolution: {integrity: sha512-Qg5rxBrGYl6Tfso+EyygPf84fY1Fzy55E/0or+iuYKtnf0vc0MlHJfVIlT7pBukMRntQHRik7hUi0Z4s7AlJsw==}
     cpu: [x64]
     os: [freebsd]
 
-  '@pnpm/exe.linux-arm64-musl@12.18.0':
-    resolution: {integrity: sha512-Vp+TIMPPyackVCXkOdEKH/RmAn/r07EcIyrgZYQK7VrkksqZOie0GnWIx+85mPqeFEYCRtXIZAFJ9L4ceTndDg==}
+  '@pnpm/exe.linux-arm64-musl@12.14.0':
+    resolution: {integrity: sha512-DRIe4yQkXBGA/PhVJdzlbnllxBdAtnMMvTVLLcGpsK5FvJz9kxD2Hyxtn68ovmNkVX06f6p45cQwfm3wx2jn1A==}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@pnpm/exe.linux-arm64@12.18.0':
-    resolution: {integrity: sha512-2dpyVBCHT+FfpuQh9i+7MXAqNWYLCvD5vYr5p6Eimxoga8USLnjbUgyj72AOrO0hjc5ri3TEFP3jiyBHjkSZpQ==}
+  '@pnpm/exe.linux-arm64@12.14.0':
+    resolution: {integrity: sha512-7joGShZ44Nk3WpNU+60JoOPjCXlgxhJAq11S2UiVtwCUDgTer1yTPPfxGW8pxaD6046actYLIYDbZNlubHWs0A==}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@pnpm/exe.linux-ppc64@12.18.0':
-    resolution: {integrity: sha512-BBOOOfNJ2QwIIya3eKqOjiN4WNTszfRz7HCvw9XggcT7+ftMjNP8XJ/GfW+ltCBeUFR9d8WBVsr2m/NLjX2CZQ==}
+  '@pnpm/exe.linux-ppc64@12.14.0':
+    resolution: {integrity: sha512-gSoryn7ySdXd//gjgf3MvvA8ZerJayaSbuMZMtAWq4vb2/wlVEgpl0Kvqt54y58TRj533Qjq2txKgnxd4JyoAQ==}
     cpu: [ppc64]
     os: [linux]
     libc: [glibc]
 
-  '@pnpm/exe.linux-riscv64@12.18.0':
-    resolution: {integrity: sha512-7kMN77xSOYJX8GPSH5RbNAc5oM61LMmcSUukDDUwllnZPXm8GRPskCNsTWy8SCw01Kr1FB+5SwGNMiTdiziLNQ==}
+  '@pnpm/exe.linux-riscv64@12.14.0':
+    resolution: {integrity: sha512-EMjew1H9WqQ7pL+tYqCPwiuB+0PeCiJRV7fyWeuFw0wwYUajFBjcaPO3IGAVu9sdmJDU+e+HYv/Zey6aKae0Vw==}
     cpu: [riscv64]
     os: [linux]
     libc: [glibc]
 
-  '@pnpm/exe.linux-s390x@12.18.0':
-    resolution: {integrity: sha512-htuSCpEcmDzhKoJqXbPkvfr176dBHU0QIF5mWcRiqxRXAB/1JoYiMYotfjWpk+ztgpB9qlx4XnWlLFAf7gzc6g==}
+  '@pnpm/exe.linux-s390x@12.14.0':
+    resolution: {integrity: sha512-shYOj/SFoXD35fHe0pWr2JofwSXulC0BnEIXLj2QokDi0EF//AfKsui35yKIkTEl+s2VJybc3PO4iJNhKIj5Qw==}
     cpu: [s390x]
     os: [linux]
     libc: [glibc]
 
-  '@pnpm/exe.linux-x64-musl@12.18.0':
-    resolution: {integrity: sha512-Uj+vzfIQ62kDP10x36yHZIXVs5ohdNtiPYwn5FhCLlNScHPo0OAI+ShGDtLofiBXKE7umu71Jmjm7N8a8zVcDw==}
+  '@pnpm/exe.linux-x64-musl@12.14.0':
+    resolution: {integrity: sha512-btZiZ2Ot0llKK1ndSfA5i3IRX7/S0VrmzseNH/BJ4c+Cady+S81H6vvU1zByggHMyqQhC8OgxO5PiIY7D9bH0Q==}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@pnpm/exe.linux-x64@12.18.0':
-    resolution: {integrity: sha512-OJ+X2wcraldCwj75pCIerWARQSRpdfj0eBTs/2ODyhfeW46ylOnjTIE/GKra6Mn6E72/gBmXS8igrUioa+F9fQ==}
+  '@pnpm/exe.linux-x64@12.14.0':
+    resolution: {integrity: sha512-F6K8e/jWxiuEYJaQtRRUG9ynBSTEHa+t7Lf86MKuOO5UA7WVVMbi+oB8nY6iKW++ncWS2yG6T9faXZGxqNsfoQ==}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@pnpm/exe.win32-arm64@12.18.0':
-    resolution: {integrity: sha512-wEY6jiACGcbhhi5yD59doHqNTndS7AaujaPmtWAu1DKkHru2hy5fJ9yUGecW72Ypaw2/I3BEprfMOopap2NQtw==}
+  '@pnpm/exe.win32-arm64@12.14.0':
+    resolution: {integrity: sha512-DOjlkVB6TtTKeAAe0hNZXn5S7YqESmo1Z6SGbR4BZNQ4isRg31XVHjX2RFTbY8gnZq68IwzyLmPqlEjMmYxofg==}
     cpu: [arm64]
     os: [win32]
 
-  '@pnpm/exe.win32-x64@12.18.0':
-    resolution: {integrity: sha512-5FJkghO7RLRkQpWxeVEygW9XsmnNuxzPfXbgwFWCHsFyFhpDn/vOdL88ToQEM0Kt5igdW5s6U0/IDH8Dvkt3pg==}
+  '@pnpm/exe.win32-x64@12.14.0':
+    resolution: {integrity: sha512-/LSX6mew/sLf08XqcjemuklNKf1K/Ftpgj4//hK/HKzI2dKbmxDB27a/2OaQ5a0O3/3OFzlssXDziZsi+yVBwQ==}
     cpu: [x64]
     os: [win32]
 
-  pnpm@12.18.0:
-    resolution: {integrity: sha512-nXiC1dyCFH7PxOBiqjSDTgrQKWcQoYN6ERWuASEn02txCeMhrBWYod0KZVl2gbHpmRfhLtDXSerpEYeUM2O+sw==}
-    engines: {node: '>=18'}
+  pnpm@12.14.0:
+    resolution: {integrity: sha512-wYum2HmT09Fky16JSPMrLAbuhUSH4GzY2GeBNC+z5btGNDZwNHEehoArqpw3vqkGzhkprQjXCITJfYAd8TOJpg==}
+    engines: {node: '>=18.*'}
     hasBin: true
 
 snapshots:
 
-  '@pnpm/exe.android-arm64@12.18.0':
+  '@pnpm/exe.android-arm64@12.14.0':
     optional: true
 
-  '@pnpm/exe.android-x64@12.18.0':
+  '@pnpm/exe.android-x64@12.14.0':
     optional: true
 
-  '@pnpm/exe.darwin-arm64@12.18.0':
+  '@pnpm/exe.darwin-arm64@12.14.0':
     optional: true
 
-  '@pnpm/exe.darwin-x64@12.18.0':
+  '@pnpm/exe.darwin-x64@12.14.0':
     optional: true
 
-  '@pnpm/exe.freebsd-x64@12.18.0':
+  '@pnpm/exe.freebsd-x64@12.14.0':
     optional: true
 
-  '@pnpm/exe.linux-arm64-musl@12.18.0':
+  '@pnpm/exe.linux-arm64-musl@12.14.0':
     optional: true
 
-  '@pnpm/exe.linux-arm64@12.18.0':
+  '@pnpm/exe.linux-arm64@12.14.0':
     optional: true
 
-  '@pnpm/exe.linux-ppc64@12.18.0':
+  '@pnpm/exe.linux-ppc64@12.14.0':
     optional: true
 
-  '@pnpm/exe.linux-riscv64@12.18.0':
+  '@pnpm/exe.linux-riscv64@12.14.0':
     optional: true
 
-  '@pnpm/exe.linux-s390x@12.18.0':
+  '@pnpm/exe.linux-s390x@12.14.0':
     optional: true
 
-  '@pnpm/exe.linux-x64-musl@12.18.0':
+  '@pnpm/exe.linux-x64-musl@12.14.0':
     optional: true
 
-  '@pnpm/exe.linux-x64@12.18.0':
+  '@pnpm/exe.linux-x64@12.14.0':
     optional: true
 
-  '@pnpm/exe.win32-arm64@12.18.0':
+  '@pnpm/exe.win32-arm64@12.14.0':
     optional: true
 
-  '@pnpm/exe.win32-x64@12.18.0':
+  '@pnpm/exe.win32-x64@12.14.0':
     optional: true
 
-  pnpm@12.18.0:
+  pnpm@12.14.0:
     optionalDependencies:
-      '@pnpm/exe.android-arm64': 12.18.0
-      '@pnpm/exe.android-x64': 12.18.0
-      '@pnpm/exe.darwin-arm64': 12.18.0
-      '@pnpm/exe.darwin-x64': 12.18.0
-      '@pnpm/exe.freebsd-x64': 12.18.0
-      '@pnpm/exe.linux-arm64': 12.18.0
-      '@pnpm/exe.linux-arm64-musl': 12.18.0
-      '@pnpm/exe.linux-ppc64': 12.18.0
-      '@pnpm/exe.linux-riscv64': 12.18.0
-      '@pnpm/exe.linux-s390x': 12.18.0
-      '@pnpm/exe.linux-x64': 12.18.0
-      '@pnpm/exe.linux-x64-musl': 12.18.0
-      '@pnpm/exe.win32-arm64': 12.18.0
-      '@pnpm/exe.win32-x64': 12.18.0
+      '@pnpm/exe.android-arm64': 12.14.0
+      '@pnpm/exe.android-x64': 12.14.0
+      '@pnpm/exe.darwin-arm64': 12.14.0
+      '@pnpm/exe.darwin-x64': 12.14.0
+      '@pnpm/exe.freebsd-x64': 12.14.0
+      '@pnpm/exe.linux-arm64': 12.14.0
+      '@pnpm/exe.linux-arm64-musl': 12.14.0
+      '@pnpm/exe.linux-ppc64': 12.14.0
+      '@pnpm/exe.linux-riscv64': 12.14.0
+      '@pnpm/exe.linux-s390x': 12.14.0
+      '@pnpm/exe.linux-x64': 12.14.0
+      '@pnpm/exe.linux-x64-musl': 12.14.0
+      '@pnpm/exe.win32-arm64': 12.14.0
+      '@pnpm/exe.win32-x64': 12.14.0
 
 ---
 lockfileVersion: '9.0'
@@ -169,29 +169,29 @@ overrides:
 
 packageExtensionsChecksum: sha256-TrarseUCmMKP0lVjkfyLP2TAvkGZMZzvzPxjKY48nrY=
 
-pnpmfileChecksum: sha256-6l6qdgUHKyTLYIQLx/UGfGRnEiFXxIaSlGMgK4mttEw=
+pnpmfileChecksum: sha256-pdg4AQK8DH59DW+glYp+VzdNOXhwB9zsxfBDGOWNEPQ=
 
 patchedDependencies:
   '@radix-ui/react-collapsible@1.1.20': 0a7d7ed8025eb36c149a62238cb71a4eff052e8f159b60414d5946776e134f62
-  '@radix-ui/react-menu@2.1.24': a21d18697be25b83f91656d94ba7a64aaaf9eead32e404dacc23297c3363083b
-  '@tiptap/extension-list@3.31.3': afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299
+  '@radix-ui/react-menu@2.1.24': a310e8b79ba69652e1d079d1340409a30b98967317064312eaa1ec6fa8027a57
+  '@tiptap/extension-list@3.31.3': bbb8f89d8324c6860ea7f96aceeba822297fec974a5a0057b06773ee5ef4d03b
   '@tiptap/markdown@3.31.3': 4fe6aebb0d868ea9e8977f371bd088e96d5018ea8cf83a7ae3f3f924b87ee7cf
-  '@vscode/windows-process-tree@0.8.0': 7d691799d520346f89866112e8d1436e990058a5384d35b32acf86057c4f435d
+  '@vscode/windows-process-tree@0.8.0': d85fa0a947488c0a725ecad4f4a472aa8bf255d69923e74fc24de7ca9a3e9f9a
   '@xterm/addon-image@0.10.0-beta.331': f088c9207dac42844a542b9da8078be52351cee60585725ef189b9fd30f33f34
   '@xterm/addon-ligatures@0.11.0-beta.330': 47405b9994b5acf1b4e90b49250358c1ca03649854d59560e7732b72fe336920
   '@xterm/addon-search@0.17.0-beta.330': eee5338dd2621ece46e79c61ec06766cd7fadaf79ffdb24e2a8ab68e97ef31f0
-  '@xterm/addon-serialize@0.15.0-beta.330': 17ca66ab9c7f52fc2fee94053b3b587c1210da468f3ddc7c4f5dba50b521c93e
-  '@xterm/addon-webgl@0.20.0-beta.329': a37a600a28756106edeac962b0ecc502c0112bcf83a76463283f7c9615a4ec78
-  '@xterm/xterm@6.1.0-beta.336': c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d
+  '@xterm/addon-serialize@0.15.0-beta.330': f8eadc9fe167a310d1567c751304bf08b62f61c45857a7ba8672d8407945ac5e
+  '@xterm/addon-webgl@0.20.0-beta.329': aab8e89f6f9cff969aad482e0f62be7031e891c09f333ba98d79a7ee24f69806
+  '@xterm/xterm@6.1.0-beta.336': 6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd
   glob@13.0.6: 163edae2cab27bf7a8cf791c9a0ee368b596bfef898e490b3b77e7e44a8f0223
   i18next-cli@1.74.2: 2ee32eef742615cd133e1a6940f027deb3723a8430bb7953bba3a6769b0aac47
-  lint-staged@16.4.0: b3b398fa76585526ea579cbb07949ce69c2456afb5ab0b49e10de2de4ea76f6d
+  lint-staged@16.4.0: b877cc3dcbb7f0e0ad34b49e7493b2e89d0499624d2221d93981cd8c7fde6e74
   mermaid@11.17.2: eca98bdc7624d4074bc520d90046001ab0fd9e2446da76893b2a91b651430c8c
   minimatch@10.2.5: 4324868e550a69eee9addc4801001bee415e98339c9b2b88d6ab4fc6028741c6
   minimatch@10.2.6: 4324868e550a69eee9addc4801001bee415e98339c9b2b88d6ab4fc6028741c6
   minimatch@9.0.9: c356feccb9147b4d6a1cc72b10270defcb95d14cb42ee74ddfe7219341417161
-  monaco-editor@0.55.1: 53b71f7d8a7c00b76ffdb73ce83d18e31692f193f5fafa6a390e48f5b3fdd636
-  node-pty@1.1.0: 73ee1bbdfe180147fbb215e330bc989b014a6090c89e9f8fa14ef5f4bac234ac
+  monaco-editor@0.55.1: 81d9f08419bae4e664e8642e6d5ab5af96009656ba3b437f3b2a3010b29f59dd
+  node-pty@1.1.0: a669934c41abed0657dfe6610c5a32a96ad228c8702de142146d3d667302c6e2
   oxlint-plugin-anti-slop@0.1.2: c10c871702365a0c2c59e9f1c5fb92df97cae5755d534c0a3d83c6368f6feafe
   pdfjs-dist@6.3.289: 424fde648e16c965ce45c55bdda49ecb3a4aa992c856900714c841c3f13f8415
   picomatch@4.0.4: 76f93480db68f4e3e460f56ccd209911ee596325ff3ae5fcf356a454d36536f8
@@ -200,7 +200,7 @@ patchedDependencies:
   serve-sim@0.1.47: 243f6a047aedb06c6c614ac5a56679b453b9f0b1595275f7f6de59b6d3c02002
   sprintf-js@1.1.3: 05316a8b01f155fe19a1e0cb4042c81d43d798a76755c407684e1199a18b1e08
   vitest@5.1.0: 957d1d635d13350266bce54094e8197e86da1931a62d0caf7d5339c72040d9d9
-  ws@8.22.0: 9393e04dd9a90b01eb7aa35fcd5b1431b5038ce999fbbd82651136193ba51f14
+  ws@8.22.0: 4ae36a3eea4d92e95deb74e7737b5c4b29dfad1f310843ec7b942700afc0e38e
 
 importers:
 
@@ -215,15 +215,15 @@ importers:
       '@linear/sdk':
         specifier: ^97.0.0
         version: 97.0.0(graphql@16.14.2)
-      '@vshu/process-host':
-        specifier: workspace:*
-        version: link:src/packages/process-host
       '@parcel/watcher':
         specifier: ^2.5.6
         version: 2.5.6
+      '@vshu/process-host':
+        specifier: workspace:*
+        version: link:src/packages/process-host
       '@xterm/addon-serialize':
         specifier: 0.15.0-beta.330
-        version: 0.15.0-beta.330(patch_hash=17ca66ab9c7f52fc2fee94053b3b587c1210da468f3ddc7c4f5dba50b521c93e)(@xterm/xterm@6.1.0-beta.336(patch_hash=c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d))
+        version: 0.15.0-beta.330(patch_hash=f8eadc9fe167a310d1567c751304bf08b62f61c45857a7ba8672d8407945ac5e)(@xterm/xterm@6.1.0-beta.336(patch_hash=6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd))
       '@xterm/headless':
         specifier: 6.1.0-beta.334
         version: 6.1.0-beta.334
@@ -247,7 +247,7 @@ importers:
         version: 3.0.2
       node-pty:
         specifier: ^1.1.0
-        version: 1.1.0(patch_hash=73ee1bbdfe180147fbb215e330bc989b014a6090c89e9f8fa14ef5f4bac234ac)
+        version: 1.1.0(patch_hash=a669934c41abed0657dfe6610c5a32a96ad228c8702de142146d3d667302c6e2)
       posthog-node:
         specifier: ^5.52.5
         version: 5.52.5
@@ -286,7 +286,7 @@ importers:
         version: 1.0.3
       ws:
         specifier: ^8.22.0
-        version: 8.22.0(patch_hash=9393e04dd9a90b01eb7aa35fcd5b1431b5038ce999fbbd82651136193ba51f14)
+        version: 8.22.0(patch_hash=4ae36a3eea4d92e95deb74e7737b5c4b29dfad1f310843ec7b942700afc0e38e)
       yaml:
         specifier: ^2.9.1
         version: 2.9.1
@@ -320,7 +320,7 @@ importers:
         version: 1.32.1(supports-color@7.2.0)(zod@4.6.7)
       '@monaco-editor/react':
         specifier: ^4.7.0
-        version: 4.7.0(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(monaco-editor@0.55.1(patch_hash=53b71f7d8a7c00b76ffdb73ce83d18e31692f193f5fafa6a390e48f5b3fdd636))(react-dom@19.2.9(@types/react@19.2.18)(react@19.2.9))(react@19.2.9)
+        version: 4.7.0(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(monaco-editor@0.55.1(patch_hash=81d9f08419bae4e664e8642e6d5ab5af96009656ba3b437f3b2a3010b29f59dd))(react-dom@19.2.9(@types/react@19.2.18)(react@19.2.9))(react@19.2.9)
       '@noble/hashes':
         specifier: 1.8.0
         version: 1.8.0
@@ -371,7 +371,7 @@ importers:
         version: 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
       '@tiptap/extension-list':
         specifier: 3.31.3
-        version: 3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
+        version: 3.31.3(patch_hash=bbb8f89d8324c6860ea7f96aceeba822297fec974a5a0057b06773ee5ef4d03b)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
       '@tiptap/extension-mathematics':
         specifier: 3.31.3
         version: 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)(@types/katex@0.16.8)(katex@0.18.10)
@@ -434,28 +434,28 @@ importers:
         version: 1.18.0
       '@xterm/addon-fit':
         specifier: 0.12.0-beta.332
-        version: 0.12.0-beta.332(@xterm/xterm@6.1.0-beta.336(patch_hash=c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d))
+        version: 0.12.0-beta.332(@xterm/xterm@6.1.0-beta.336(patch_hash=6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd))
       '@xterm/addon-image':
         specifier: 0.10.0-beta.331
-        version: 0.10.0-beta.331(patch_hash=f088c9207dac42844a542b9da8078be52351cee60585725ef189b9fd30f33f34)(@xterm/xterm@6.1.0-beta.336(patch_hash=c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d))
+        version: 0.10.0-beta.331(patch_hash=f088c9207dac42844a542b9da8078be52351cee60585725ef189b9fd30f33f34)(@xterm/xterm@6.1.0-beta.336(patch_hash=6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd))
       '@xterm/addon-ligatures':
         specifier: 0.11.0-beta.330
-        version: 0.11.0-beta.330(patch_hash=47405b9994b5acf1b4e90b49250358c1ca03649854d59560e7732b72fe336920)(@xterm/xterm@6.1.0-beta.336(patch_hash=c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d))
+        version: 0.11.0-beta.330(patch_hash=47405b9994b5acf1b4e90b49250358c1ca03649854d59560e7732b72fe336920)(@xterm/xterm@6.1.0-beta.336(patch_hash=6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd))
       '@xterm/addon-search':
         specifier: 0.17.0-beta.330
-        version: 0.17.0-beta.330(patch_hash=eee5338dd2621ece46e79c61ec06766cd7fadaf79ffdb24e2a8ab68e97ef31f0)(@xterm/xterm@6.1.0-beta.336(patch_hash=c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d))
+        version: 0.17.0-beta.330(patch_hash=eee5338dd2621ece46e79c61ec06766cd7fadaf79ffdb24e2a8ab68e97ef31f0)(@xterm/xterm@6.1.0-beta.336(patch_hash=6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd))
       '@xterm/addon-unicode11':
         specifier: 0.10.0-beta.330
-        version: 0.10.0-beta.330(@xterm/xterm@6.1.0-beta.336(patch_hash=c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d))
+        version: 0.10.0-beta.330(@xterm/xterm@6.1.0-beta.336(patch_hash=6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd))
       '@xterm/addon-web-links':
         specifier: 0.13.0-beta.330
-        version: 0.13.0-beta.330(@xterm/xterm@6.1.0-beta.336(patch_hash=c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d))
+        version: 0.13.0-beta.330(@xterm/xterm@6.1.0-beta.336(patch_hash=6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd))
       '@xterm/addon-webgl':
         specifier: 0.20.0-beta.329
-        version: 0.20.0-beta.329(patch_hash=a37a600a28756106edeac962b0ecc502c0112bcf83a76463283f7c9615a4ec78)(@xterm/xterm@6.1.0-beta.336(patch_hash=c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d))
+        version: 0.20.0-beta.329(patch_hash=aab8e89f6f9cff969aad482e0f62be7031e891c09f333ba98d79a7ee24f69806)(@xterm/xterm@6.1.0-beta.336(patch_hash=6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd))
       '@xterm/xterm':
         specifier: 6.1.0-beta.336
-        version: 6.1.0-beta.336(patch_hash=c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d)
+        version: 6.1.0-beta.336(patch_hash=6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd)
       ajv:
         specifier: 8.20.0
         version: 8.20.0
@@ -536,7 +536,7 @@ importers:
         version: 0.18.10
       lint-staged:
         specifier: ^16.4.0
-        version: 16.4.0(patch_hash=b3b398fa76585526ea579cbb07949ce69c2456afb5ab0b49e10de2de4ea76f6d)
+        version: 16.4.0(patch_hash=b877cc3dcbb7f0e0ad34b49e7493b2e89d0499624d2221d93981cd8c7fde6e74)
       lowlight:
         specifier: ^3.3.0
         version: 3.3.0
@@ -554,7 +554,7 @@ importers:
         version: 11.17.2(patch_hash=eca98bdc7624d4074bc520d90046001ab0fd9e2446da76893b2a91b651430c8c)
       monaco-editor:
         specifier: ^0.55.1
-        version: 0.55.1(patch_hash=53b71f7d8a7c00b76ffdb73ce83d18e31692f193f5fafa6a390e48f5b3fdd636)
+        version: 0.55.1(patch_hash=81d9f08419bae4e664e8642e6d5ab5af96009656ba3b437f3b2a3010b29f59dd)
       node-gyp:
         specifier: 12.4.0
         version: 12.4.0
@@ -694,15 +694,6 @@ importers:
         specifier: ^5.1.0
         version: 5.1.0(@types/react@19.2.18)(@types/use-sync-external-store@0.0.6)(react@19.2.9)(use-sync-external-store@1.6.0(@types/react@19.2.18)(react@19.2.9))
     optionalDependencies:
-      '@vshu/windows-notifications':
-        specifier: workspace:*
-        version: link:native/windows-notifications
-      '@vshu/windows-registry':
-        specifier: workspace:*
-        version: link:native/windows-registry
-      '@vshu/windows-security':
-        specifier: workspace:*
-        version: link:native/windows-security
       '@transcribe-cpp/darwin-arm64-metal':
         specifier: 0.4.1
         version: 0.4.1
@@ -720,7 +711,16 @@ importers:
         version: 0.4.1
       '@vscode/windows-process-tree':
         specifier: 0.8.0
-        version: 0.8.0(patch_hash=7d691799d520346f89866112e8d1436e990058a5384d35b32acf86057c4f435d)
+        version: 0.8.0(patch_hash=d85fa0a947488c0a725ecad4f4a472aa8bf255d69923e74fc24de7ca9a3e9f9a)
+      '@vshu/windows-notifications':
+        specifier: workspace:*
+        version: link:native/windows-notifications
+      '@vshu/windows-registry':
+        specifier: workspace:*
+        version: link:native/windows-registry
+      '@vshu/windows-security':
+        specifier: workspace:*
+        version: link:native/windows-security
       transcribe-cpp:
         specifier: 0.4.1
         version: 0.4.1
@@ -9253,10 +9253,10 @@ snapshots:
     dependencies:
       state-local: 1.0.7
 
-  '@monaco-editor/react@4.7.0(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(monaco-editor@0.55.1(patch_hash=53b71f7d8a7c00b76ffdb73ce83d18e31692f193f5fafa6a390e48f5b3fdd636))(react-dom@19.2.9(@types/react@19.2.18)(react@19.2.9))(react@19.2.9)':
+  '@monaco-editor/react@4.7.0(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(monaco-editor@0.55.1(patch_hash=81d9f08419bae4e664e8642e6d5ab5af96009656ba3b437f3b2a3010b29f59dd))(react-dom@19.2.9(@types/react@19.2.18)(react@19.2.9))(react@19.2.9)':
     dependencies:
       '@monaco-editor/loader': 1.7.0
-      monaco-editor: 0.55.1(patch_hash=53b71f7d8a7c00b76ffdb73ce83d18e31692f193f5fafa6a390e48f5b3fdd636)
+      monaco-editor: 0.55.1(patch_hash=81d9f08419bae4e664e8642e6d5ab5af96009656ba3b437f3b2a3010b29f59dd)
       react: 19.2.9
       react-dom: 19.2.9(@types/react@19.2.18)(react@19.2.9)
     optionalDependencies:
@@ -9866,7 +9866,7 @@ snapshots:
     dependencies:
       '@radix-ui/primitive': 1.1.7
       '@radix-ui/react-context': 1.2.2(@types/react@19.2.18)(react@19.2.9)
-      '@radix-ui/react-menu': 2.1.24(patch_hash=a21d18697be25b83f91656d94ba7a64aaaf9eead32e404dacc23297c3363083b)(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.9(@types/react@19.2.18)(react@19.2.9))(react@19.2.9)
+      '@radix-ui/react-menu': 2.1.24(patch_hash=a310e8b79ba69652e1d079d1340409a30b98967317064312eaa1ec6fa8027a57)(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.9(@types/react@19.2.18)(react@19.2.9))(react@19.2.9)
       '@radix-ui/react-primitive': 2.1.10(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.9(@types/react@19.2.18)(react@19.2.9))(react@19.2.9)
       '@radix-ui/react-use-controllable-state': 1.2.6(@types/react@19.2.18)(react@19.2.9)
       react: 19.2.9
@@ -9970,7 +9970,7 @@ snapshots:
       '@radix-ui/react-compose-refs': 1.1.5(@types/react@19.2.18)(react@19.2.9)
       '@radix-ui/react-context': 1.2.2(@types/react@19.2.18)(react@19.2.9)
       '@radix-ui/react-id': 1.1.4(@types/react@19.2.18)(react@19.2.9)
-      '@radix-ui/react-menu': 2.1.24(patch_hash=a21d18697be25b83f91656d94ba7a64aaaf9eead32e404dacc23297c3363083b)(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.9(@types/react@19.2.18)(react@19.2.9))(react@19.2.9)
+      '@radix-ui/react-menu': 2.1.24(patch_hash=a310e8b79ba69652e1d079d1340409a30b98967317064312eaa1ec6fa8027a57)(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.9(@types/react@19.2.18)(react@19.2.9))(react@19.2.9)
       '@radix-ui/react-primitive': 2.1.10(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.9(@types/react@19.2.18)(react@19.2.9))(react@19.2.9)
       '@radix-ui/react-use-controllable-state': 1.2.6(@types/react@19.2.18)(react@19.2.9)
       react: 19.2.9
@@ -10067,7 +10067,7 @@ snapshots:
       '@types/react': 19.2.18
       '@types/react-dom': 19.2.7(@types/react@19.2.18)
 
-  '@radix-ui/react-menu@2.1.24(patch_hash=a21d18697be25b83f91656d94ba7a64aaaf9eead32e404dacc23297c3363083b)(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.9(@types/react@19.2.18)(react@19.2.9))(react@19.2.9)':
+  '@radix-ui/react-menu@2.1.24(patch_hash=a310e8b79ba69652e1d079d1340409a30b98967317064312eaa1ec6fa8027a57)(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.9(@types/react@19.2.18)(react@19.2.9))(react@19.2.9)':
     dependencies:
       '@radix-ui/primitive': 1.1.7
       '@radix-ui/react-collection': 1.1.15(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.9(@types/react@19.2.18)(react@19.2.9))(react@19.2.9)
@@ -10101,7 +10101,7 @@ snapshots:
       '@radix-ui/react-context': 1.2.2(@types/react@19.2.18)(react@19.2.9)
       '@radix-ui/react-direction': 1.1.4(@types/react@19.2.18)(react@19.2.9)
       '@radix-ui/react-id': 1.1.4(@types/react@19.2.18)(react@19.2.9)
-      '@radix-ui/react-menu': 2.1.24(patch_hash=a21d18697be25b83f91656d94ba7a64aaaf9eead32e404dacc23297c3363083b)(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.9(@types/react@19.2.18)(react@19.2.9))(react@19.2.9)
+      '@radix-ui/react-menu': 2.1.24(patch_hash=a310e8b79ba69652e1d079d1340409a30b98967317064312eaa1ec6fa8027a57)(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.9(@types/react@19.2.18)(react@19.2.9))(react@19.2.9)
       '@radix-ui/react-primitive': 2.1.10(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.9(@types/react@19.2.18)(react@19.2.9))(react@19.2.9)
       '@radix-ui/react-roving-focus': 1.1.19(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.9(@types/react@19.2.18)(react@19.2.9))(react@19.2.9)
       '@radix-ui/react-use-controllable-state': 1.2.6(@types/react@19.2.18)(react@19.2.9)
@@ -10957,9 +10957,9 @@ snapshots:
       '@tiptap/pm': 3.31.3
     optional: true
 
-  '@tiptap/extension-bullet-list@3.31.3(@tiptap/extension-list@3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))':
+  '@tiptap/extension-bullet-list@3.31.3(@tiptap/extension-list@3.31.3(patch_hash=bbb8f89d8324c6860ea7f96aceeba822297fec974a5a0057b06773ee5ef4d03b)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))':
     dependencies:
-      '@tiptap/extension-list': 3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
+      '@tiptap/extension-list': 3.31.3(patch_hash=bbb8f89d8324c6860ea7f96aceeba822297fec974a5a0057b06773ee5ef4d03b)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
 
   '@tiptap/extension-code-block-lowlight@3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/extension-code-block@3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)(highlight.js@11.11.1)(lowlight@3.3.0)':
     dependencies:
@@ -11030,15 +11030,15 @@ snapshots:
       '@tiptap/pm': 3.31.3
       linkifyjs: 4.3.3
 
-  '@tiptap/extension-list-item@3.31.3(@tiptap/extension-list@3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))':
+  '@tiptap/extension-list-item@3.31.3(@tiptap/extension-list@3.31.3(patch_hash=bbb8f89d8324c6860ea7f96aceeba822297fec974a5a0057b06773ee5ef4d03b)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))':
     dependencies:
-      '@tiptap/extension-list': 3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
+      '@tiptap/extension-list': 3.31.3(patch_hash=bbb8f89d8324c6860ea7f96aceeba822297fec974a5a0057b06773ee5ef4d03b)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
 
-  '@tiptap/extension-list-keymap@3.31.3(@tiptap/extension-list@3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))':
+  '@tiptap/extension-list-keymap@3.31.3(@tiptap/extension-list@3.31.3(patch_hash=bbb8f89d8324c6860ea7f96aceeba822297fec974a5a0057b06773ee5ef4d03b)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))':
     dependencies:
-      '@tiptap/extension-list': 3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
+      '@tiptap/extension-list': 3.31.3(patch_hash=bbb8f89d8324c6860ea7f96aceeba822297fec974a5a0057b06773ee5ef4d03b)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
 
-  '@tiptap/extension-list@3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)':
+  '@tiptap/extension-list@3.31.3(patch_hash=bbb8f89d8324c6860ea7f96aceeba822297fec974a5a0057b06773ee5ef4d03b)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)':
     dependencies:
       '@tiptap/core': 3.31.3(@tiptap/pm@3.31.3)
       '@tiptap/pm': 3.31.3
@@ -11052,9 +11052,9 @@ snapshots:
     optionalDependencies:
       '@types/katex': 0.16.8
 
-  '@tiptap/extension-ordered-list@3.31.3(@tiptap/extension-list@3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))':
+  '@tiptap/extension-ordered-list@3.31.3(@tiptap/extension-list@3.31.3(patch_hash=bbb8f89d8324c6860ea7f96aceeba822297fec974a5a0057b06773ee5ef4d03b)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))':
     dependencies:
-      '@tiptap/extension-list': 3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
+      '@tiptap/extension-list': 3.31.3(patch_hash=bbb8f89d8324c6860ea7f96aceeba822297fec974a5a0057b06773ee5ef4d03b)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
 
   '@tiptap/extension-paragraph@3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))':
     dependencies:
@@ -11135,7 +11135,7 @@ snapshots:
       '@tiptap/core': 3.31.3(@tiptap/pm@3.31.3)
       '@tiptap/extension-blockquote': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
       '@tiptap/extension-bold': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
-      '@tiptap/extension-bullet-list': 3.31.3(@tiptap/extension-list@3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))
+      '@tiptap/extension-bullet-list': 3.31.3(@tiptap/extension-list@3.31.3(patch_hash=bbb8f89d8324c6860ea7f96aceeba822297fec974a5a0057b06773ee5ef4d03b)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))
       '@tiptap/extension-code': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
       '@tiptap/extension-code-block': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
       '@tiptap/extension-document': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
@@ -11146,10 +11146,10 @@ snapshots:
       '@tiptap/extension-horizontal-rule': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
       '@tiptap/extension-italic': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
       '@tiptap/extension-link': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
-      '@tiptap/extension-list': 3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
-      '@tiptap/extension-list-item': 3.31.3(@tiptap/extension-list@3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))
-      '@tiptap/extension-list-keymap': 3.31.3(@tiptap/extension-list@3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))
-      '@tiptap/extension-ordered-list': 3.31.3(@tiptap/extension-list@3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))
+      '@tiptap/extension-list': 3.31.3(patch_hash=bbb8f89d8324c6860ea7f96aceeba822297fec974a5a0057b06773ee5ef4d03b)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
+      '@tiptap/extension-list-item': 3.31.3(@tiptap/extension-list@3.31.3(patch_hash=bbb8f89d8324c6860ea7f96aceeba822297fec974a5a0057b06773ee5ef4d03b)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))
+      '@tiptap/extension-list-keymap': 3.31.3(@tiptap/extension-list@3.31.3(patch_hash=bbb8f89d8324c6860ea7f96aceeba822297fec974a5a0057b06773ee5ef4d03b)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))
+      '@tiptap/extension-ordered-list': 3.31.3(@tiptap/extension-list@3.31.3(patch_hash=bbb8f89d8324c6860ea7f96aceeba822297fec974a5a0057b06773ee5ef4d03b)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))
       '@tiptap/extension-paragraph': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
       '@tiptap/extension-strike': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
       '@tiptap/extension-text': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
@@ -11547,50 +11547,50 @@ snapshots:
 
   '@vscode/ripgrep-universal@1.18.0': {}
 
-  '@vscode/windows-process-tree@0.8.0(patch_hash=7d691799d520346f89866112e8d1436e990058a5384d35b32acf86057c4f435d)':
+  '@vscode/windows-process-tree@0.8.0(patch_hash=d85fa0a947488c0a725ecad4f4a472aa8bf255d69923e74fc24de7ca9a3e9f9a)':
     dependencies:
       node-addon-api: 7.1.0
     optional: true
 
   '@xmldom/xmldom@0.8.15': {}
 
-  '@xterm/addon-fit@0.12.0-beta.332(@xterm/xterm@6.1.0-beta.336(patch_hash=c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d))':
+  '@xterm/addon-fit@0.12.0-beta.332(@xterm/xterm@6.1.0-beta.336(patch_hash=6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd))':
     dependencies:
-      '@xterm/xterm': 6.1.0-beta.336(patch_hash=c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d)
+      '@xterm/xterm': 6.1.0-beta.336(patch_hash=6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd)
 
-  '@xterm/addon-image@0.10.0-beta.331(patch_hash=f088c9207dac42844a542b9da8078be52351cee60585725ef189b9fd30f33f34)(@xterm/xterm@6.1.0-beta.336(patch_hash=c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d))':
+  '@xterm/addon-image@0.10.0-beta.331(patch_hash=f088c9207dac42844a542b9da8078be52351cee60585725ef189b9fd30f33f34)(@xterm/xterm@6.1.0-beta.336(patch_hash=6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd))':
     dependencies:
-      '@xterm/xterm': 6.1.0-beta.336(patch_hash=c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d)
+      '@xterm/xterm': 6.1.0-beta.336(patch_hash=6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd)
 
-  '@xterm/addon-ligatures@0.11.0-beta.330(patch_hash=47405b9994b5acf1b4e90b49250358c1ca03649854d59560e7732b72fe336920)(@xterm/xterm@6.1.0-beta.336(patch_hash=c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d))':
+  '@xterm/addon-ligatures@0.11.0-beta.330(patch_hash=47405b9994b5acf1b4e90b49250358c1ca03649854d59560e7732b72fe336920)(@xterm/xterm@6.1.0-beta.336(patch_hash=6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd))':
     dependencies:
-      '@xterm/xterm': 6.1.0-beta.336(patch_hash=c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d)
+      '@xterm/xterm': 6.1.0-beta.336(patch_hash=6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd)
       lru-cache: 11.5.1
       opentype.js: 2.0.0
 
-  '@xterm/addon-search@0.17.0-beta.330(patch_hash=eee5338dd2621ece46e79c61ec06766cd7fadaf79ffdb24e2a8ab68e97ef31f0)(@xterm/xterm@6.1.0-beta.336(patch_hash=c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d))':
+  '@xterm/addon-search@0.17.0-beta.330(patch_hash=eee5338dd2621ece46e79c61ec06766cd7fadaf79ffdb24e2a8ab68e97ef31f0)(@xterm/xterm@6.1.0-beta.336(patch_hash=6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd))':
     dependencies:
-      '@xterm/xterm': 6.1.0-beta.336(patch_hash=c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d)
+      '@xterm/xterm': 6.1.0-beta.336(patch_hash=6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd)
 
-  '@xterm/addon-serialize@0.15.0-beta.330(patch_hash=17ca66ab9c7f52fc2fee94053b3b587c1210da468f3ddc7c4f5dba50b521c93e)(@xterm/xterm@6.1.0-beta.336(patch_hash=c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d))':
+  '@xterm/addon-serialize@0.15.0-beta.330(patch_hash=f8eadc9fe167a310d1567c751304bf08b62f61c45857a7ba8672d8407945ac5e)(@xterm/xterm@6.1.0-beta.336(patch_hash=6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd))':
     dependencies:
-      '@xterm/xterm': 6.1.0-beta.336(patch_hash=c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d)
+      '@xterm/xterm': 6.1.0-beta.336(patch_hash=6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd)
 
-  '@xterm/addon-unicode11@0.10.0-beta.330(@xterm/xterm@6.1.0-beta.336(patch_hash=c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d))':
+  '@xterm/addon-unicode11@0.10.0-beta.330(@xterm/xterm@6.1.0-beta.336(patch_hash=6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd))':
     dependencies:
-      '@xterm/xterm': 6.1.0-beta.336(patch_hash=c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d)
+      '@xterm/xterm': 6.1.0-beta.336(patch_hash=6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd)
 
-  '@xterm/addon-web-links@0.13.0-beta.330(@xterm/xterm@6.1.0-beta.336(patch_hash=c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d))':
+  '@xterm/addon-web-links@0.13.0-beta.330(@xterm/xterm@6.1.0-beta.336(patch_hash=6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd))':
     dependencies:
-      '@xterm/xterm': 6.1.0-beta.336(patch_hash=c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d)
+      '@xterm/xterm': 6.1.0-beta.336(patch_hash=6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd)
 
-  '@xterm/addon-webgl@0.20.0-beta.329(patch_hash=a37a600a28756106edeac962b0ecc502c0112bcf83a76463283f7c9615a4ec78)(@xterm/xterm@6.1.0-beta.336(patch_hash=c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d))':
+  '@xterm/addon-webgl@0.20.0-beta.329(patch_hash=aab8e89f6f9cff969aad482e0f62be7031e891c09f333ba98d79a7ee24f69806)(@xterm/xterm@6.1.0-beta.336(patch_hash=6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd))':
     dependencies:
-      '@xterm/xterm': 6.1.0-beta.336(patch_hash=c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d)
+      '@xterm/xterm': 6.1.0-beta.336(patch_hash=6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd)
 
   '@xterm/headless@6.1.0-beta.334': {}
 
-  '@xterm/xterm@6.1.0-beta.336(patch_hash=c5421560f0f6faaa1dd5dba59d50819b16ea1446a7f3f34a839a53becf8e380d)': {}
+  '@xterm/xterm@6.1.0-beta.336(patch_hash=6a529f5ff7787124115339820c8f0886db4a4e9b3f5a4887dca6436225a447bd)': {}
 
   abbrev@4.0.0: {}
 
@@ -12968,7 +12968,7 @@ snapshots:
       buffer-image-size: 0.6.4
       entities: 7.0.1
       whatwg-mimetype: 3.0.0
-      ws: 8.22.0(patch_hash=9393e04dd9a90b01eb7aa35fcd5b1431b5038ce999fbbd82651136193ba51f14)
+      ws: 8.22.0(patch_hash=4ae36a3eea4d92e95deb74e7737b5c4b29dfad1f310843ec7b942700afc0e38e)
     transitivePeerDependencies:
       - '@types/bufferutil'
       - '@types/utf-8-validate'
@@ -13491,7 +13491,7 @@ snapshots:
 
   linkifyjs@4.3.3: {}
 
-  lint-staged@16.4.0(patch_hash=b3b398fa76585526ea579cbb07949ce69c2456afb5ab0b49e10de2de4ea76f6d):
+  lint-staged@16.4.0(patch_hash=b877cc3dcbb7f0e0ad34b49e7493b2e89d0499624d2221d93981cd8c7fde6e74):
     dependencies:
       commander: 14.0.3
       listr2: 9.0.5
@@ -14119,7 +14119,7 @@ snapshots:
       pkg-types: 1.3.1
       ufo: 1.6.4
 
-  monaco-editor@0.55.1(patch_hash=53b71f7d8a7c00b76ffdb73ce83d18e31692f193f5fafa6a390e48f5b3fdd636):
+  monaco-editor@0.55.1(patch_hash=81d9f08419bae4e664e8642e6d5ab5af96009656ba3b437f3b2a3010b29f59dd):
     dependencies:
       dompurify: 3.4.17
       marked: 14.0.0
@@ -14228,7 +14228,7 @@ snapshots:
 
   node-int64@0.4.0: {}
 
-  node-pty@1.1.0(patch_hash=73ee1bbdfe180147fbb215e330bc989b014a6090c89e9f8fa14ef5f4bac234ac):
+  node-pty@1.1.0(patch_hash=a669934c41abed0657dfe6610c5a32a96ad228c8702de142146d3d667302c6e2):
     dependencies:
       node-addon-api: 7.1.1
 
@@ -14742,7 +14742,7 @@ snapshots:
       '@radix-ui/react-form': 0.1.16(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.9(@types/react@19.2.18)(react@19.2.9))(react@19.2.9)
       '@radix-ui/react-hover-card': 1.1.23(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.9(@types/react@19.2.18)(react@19.2.9))(react@19.2.9)
       '@radix-ui/react-label': 2.1.15(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.9(@types/react@19.2.18)(react@19.2.9))(react@19.2.9)
-      '@radix-ui/react-menu': 2.1.24(patch_hash=a21d18697be25b83f91656d94ba7a64aaaf9eead32e404dacc23297c3363083b)(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.9(@types/react@19.2.18)(react@19.2.9))(react@19.2.9)
+      '@radix-ui/react-menu': 2.1.24(patch_hash=a310e8b79ba69652e1d079d1340409a30b98967317064312eaa1ec6fa8027a57)(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.9(@types/react@19.2.18)(react@19.2.9))(react@19.2.9)
       '@radix-ui/react-menubar': 1.1.24(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.9(@types/react@19.2.18)(react@19.2.9))(react@19.2.9)
       '@radix-ui/react-navigation-menu': 1.2.22(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.9(@types/react@19.2.18)(react@19.2.9))(react@19.2.9)
       '@radix-ui/react-one-time-password-field': 0.1.16(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.9(@types/react@19.2.18)(react@19.2.9))(react@19.2.9)
@@ -15156,7 +15156,7 @@ snapshots:
     dependencies:
       inspect-webkit: 0.0.5(typescript@7.0.2)
       sonner: 2.0.8(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.9(@types/react@19.2.18)(react@19.2.9))(react@19.2.9)
-      ws: 8.22.0(patch_hash=9393e04dd9a90b01eb7aa35fcd5b1431b5038ce999fbbd82651136193ba51f14)
+      ws: 8.22.0(patch_hash=4ae36a3eea4d92e95deb74e7737b5c4b29dfad1f310843ec7b942700afc0e38e)
     transitivePeerDependencies:
       - '@types/bufferutil'
       - '@types/react'
@@ -15818,7 +15818,7 @@ snapshots:
 
   wrappy@1.0.2: {}
 
-  ws@8.22.0(patch_hash=9393e04dd9a90b01eb7aa35fcd5b1431b5038ce999fbbd82651136193ba51f14): {}
+  ws@8.22.0(patch_hash=4ae36a3eea4d92e95deb74e7737b5c4b29dfad1f310843ec7b942700afc0e38e): {}
 
   xmlbuilder@15.1.1: {}
 
